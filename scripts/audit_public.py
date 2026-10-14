@@ -2,8 +2,8 @@
 """Conservative current-tree publication guard. Human/history review still required."""
 import json,pathlib,re,subprocess,sys
 ROOT=pathlib.Path(__file__).resolve().parent.parent
-FORBIDDEN_DIRS={'games','generated','tools','build','private','local','artifacts','captures','logs','profiles','venv','.venv'}
-FORBIDDEN_EXTS={'.iso','.chd','.cso','.zip','.7z','.rar','.elf','.irx','.bin','.wasm','.a','.o','.obj','.so','.dylib','.dll','.exe','.ps2','.state','.sav','.dump','.ppm','.wav','.log','.mp4','.webp'}
+FORBIDDEN_DIRS={'games','generated','tools','build','private','local','artifacts','captures','logs','profiles','venv','.venv','.pi','.rea','.local','.cache','node_modules','rea','pi','evidence'}
+FORBIDDEN_EXTS={'.iso','.chd','.cso','.zip','.7z','.rar','.elf','.irx','.bin','.wasm','.a','.o','.obj','.so','.dylib','.dll','.exe','.ps2','.state','.sav','.dump','.ppm','.wav','.log','.mp4','.webp','.jsonl','.jdb2','.gpr','.idb','.i64','.bndb','.sqlite','.sqlite3'}
 SECRET=re.compile(rb'(?:gh[pousr]_[A-Za-z0-9_]{30,}|github_pat_[A-Za-z0-9_]{30,}|sk-[A-Za-z0-9_-]{30,})')
 def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
 def main():
@@ -19,7 +19,7 @@ def main():
   if p.is_symlink():reasons.append('symlink: review rather than follow local data')
   if set(p.relative_to(ROOT).parts)&FORBIDDEN_DIRS:reasons.append('private/generated directory')
   if p.suffix.lower() in FORBIDDEN_EXTS:reasons.append('binary/game/media/build artifact extension')
-  if p.name.startswith('.env') or p.name=='access-token' or 'credentials' in p.name.lower():reasons.append('private configuration')
+  if p.name.startswith('.env') or p.name in {'access-token','auth.json','mcp-auth.json','trust.json'} or 'credentials' in p.name.lower():reasons.append('private configuration')
   if not p.is_symlink() and p.is_file():
    data=p.read_bytes()
    if data.startswith((b'\x7fELF',b'MZ',b'\x00asm',b'PK\x03\x04',b'!<arch>\n')):reasons.append('compiled/archive magic')

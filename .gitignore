@@ -1,3 +1,26 @@
+# Private agent configuration, credentials, sessions, and local REA installations.
+/.pi/
+/.rea/
+/pi/
+/rea/
+/.local/
+/.cache/
+node_modules/
+auth.json
+mcp-auth.json
+trust.json
+*.jsonl
+# Native analysis databases, exports, and private evidence.
+/evidence/
+*.jdb2
+*.gpr
+*.rep/
+*.idb
+*.i64
+*.bndb
+*.sqlite
+*.sqlite3
+
 /games/
 /generated/
 /tools/

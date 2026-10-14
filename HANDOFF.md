@@ -2,6 +2,14 @@
 
 ## Authoritative home
 
+Active local checkout: `~/code/personal/gt3-recomp`. Global `pi` uses saved private
+credentials/settings/sessions under `~/.pi/agent`; REA/Ghidra/JDK are installed only
+under ignored `local/rea` and registered via ignored project `.pi/mcp.json`.
+Original inputs/oracles/evidence are available under ignored `local/game-input`
+and `local/legacy`. Full private history is preserved under `~/archives/gt3`.
+See [development setup](docs/gt3/DEVELOPMENT.md). No credentials or installations
+are public. The old experiment location is retired, not a development root.
+
 This checkout and `wardbryan3/gt3-recomp` main are the source of truth. Do not resume
 new development in copied historical runtime repositories. Supporting upstream
 history, license and notices remain intact.
