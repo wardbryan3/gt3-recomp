@@ -15,7 +15,7 @@ jobs:
           python3 tests/gt3_patch_test.py
           bash -n scripts/build_gt3.sh scripts/port.sh tests/run_resolution_tests.sh
       - name: Configure software runtime (no game or downloaded GPU SDK)
-        run: cmake -S . -B build/tests -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
+        run: cmake -S . -B build/tests -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=ON -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
       - name: Compile synthetic regressions
         run: cmake --build build/tests --target gt3_hardware_test sif_scratchpad_test --parallel 2
       - name: Test

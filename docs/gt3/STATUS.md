@@ -24,8 +24,12 @@ rebased source/tests. The newer upstream interrupt-latch implementation was kept
 state version is bumped for the additional i.Link state. Experiment measurements
 are not automatically measurements of this newly rebased code.
 
-Publication guard, script syntax and synthetic patch tests are preparation checks.
-CI is configured for synthetic software-runtime regressions. Fresh-clone native
+Publication guard, script syntax and synthetic patch tests passed. The rebased
+software runtime compiled with Clang and both synthetic CTest regressions passed:
+GT3 hardware behavior and SIF RAM/scratchpad descriptor reads. GCC configuration
+exposed unsupported inherited Clang vector builtins; compiler requirements and CI
+now explicitly select Clang, with an early diagnostic for unsupported compilers.
+CI is configured for these source-only regressions. Fresh-clone native
 boot/discovery, local GPU tests, browser/GT4 regression coverage and portable build
 coverage must be established before a release. No release binaries are provided.
 

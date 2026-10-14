@@ -36,7 +36,8 @@ this fork keeps the upstream implementation rather than duplicating it.
 ## Build locally
 
 Linux/native is the currently validated experiment path. You need Git, CMake,
-Ninja, Python 3, a C++20 compiler, and SDL2 development files for a window.
+Ninja, Python 3, Clang with C++20 support, and SDL2 development files for a window.
+The inherited VU implementation uses Clang vector builtins; GCC is not supported.
 Setup downloads wgpu-native into ignored local storage. No system package or
 firewall changes are made by these build scripts.
 
@@ -72,7 +73,7 @@ fresh-clone end-to-end discovery need additional validation.
 
 ```bash
 # No ISO or generated game code required; software runtime:
-cmake -S . -B build/tests -G Ninja -DBUILD_TESTING=ON \
+cmake -S . -B build/tests -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=ON \
   -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
 cmake --build build/tests --target gt3_hardware_test sif_scratchpad_test
 ctest --test-dir build/tests --output-on-failure

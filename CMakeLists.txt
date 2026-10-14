@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(gt3-recomp CXX)
 
+if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(FATAL_ERROR "The VU runtime requires Clang vector builtins; configure with -DCMAKE_CXX_COMPILER=clang++")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
