@@ -23,6 +23,15 @@ flowchart TD
   K --> L[Checkpoint 2 implementation - separately authorized]
 ```
 
+## Pedal Recovery v1 audit outcome
+
+The explicitly requested [v1 audit](pedal-recovery-v1.md) stopped before
+implementation. A subsequent [native-baseline task](current-baseline.md) restored
+tools, fresh regressions, a normal-boot v3 race fixture and isolated current-main
+steering/synthetic live proof. No pedal boundary expansion or lifecycle promotion
+followed. **Stop at that baseline**; a separate request is needed to resume the
+pedal contract/differential work below, not an adjacent subsystem.
+
 ## Proposed next cycle: pedal semantics only
 
 **Need:** recover the original accelerator/brake contract before any physical-pedal adapter. Steering is already sufficient and frozen. No new device features required.

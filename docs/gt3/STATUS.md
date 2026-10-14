@@ -14,6 +14,49 @@ Snapshot3 remains current; old v2 race states are not portable by changing a byt
 See HANDOFF.md and experiments/legacy/README.md. No pedal/physical-wheel/FFB/AI API
 has been implemented by this checkpoint.
 
+## Current-main native baseline (source base 82987de + validation-only overlay)
+
+The documented missing CMake/Ninja dependencies are restored. Fresh software and
+GPU/native builds pass; four canonical executables built in independent directories
+are byte-identical. Current tools regenerate translations; old libraries are not
+linked. All applicable native regressions pass, including the full unchanged clean,
+controls, pad/wheel, synthetic, original-only pedal, GPU and hardware/SIF suites.
+
+Normal boot produced an identity-pinned **v3** frame-4801 Super Speedway race state.
+Defined serialized state and complete guest dumps reproduce; raw independent
+snapshot hashes can differ only in compiled native Thread padding. Original files
+are not normalized or relabeled. With external UTC input pinned and future pad
+input at 4802, snapshot replay matches uninterrupted execution exactly.
+
+Ten new wheel live scenarios pass: 3,400 clean mode-4 updates, 13,600 original
+consumers, maximum error 5.96046448e-8, tolerance 2e-6. Clean pad, disabled and
+trace-only cases also pass exact traces/captures/full-dump comparisons. These
+results use a **validation-only isolated host**, not canonical ps2run installation.
+No gameplay/control/render/state-format source changed. No physical proof added.
+
+Fresh authority: `decomp/gt3/current-validation.json`; historical lifecycle/evidence
+remains separate. See [reproduction and limitations](../site/docs/current-baseline.md).
+Both strict private verifiers and `just check`, `just test`, `just docs-build` pass.
+Stop here; pedals remain unimplemented.
+
+## Pedal Recovery v1 audit (earlier stopped cycle, source base 82987de)
+
+The following blockers describe that earlier attempt; native baseline prerequisites
+are now restored as recorded above. They are retained as history, not current failures.
+
+Stopped before clean implementation/integration. The candidate tail remains
+`001E48FC–001E4BA7`, rejoin `001E4BA8`; no Frozen promotion. Current-runtime load
+rejects the retained v2 race snapshot, and no validated v3 fixture/compatibility
+path was found in inspected validation locations. Fresh `just test` and GPU build
+attempts are blocked by missing `cmake`; `ninja` is also absent from PATH.
+
+Available archive-linked unchanged controls, pad/wheel, clean steering, synthetic
+and original-only pedal fixtures passed, as did cached hardware/SIF executables.
+These are not fresh builds or new live evidence. Public check, strict private
+verification and docs build passed. See [the audit](../site/docs/pedal-recovery-v1.md)
+for contracts, counts, source/build context and the exact prerequisite to resume.
+No preserved files or runtime semantics were changed.
+
 ## Private experiment observations (before the public-tree rebase)
 
 - GT3 USA v1.10 menus/races and scoped projection/camera changes exercised.

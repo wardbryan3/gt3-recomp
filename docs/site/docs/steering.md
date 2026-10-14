@@ -1,4 +1,4 @@
-> **Evidence context:** historical private experiment. Current main preserves source and findings; clean steering/synthetic runtime installation is not yet revalidated or enabled here.
+> **Evidence context:** installation/results below describe the historical experiment. The unchanged four boundaries now also pass fresh [current-main native validation](current-baseline.md) in an isolated test-only host. Canonical ps2run remains generated-only.
 
 ---
 title: Verified and frozen clean steering

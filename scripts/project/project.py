@@ -10,6 +10,56 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / 'decomp/gt3'
 def load(name): return json.loads((DB / (name + '.json')).read_text())
+def check_current():
+    """Public consistency only. Private validation is explicit and never skipped."""
+    v=load('current-validation')
+    assert v['schema_version']==1
+    assert v['context']=='current-main-source-with-validation-only-harness'
+    assert v['runtime_installation']=='canonical-generated; recovered gates in isolated validation harness only'
+    assert re.fullmatch(r'[0-9a-f]{40}',v['source_commit'])
+    for key in ('build','regressions','live'):
+        assert v[key] in ('pending','passing','failed','blocked'), (key,v[key])
+    assert v['fixture']['status'] in ('pending','passing','failed','blocked')
+    assert v['fixture']['version']==3, 'Current fixture must be native v3, never relabeled v2'
+    ids=set()
+    for a in v['artifacts']:
+        assert a['id'] not in ids; ids.add(a['id'])
+        assert re.fullmatch(r'[0-9a-f]{64}',a['sha256'])
+        path=Path(a['path'])
+        assert not path.is_absolute() and '..' not in path.parts
+        assert path.parts and path.parts[0]=='local' and a['visibility']=='private'
+        assert a.get('kind','file') in ('file','file-manifest')
+    if any(v[k]=='passing' for k in ('build','regressions','live')) or v['fixture']['status']=='passing':
+        assert ids, 'Passing current results require pinned private artifacts'
+    if v['live']=='passing':
+        assert v['build']==v['regressions']==v['fixture']['status']=='passing', 'Current live proof requires fresh build/regression/v3 fixture gates'
+    if v['fixture']['status']=='passing':
+        assert v['fixture']['artifact'] in ids, 'Current fixture must have its own pinned artifact'
+    return v
+
+def verify_current(root):
+    v=check_current(); root=Path(root).resolve()
+    nested=0
+    def verify_file(a):
+        p=Path(a['path'])
+        assert not p.is_absolute() and '..' not in p.parts and p.parts and p.parts[0]=='local'
+        path=root/p
+        assert path.is_file(), f'Missing current artifact: {a.get("id",a["path"])}'
+        assert hashlib.sha256(path.read_bytes()).hexdigest()==a['sha256'], f'CURRENT EVIDENCE CHANGED: {a.get("id",a["path"])}; do not rehash'
+        return path
+    for a in v['artifacts']:
+        path=verify_file(a)
+        if a.get('kind')=='file-manifest':
+            members=json.loads(path.read_text())['files']
+            assert members and len({m['path'] for m in members})==len(members)
+            for member in members:verify_file(member);nested+=1
+    assert v['artifacts'], 'No current evidence registered'
+    if v.get('fixture',{}).get('status')=='passing':
+        a=next(a for a in v['artifacts'] if a['id']==v['fixture']['artifact'])
+        with (root/a['path']).open('rb') as stream:header=stream.read(12)
+        assert header[:8]==b'PS2STATE' and int.from_bytes(header[8:12],'little')==3, 'Current fixture is not native v3'
+    print(f"Current validation: {len(v['artifacts'])} artifact hashes + {nested} evidence-tree members verified; no files changed")
+
 def check():
     m, s, t, p = (load(n) for n in ('manifest', 'symbols', 'types', 'provenance'))
     for d in (m,s,t,p): assert d['schema_version'] == 1, 'Unsupported schema'
@@ -59,6 +109,9 @@ def check():
         for f in layout['fields']:
             assert 0<=int(f['offset'],16)<int(layout['size'],16);evidence(f['evidence'])
     for f in t['observations']['fields']:evidence(f['evidence'])
+    current=check_current()
+    for f in m['functions']:
+        if 'current_validation' in f:assert f['current_validation']==current['id']
     return m,s,t,p
 
 def docs():
@@ -66,7 +119,7 @@ def docs():
     def page(name,title,text):
         (dest/'registry'/name).write_text(f'---\ntitle: "{title}"\n---\n\n<!-- Generated from decomp/gt3 JSON; edit metadata, not this page. -->\n\n'+text.rstrip()+'\n')
     counts=Counter(f['lifecycle'] for f in m['functions'])
-    text='## Lifecycle inventory\n\nStatuses describe the **preserved private experiment**, not current-main installation. Current source is compile checked only.\n\nThis is **selected evidence inventory, not whole-game recovery coverage**. Identified entries are not authorized replacements. Dependencies from pseudocode remain candidates.\n\n'
+    text='## Lifecycle inventory\n\nStatuses describe the **preserved private experiment**, not canonical current-main installation. Fresh isolated validation is tracked separately in [current validation](current-validation.md); canonical ps2run retains generated execution.\n\nThis is **selected evidence inventory, not whole-game recovery coverage**. Identified entries are not authorized replacements. Dependencies from pseudocode remain candidates.\n\n'
     text+='\n'.join(f'- **{k}**: {counts[k]}' for k in m['lifecycle_order'])+'\n\n'
     text+='| Original entry | Semantic name | State | Diff | Runtime | Live |\n|---|---|---|---|---|---|\n'
     for f in m['functions']:text+=f"| `{f['address']}` | `{f['name']}` | {f['lifecycle']} | {f['differential']['status']} | {f['runtime']['status']} | {f['live']['status']} |\n"
@@ -82,8 +135,16 @@ def docs():
     text+='\n## Untyped car observations\n\nThese offsets do **not** extend the C++ layout or authorize writes.\n\n| Offset | Provisional name | Confidence | Meaning |\n|---|---|---|---|\n'
     for f in t['observations']['fields']:text+=f"| `{f['offset']}` | `{f['name']}` | {f['confidence']} | {f['meaning']} |\n"
     page('types.md','Partial type knowledge',text)
+    current=check_current()
+    text='Historical function lifecycle remains separate. This page describes **current-main source with an isolated validation-only harness**, not canonical runtime installation.\n\n'
+    text+=f"Source base: `{current['source_commit']}`.\n\n| Gate | Current result |\n|---|---|\n"
+    for key in ('build','regressions','live'):text+=f"| {key} | {current[key]} |\n"
+    text+=f"| native v3 fixture | {current['fixture']['status']} |\n\n"
+    text+='\n'.join('- '+s for s in current['limitations'])+'\n\n'
+    text+='Private evidence is fingerprinted in `decomp/gt3/current-validation.json`; use `just verify-current EXPLICIT_REPOSITORY_ROOT`. Raw snapshots, binaries, traces and captures are not published. See [current baseline](../current-baseline.md).\n'
+    page('current-validation.md','Current-main native baseline',text)
     knowledge=ROOT/'docs/site/static/knowledge';knowledge.mkdir(parents=True,exist_ok=True)
-    for name in ('manifest','symbols','types','provenance'):
+    for name in ('manifest','symbols','types','provenance','current-validation'):
         (knowledge/f'{name}.json').write_bytes((DB/f'{name}.json').read_bytes())
     print('Public documentation generated: facts/metadata only; no raw evidence copied')
 
@@ -110,10 +171,13 @@ def type_assertions():
     out.write_text('\n'.join(lines)+'\n')
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['check','docs','status','lookup','evidence','type-assertions','verify-private']);parser.add_argument('query',nargs='?');a=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['check','docs','status','lookup','evidence','type-assertions','verify-private','verify-current']);parser.add_argument('query',nargs='?');a=parser.parse_args()
     if a.command=='verify-private':
         if not a.query:parser.error('explicit private experiment root required')
         verify_private(a.query);return
+    if a.command=='verify-current':
+        if not a.query:parser.error('explicit current repository root required')
+        verify_current(a.query);return
     if a.command=='type-assertions':type_assertions();return
     if a.command=='docs':docs();return
     m,s,t,p=check()

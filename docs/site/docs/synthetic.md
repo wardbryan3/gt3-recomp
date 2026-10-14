@@ -1,4 +1,4 @@
-> **Evidence context:** historical private experiment. Current main preserves source and findings; clean steering/synthetic runtime installation is not yet revalidated or enabled here.
+> **Evidence context:** experiment narrative below is historical. Fresh [current-main native validation](current-baseline.md) repeats the unchanged synthetic adapter/live checks in a test-only host; canonical ps2run has no synthetic runtime installation.
 
 ---
 title: Preserved synthetic-wheel experiment

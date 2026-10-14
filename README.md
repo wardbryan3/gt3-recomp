@@ -25,8 +25,10 @@ just lookup 0x001e4478
 Readable mapping, clean steering and independent synthetic-wheel source are
 preserved with original-dependent fixture source. **The recovered library is
 compile checked, not linked into ps2run or installed into generated bodies.**
-Historical exact/live results are explicitly contextualized; new runtime
-installation still needs revalidation. No pedal/FFB/AI API is implemented here.
+Historical exact/live results are explicitly contextualized. Fresh current-main
+baseline evidence is tracked [separately](docs/site/docs/current-baseline.md), using
+an isolated validation host rather than installing hooks into canonical ps2run.
+No pedal/FFB/AI API is implemented here.
 
 [Legacy source ledger](experiments/legacy/README.md) preserves unique old source
 variants as restoration patches, not copied active runtime repositories. Raw

@@ -44,6 +44,28 @@ outside the repository under `~/archives/gt3/`. Their tools/caches are historica
 not active global REA installations. Private migration manifests/logs and a stable
 conversation continuation reference are in `local/migration/`.
 
+## Reproducible native baseline validation
+
+The documented missing CMake/Ninja packages have been restored in the active
+machine environment. On this Arch-based machine the explicit operation was
+`sudo pacman -S --needed cmake ninja`; normal package-manager dependency/snapshot
+hooks ran. This was not a system upgrade. Clang, SDL2 development compatibility
+files and Vulkan were already present; wgpu-native v29.0.1.1 was fetched using the
+existing repository script into ignored third-party storage.
+
+[Current native baseline](../site/docs/current-baseline.md) documents the fresh
+build/fixture/live recipes. They regenerate EE/VU translations with current
+source and put all game-containing output under new ignored paths. A validation-
+only wrapper reuses normal main and unchanged clean/synthetic algorithms; canonical
+ps2run is not modified. Normal-boot v3 capture uses disposable cards and an explicit
+process-local UTC clock input, not a v2 conversion or a system clock change.
+
+`just verify-current "$PWD"` strictly checks the new private artifact authority,
+separately from historical `verify-private`. Current per-gate status is in
+`decomp/gt3/current-validation.json`; recipe availability alone is not proof of a
+passing live run. No raw fixture, executable, clock-library binary or captures are
+published.
+
 ## Publication and operational rules
 
 `.gitignore` excludes agent state, REA installations/databases, game inputs,

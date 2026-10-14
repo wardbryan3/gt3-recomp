@@ -9,7 +9,7 @@ project = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(project)
 class MetadataTests(unittest.TestCase):
     def setUp(self):
-        self.data = {name:project.load(name) for name in ('manifest','symbols','types','provenance')}
+        self.data = {name:project.load(name) for name in ('manifest','symbols','types','provenance','current-validation')}
     def rejected(self, mutation):
         data=copy.deepcopy(self.data);mutation(data)
         with patch.object(project,'load',side_effect=lambda name:data[name]):
@@ -39,6 +39,57 @@ class MetadataTests(unittest.TestCase):
         self.rejected(lambda d:d['manifest']['snapshot_context'].update(current_main_runtime_integration='installed'))
     def test_raw_evidence_cannot_be_public(self):
         self.rejected(lambda d:d['provenance']['artifacts'][0].update(visibility='public'))
+    def test_current_live_requires_current_prerequisites(self):
+        def mutate(d):
+            v=d['current-validation'];v.update(live='passing',build='blocked')
+        self.rejected(mutate)
+    def test_current_passing_requires_pinned_artifacts(self):
+        self.rejected(lambda d:d['current-validation'].update(build='passing',artifacts=[]))
+    def test_current_fixture_cannot_be_v2(self):
+        self.rejected(lambda d:d['current-validation']['fixture'].update(version=2))
+    def test_current_harness_cannot_claim_canonical_installation(self):
+        self.rejected(lambda d:d['current-validation'].update(runtime_installation='installed'))
+    def test_current_artifact_path_cannot_escape_repository(self):
+        self.rejected(lambda d:d['current-validation']['artifacts'].append(
+            {'id':'bad','path':'../private','sha256':'a'*64,'visibility':'private'}))
+    def test_current_tree_member_change_or_removal_fails(self):
+        import tempfile, hashlib, json
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'local').mkdir(); member=root/'local/trace.jsonl'
+            member.write_bytes(b'proof')
+            tree=root/'local/files.json'
+            tree.write_text(json.dumps({'files':[{'path':'local/trace.jsonl',
+                'sha256':hashlib.sha256(b'proof').hexdigest()}]}))
+            v={'artifacts':[{'id':'tree','path':'local/files.json','kind':'file-manifest',
+                            'sha256':hashlib.sha256(tree.read_bytes()).hexdigest()}]}
+            with patch.object(project,'check_current',return_value=v):
+                project.verify_current(root)
+                member.write_bytes(b'changed')
+                with self.assertRaises(AssertionError):project.verify_current(root)
+                member.unlink()
+                with self.assertRaises(AssertionError):project.verify_current(root)
+    def test_current_private_rejects_v2_even_with_matching_hash(self):
+        import tempfile, hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'local').mkdir(); path=root/'local/race.state'
+            body=b'PS2STATE'+(2).to_bytes(4,'little');path.write_bytes(body)
+            v={'fixture':{'status':'passing','artifact':'fixture'},'artifacts':[
+                {'id':'fixture','path':'local/race.state','sha256':hashlib.sha256(body).hexdigest()}]}
+            with patch.object(project,'check_current',return_value=v):
+                with self.assertRaises(AssertionError):project.verify_current(root)
+    def test_current_private_missing_or_changed_hash_fails(self):
+        import tempfile, hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'local').mkdir(); path=root/'local/proof.json'
+            path.write_bytes(b'original')
+            v={'artifacts':[{'id':'fixture','path':'local/proof.json',
+                             'sha256':hashlib.sha256(b'original').hexdigest()}]}
+            with patch.object(project,'check_current',return_value=v):
+                project.verify_current(root)
+                path.write_bytes(b'changed')
+                with self.assertRaises(AssertionError):project.verify_current(root)
+                path.unlink()
+                with self.assertRaises(AssertionError):project.verify_current(root)
     def test_private_missing_or_changed_hash_fails(self):
         import tempfile, hashlib
         with tempfile.TemporaryDirectory() as tmp:

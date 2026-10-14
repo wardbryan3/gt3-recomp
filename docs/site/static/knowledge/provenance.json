@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "current_validation_registry": "decomp/gt3/current-validation.json",
   "artifacts": [
     {
       "id": "artifact:docs/gt3-controls-evidence.json",

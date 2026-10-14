@@ -1,4 +1,4 @@
-> **Public checkpoint context:** historical lifecycle/runtime/live fields describe the preserved private experiment. All inventories carry `snapshot_context`; current main compiles recovery source but does not install it. Public `check` verifies schema/source/type relationships only. `verify-private EXPLICIT_ROOT` separately and strictly verifies all retained original hashes and IDs. Raw exports are never documentation download assets.
+> **Public checkpoint context:** historical lifecycle/runtime/live fields describe the preserved private experiment. All inventories carry `snapshot_context`; canonical current main compiles recovery source but does not install it. Fresh isolated native validation is separately recorded in `current-validation.json`. Public `check` verifies schema/source/type relationships only. `verify-private EXPLICIT_ROOT` separately and strictly verifies all retained original hashes and IDs. Raw exports are never documentation download assets.
 
 # Knowledge schema v1 and authority rules
 
@@ -32,6 +32,23 @@ Guest endianness, pointer width and EE float representation are explicit. `layou
 Artifact IDs map to retained file path, SHA-256, evidence kind and limitations. Evidence-ID records map REA IDs to the containing hashed export and are verified against its `records`. Kinds distinguish static REA, live and generated-fixture records; prior clean summary includes mixed evidence and its own explanatory ledger. IDs beginning `artifact:` reference complete artifacts rather than individual REA predicates.
 
 Evidence hashes are immutable expectations. A mismatch requires investigation, not blind rehashing. Add new observations under new artifact paths/IDs and qualify contradictions. The manifest may evolve after explicit new work; evidence itself must not be rewritten. New machine-readable status does not supersede limitations in retained source evidence.
+
+## current-validation.json
+
+Separate authority for fresh current-main baseline attempts/results. Historical
+function lifecycle and evidence hashes are not overwritten by this record. It
+pins the source commit, validation-only runtime scope, build/regression/live gates,
+native-v3 fixture status and private artifact paths/hashes. A passing gate requires
+retained artifacts. Artifacts of kind `file-manifest` pin a private list of nested
+paths/hashes; explicit verification checks every member, not just the summary.
+A passing fixture also requires a native `PS2STATE` v3 header at private verification. Public consistency checks do not read game files.
+
+`just verify-current EXPLICIT_REPOSITORY_ROOT` strictly verifies every listed new
+artifact and fails on missing/changed files. This is separate from historical
+`verify-private EXPLICIT_DONOR_ROOT`; neither silently skips missing proof. The
+isolated validation harness is not a canonical ps2run runtime installation. Never
+promote a current live status based solely on historical evidence or a v2 header
+rewrite. Generated current-status pages and JSON mirrors derive from this file.
 
 ## Generated views
 

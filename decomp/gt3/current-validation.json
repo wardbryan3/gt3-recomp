@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "id": "current-main-native-v3-baseline",
+  "source_commit": "82987dec7a71d76414adfff8663da5494a280938",
+  "context": "current-main-source-with-validation-only-harness",
+  "runtime_installation": "canonical-generated; recovered gates in isolated validation harness only",
+  "source_overlay": "Validation scripts/test-only host, clock input and host-layout probe plus registry/docs tooling; host/, runtime/, recomp/ and CMakeLists.txt unchanged",
+  "build": "passing",
+  "regressions": "passing",
+  "fixture": {
+    "status": "passing",
+    "version": 3,
+    "artifact": "artifact:current-native-v3-race",
+    "saved_frame": 4801,
+    "clock_utc_epoch": 1791964800,
+    "continuation_input_frame": 4802,
+    "independent_boot_defined_state_exact": true,
+    "independent_boot_complete_guest_dump_exact": true,
+    "independent_boot_raw_file_exact": false,
+    "raw_file_difference": "22 bytes in compiled native EE Thread padding only; both raw states retained unchanged",
+    "uninterrupted_continuation_exact": true
+  },
+  "live": "passing",
+  "results": {
+    "fresh_byte_identical_canonical_builds": 4,
+    "controls_normalization_cases": 25600,
+    "mapped_action_cases": 57344,
+    "pad_steering_frames": 15360,
+    "wheel_commands": 19468,
+    "wheel_driving_frames": 7560,
+    "clean_normalization_cases": 28160,
+    "clean_wheel_cases": 16384,
+    "clean_filter_cases": 16000,
+    "clean_envelope_full_tail_cases": 20000,
+    "synthetic_quantizations": 8193,
+    "synthetic_integrations": 42,
+    "original_only_pedal_fixtures": 22,
+    "metadata_tests": 19,
+    "native_padding_comparison_tests": 7,
+    "live_wheel_scenarios": 10,
+    "live_clean_mode4_updates": 3400,
+    "live_original_consumer_calls": 13600,
+    "live_max_reconstruction_error": 5.96046448e-8,
+    "unchanged_tolerance": 2e-6,
+    "live_pad_clean_calls": {"normalized": 800, "wheel_commands": 200, "filters": 200, "envelopes": 200},
+    "exact_comparisons": "canonical repeat/uninterrupted; disabled/trace-only versus canonical; clean pad; clean versus generated wheel semantic traces, all captures and complete EE/IOP/SPU dumps"
+  },
+  "artifacts": [
+    {
+      "id": "artifact:current-build-identity",
+      "path": "local/baseline-v3/trusted-build/build-identity.json",
+      "sha256": "75f620cdae809ee52b0b4a82eecabfb284e4dc2ddfe2c8081a061f701b0e7df4",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-canonical-executable",
+      "path": "local/baseline-v3/trusted-build/original/ps2run",
+      "sha256": "b22b692a3bf8dbcce7c3defb57605a96b8763efae10685cc7a082e1d77410d4a",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-validation-executable",
+      "path": "local/baseline-v3/trusted-build/observed/gt3_baseline_host",
+      "sha256": "eac5acc3b6ca85d966a45167482c0660e716533e0a60ec92bdf0cad3e5afe430",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-test-clock",
+      "path": "local/baseline-v3/trusted-build/fixed-clock.so",
+      "sha256": "9abcfdab3a30df7948add0239bdf55fdd1a41433941726b63d9de3b1676deb42",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-layout-probe",
+      "path": "local/baseline-v3/trusted-build/state-layout",
+      "sha256": "57462fdc511b18f27c7baa02be065d766d7cf7aec9722b8a347865601a3eee05",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-compiled-host-layout",
+      "path": "local/baseline-v3/trusted-build/state-layout.json",
+      "sha256": "ef6d4bb9227b004b6b0b1566703efb74caac01a4e7997c51473a0f1bce46f25f",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-complete-regressions",
+      "path": "local/baseline-v3/complete-regressions/regressions.log",
+      "sha256": "a484b1e8116911ad82941c644d0fc166ca9e21e872d55307d975e8d2e4afe415",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-live-summary",
+      "path": "local/baseline-v3/accepted-live/summary.json",
+      "sha256": "576088ba027ccc1d721eff0940f10ffe5ff50d504afdb8a917259eec0d24251b",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-native-v3-race",
+      "path": "local/baseline-v3/accepted-live/capture/race-start-v3.state",
+      "sha256": "da2661b490f977bd2d1b4d076d957bd8580aebf301f3c02e83b25964312c895a",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-native-v3-recapture",
+      "path": "local/baseline-v3/accepted-live/recapture/race-start-v3.state",
+      "sha256": "c4ada5162efe0ce7dbf8c3dfca031ea921fd0759e2ba1c4b89c1751099ad4097",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-live-files",
+      "kind": "file-manifest",
+      "path": "local/baseline-v3/accepted-live-files.json",
+      "sha256": "f5864c102b6758ad7b7753fb4184353d96214e88c8895fdb5d13e53498f3f6ef",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-binary-reproducibility",
+      "path": "local/baseline-v3/binary-reproducibility.json",
+      "sha256": "7d64e4b54eccc3ef278e60c4f6e88628254089fb18bb8aa0f6e4acffed482686",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-dependency-restoration",
+      "path": "local/baseline-v3/dependencies.log",
+      "sha256": "3e3bfa538b975115a38107a212614078f9c96ac78fc1e705670fad7c119dc88d",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-tool-versions",
+      "path": "local/baseline-v3/tool-versions.txt",
+      "sha256": "7f0835c9873a855ac3ff763989b8b24deaf4d35a712b53af5f76d7a3d1fbca6c",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:current-final-regressions",
+      "path": "local/baseline-v3/final-regressions/regressions.log",
+      "sha256": "7dd04506681610092af4cf142d86e51d8622dd3408091c96e59739c7cd7baa05",
+      "visibility": "private"
+    }
+  ],
+  "limitations": [
+    "Historical function lifecycle/runtime/live fields remain historical; this separate record establishes fresh bounded native validation, not canonical runtime installation.",
+    "Native unpatched USA v1.10, one Super Speedway Arcade race with external UTC input pinned; no browser, physical-device, physical-scanout, arbitrary-car/mode or long-session proof.",
+    "The raw v3 fixture is identity-pinned; independent normal boots can differ in unspecified serialized native padding. Every defined state byte, complete guest dumps and replay comparisons pass without rewriting either state.",
+    "Canonical ps2run has no clean/synthetic runtime installation. Four unchanged frozen gates execute only in the isolated validation harness. No pedal recovery or lifecycle promotion.",
+    "Initial capture/frame/clock/padding/input-phase assumptions and a comparison-helper tag typo were retained as failed attempts under local/baseline-v3; no original regression assertion, evidence hash or snapshot header was weakened/rewritten."
+  ]
+}

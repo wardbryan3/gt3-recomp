@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "current_validation_registry": "decomp/gt3/current-validation.json",
   "profile": "gt3-usa-v110",
   "original_elf_sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
   "lifecycle_order": [
@@ -16,7 +17,9 @@
     "State tracks a bounded implementation, not coverage of the game.",
     "identified may have reconnaissance observations, not a complete traced contract.",
     "frozen retains separate differential/runtime/live statuses.",
-    "No pedal, transmission, output or telemetry replacement installed tonight."
+    "No pedal, transmission, output or telemetry replacement installed tonight.",
+    "Pedal Recovery v1 audit at source base 82987de stopped before implementation: at that time the current-main v3 fixture and cmake/ninja prerequisites were unavailable. Candidate 001E48FC-001E4BA7/resume001E4BA8 remains generated; no lifecycle promotion. See docs/site/docs/pedal-recovery-v1.md.",
+    "Subsequent native-baseline task restored dependencies, passed fresh native regressions, captured a normal-boot v3 race fixture and reproduced bounded steering/synthetic live proof. Current results are separate in current-validation.json; historical function lifecycle/runtime/live fields below are not overwritten. Canonical ps2run remains generated-only; stop before any pedal recovery."
   ],
   "functions": [
     {
@@ -712,6 +715,7 @@
     },
     {
       "id": "clean:filter_stick",
+      "current_validation": "current-main-native-v3-baseline",
       "address": "0x001e4368",
       "name": "filter_stick",
       "component": "clean-steering",
@@ -798,6 +802,7 @@
     },
     {
       "id": "clean:process_steering",
+      "current_validation": "current-main-native-v3-baseline",
       "address": "0x001e4478",
       "name": "process_steering",
       "component": "clean-steering",
@@ -2925,6 +2930,7 @@
     },
     {
       "id": "clean:normalize_mapped_channel",
+      "current_validation": "current-main-native-v3-baseline",
       "address": "0x00210f90",
       "name": "normalize_mapped_channel",
       "component": "clean-steering",
@@ -3199,6 +3205,7 @@
     },
     {
       "id": "clean:build_wheel_command",
+      "current_validation": "current-main-native-v3-baseline",
       "address": "0x002115f8",
       "name": "build_wheel_command",
       "component": "clean-steering",

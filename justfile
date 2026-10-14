@@ -17,6 +17,7 @@ build:
 test: build
     ctest --test-dir build/source --output-on-failure
     python3 tests/gt3_patch_test.py
+    python3 -m unittest discover -s tests -p gt3_baseline_validation_test.py
     python3 -m unittest discover -s tests -p project_metadata_test.py
     python3 -m unittest discover -s tests -p publication_test.py
 
@@ -41,6 +42,10 @@ evidence query:
 # Explicit strict check of retained historical evidence; never silently rehash.
 verify-private root:
     python3 scripts/project/project.py verify-private '{{root}}'
+
+# Strict current-main evidence verification, separate from the historical root.
+verify-current root:
+    python3 scripts/project/project.py verify-current '{{root}}'
 
 docs-generate:
     python3 scripts/project/project.py docs

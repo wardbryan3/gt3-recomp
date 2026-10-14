@@ -6,6 +6,15 @@ title: Throttle and brake — detailed original-code discovery
 
 **Discovery only.** All pedal/control processing remains generated; existing wheel-builder pedal writes are preserved legacy behavior, not new pedal recovery. No physical or synthetic pedal adapter was added.
 
+## Current requested cycle
+
+[Pedal Recovery v1 prerequisite audit](pedal-recovery-v1.md) stopped before
+implementation. A separate [current-main baseline](current-baseline.md) task has
+since restored tools, fresh regressions, a native v3 race fixture and bounded
+steering/synthetic live proof. It did **not** resume pedals: no clean pedal
+differential, installation or live replacement result is claimed. The historical
+discovery below remains unchanged.
+
 ## Original producers
 
 - Digital mask helper `00210EF8`: mask `0x400/0x800` sets command accelerator `+8` / brake `+10` to 1 and clears analog flags 2/4. A truthy digital command is not the same representation as Q12 analog pressure.

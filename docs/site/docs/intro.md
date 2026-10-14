@@ -1,4 +1,4 @@
-> **Evidence context:** historical private experiment. Current main preserves source and findings; clean steering/synthetic runtime installation is not yet revalidated or enabled here.
+> **Evidence context:** original checkpoint narrative below is historical. Fresh current-main native build/fixture/live validation is recorded separately in [current baseline](current-baseline.md); canonical ps2run still has no recovered runtime installation.
 
 ---
 title: GT3-native selective decompilation

@@ -6,7 +6,7 @@ title: "Decompilation status"
 
 ## Lifecycle inventory
 
-Statuses describe the **preserved private experiment**, not current-main installation. Current source is compile checked only.
+Statuses describe the **preserved private experiment**, not canonical current-main installation. Fresh isolated validation is tracked separately in [current validation](current-validation.md); canonical ps2run retains generated execution.
 
 This is **selected evidence inventory, not whole-game recovery coverage**. Identified entries are not authorized replacements. Dependencies from pseudocode remain candidates.
 
