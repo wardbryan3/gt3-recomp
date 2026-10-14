@@ -1,0 +1,40 @@
+{
+  "scope": "Historical private-workspace orchestration; not active current-main tasks. Paths/dependencies refer to the preserved original experiment.",
+  "files": [
+    {
+      "original_path": "tools/build-native.sh",
+      "snapshot": "experiments/legacy/resolution-workflow/build-native.sh",
+      "sha256": "c40a19397148bbb12946e7e7c27ed40964163269dca109f09743bee6b43dbcfe"
+    },
+    {
+      "original_path": "tools/run-native.sh",
+      "snapshot": "experiments/legacy/resolution-workflow/run-native.sh",
+      "sha256": "4b5a3dbe6b0f7dbb0a7fc830aaf3c4fd0b8515edb279d07073e450de21432a78"
+    },
+    {
+      "original_path": "tools/test-discovery.sh",
+      "snapshot": "experiments/legacy/resolution-workflow/test-discovery.sh",
+      "sha256": "2226a09371e19a8d4bf5a82c37d8e82fae81144c5c658fa07e8e3b047934b848"
+    },
+    {
+      "original_path": "tools/check-types.sh",
+      "snapshot": "experiments/legacy/resolution-workflow/check-types.sh",
+      "sha256": "600ca10595c1025c34a0893315e9583f76ea4d92ad0bb1fc0f55eb79c7631c2d"
+    },
+    {
+      "original_path": "tools/project.py",
+      "snapshot": "experiments/legacy/resolution-workflow/project.py",
+      "sha256": "a6d478c64ef8b9857cd9c3a3fe5a3537b850417fad49a21e00edad272a749cbe"
+    },
+    {
+      "original_path": "tools/just",
+      "snapshot": "experiments/legacy/resolution-workflow/just-bootstrap.sh",
+      "sha256": "dc6cc053b46a31bea4910e55206021f35a34948c72db29e32041f72b2c52e147"
+    },
+    {
+      "original_path": "justfile",
+      "snapshot": "experiments/legacy/resolution-workflow/justfile",
+      "sha256": "d57a6664eb30f3b8937fe5fd5bc0c63765713ca4869cd4696a4984f354d2b2f6"
+    }
+  ]
+}

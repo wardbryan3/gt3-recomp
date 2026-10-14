@@ -1,0 +1,91 @@
+# Local orchestration; existing recipes and known-good builds remain independent.
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+# Discover available tasks.
+default:
+    @"{{just_executable()}}" --list
+
+# Install LOCKED documentation dependencies locally, never system packages.
+setup:
+    python3 tools/project.py check
+    node --version
+    npm --prefix docs/site ci --no-audit --no-fund
+
+# Fresh original generated oracle in an isolated output tree.
+build-generated:
+    tools/build-native.sh generated
+
+# Default execution build keeps all clean gates OFF.
+build: build-generated
+
+# Separate isolated gated build; original generated bodies are retained.
+build-clean: build-generated
+    tools/build-native.sh clean
+
+# Existing, unchanged comprehensive differential/runtime/GPU suite.
+test:
+    tests/run_gt3_clean_steering.sh
+
+# Original-code pedal reconnaissance fixtures, NOT a recovered implementation.
+test-discovery:
+    tools/test-discovery.sh
+
+# Legacy GPU/control/hardware baseline entry point.
+test-baseline:
+    tests/run_resolution_tests.sh
+
+# Explicit full-game validation of the frozen clean executable, exclusive output directory.
+validate out snapshot="/home/b/experiments/gt3-native-20261013/validation/race-start.state":
+    python3 tools/project.py check
+    sha256sum -c build/project-init/preservation.sha256
+    scripts/validate_gt3_clean_steering.py --snapshot '{{snapshot}}' --out '{{out}}'
+
+# Run the isolated original build using a new disposable memory card.
+run *args:
+    tools/run-native.sh generated {{args}}
+
+# Explicit opt-in clean execution; synthetic injection still requires its own flags.
+run-clean *args:
+    tools/run-native.sh clean --gt3-clean-steering {{args}}
+
+# Preserved independent synthetic launcher (does not enable clean steering).
+run-synthetic *args:
+    scripts/play_gt3_synthetic_wheel.sh {{args}}
+
+# Manifest -> generated documentation. Never rewrite retained evidence.
+docs-generate:
+    python3 tools/project.py docs
+
+# Production site, Mermaid and strict broken-link checking.
+docs-build: docs-generate
+    npm --prefix docs/site run diagrams
+    npm --prefix docs/site run build
+
+# Development server on all interfaces; use only on trusted networks.
+docs-dev: docs-generate
+    npm --prefix docs/site run start
+
+# Metadata consistency, immutable provenance hashes, and types' offset assertions.
+check:
+    python3 tools/project.py check
+    tools/check-types.sh
+    python3 -m unittest discover -s tests -p project_metadata_test.py
+    git diff --check
+
+# Recovery lifecycle summary.
+status:
+    python3 tools/project.py status
+
+# Address or semantic-name search, with provenance and qualifiers.
+lookup query:
+    python3 tools/project.py lookup '{{query}}'
+
+# View retained static evidence by guest address, never silently re-decompile.
+evidence address:
+    python3 tools/project.py evidence '{{address}}'
+
+# Guards against touching original/known-good artifacts; local initialization inventory.
+audit:
+    sha256sum -c build/project-init/preservation.sha256
+    python3 tools/project.py check
+    git status --short
