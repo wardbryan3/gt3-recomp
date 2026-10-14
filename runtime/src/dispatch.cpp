@@ -162,6 +162,7 @@ void stop(Cpu &c, std::uint32_t pc, const char *what) {
 }
 
 void probe(Cpu &c, std::uint32_t pc) {
+    if (g_options.on_probe) { g_options.on_probe(c, pc); return; }
     std::fprintf(stderr, "[probe] 0x%08X a0 %08X a1 %08X a2 %08X a3 %08X ra %08X v0 %08X\n", pc, c.r[4].w[0], c.r[5].w[0], c.r[6].w[0],
                  c.r[7].w[0], c.r[31].w[0], c.r[2].w[0]);
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(ps2-web-recomp CXX)
+project(gt3-recomp CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -58,6 +58,24 @@ add_library(ps2runtime STATIC
     runtime/src/iop/cdvdfsv.cpp)
 target_include_directories(ps2runtime PUBLIC runtime/include)
 target_compile_options(ps2runtime PRIVATE -Wall -Wextra)
+
+option(PS2_NATIVE_SSE41 "Require SSE4.1 for native x86 graphics preparation (no runtime dispatch)" OFF)
+if(PS2_NATIVE_SSE41)
+    if(EMSCRIPTEN OR NOT CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
+        message(FATAL_ERROR "PS2_NATIVE_SSE41 requires native x86-64; leave OFF elsewhere")
+    endif()
+    set_source_files_properties(runtime/src/gs/gpu/gpu.cpp PROPERTIES COMPILE_OPTIONS "-msse4.1")
+endif()
+
+include(CTest)
+if(BUILD_TESTING AND NOT EMSCRIPTEN)
+    foreach(test IN ITEMS gt3_hardware sif_scratchpad)
+        add_executable(${test}_test tests/${test}.cpp)
+        target_include_directories(${test}_test PRIVATE runtime/src)
+        target_link_libraries(${test}_test PRIVATE ps2runtime)
+        add_test(NAME ${test} COMMAND ${test}_test)
+    endforeach()
+endif()
 
 set(PS2_WGPU_DIR "${CMAKE_SOURCE_DIR}/third_party/wgpu-native" CACHE PATH "wgpu-native release folder")
 if(EMSCRIPTEN OR EXISTS "${PS2_WGPU_DIR}/lib/libwgpu_native.a")

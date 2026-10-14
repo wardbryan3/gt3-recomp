@@ -1,0 +1,22 @@
+name: Source-only tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  source-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Publication guard and synthetic patch tests
+        run: |
+          python3 scripts/audit_public.py
+          python3 tests/gt3_patch_test.py
+          bash -n scripts/build_gt3.sh scripts/port.sh tests/run_resolution_tests.sh
+      - name: Configure software runtime (no game or downloaded GPU SDK)
+        run: cmake -S . -B build/tests -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
+      - name: Compile synthetic regressions
+        run: cmake --build build/tests --target gt3_hardware_test sif_scratchpad_test --parallel 2
+      - name: Test
+        run: ctest --test-dir build/tests --output-on-failure

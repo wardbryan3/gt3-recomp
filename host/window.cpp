@@ -217,9 +217,15 @@ void show_pixels(const std::uint32_t *rgba, std::uint32_t w, std::uint32_t h) {
     if (w != g_tex_w || h != g_tex_h) {
         if (g_texture) SDL_DestroyTexture(g_texture);
         g_texture = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, static_cast<int>(w), static_cast<int>(h));
-        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w) * 3 / 4);
+        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w / ps2::presentation_aspect()));
         g_tex_w = w;
         g_tex_h = h;
+    }
+    static float last_aspect = 0.0f;
+    const float aspect = ps2::presentation_aspect();
+    if (last_aspect != aspect) {
+        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w / aspect));
+        last_aspect = aspect;
     }
     SDL_UpdateTexture(g_texture, nullptr, rgba, static_cast<int>(w * 4));
     SDL_RenderClear(g_renderer);
@@ -314,11 +320,14 @@ bool open_window(bool fullscreen) {
         return false;
     }
     const Uint32 flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0u);
-    g_window = SDL_CreateWindow("ps2-web-recomp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 720, flags);
+    g_window = SDL_CreateWindow("ps2-web-recomp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ps2::g_options.output_width ? ps2::g_options.output_width : 960, ps2::g_options.output_height ? ps2::g_options.output_height : 720, flags);
     if (!g_window) {
         std::fprintf(stderr, "SDL: %s\n", SDL_GetError());
         return false;
     }
+    int drawable_width = 0, drawable_height = 0;
+    SDL_GetWindowSizeInPixels(g_window, &drawable_width, &drawable_height);
+    std::fprintf(stderr, "[window] requested %ux%u, drawable %dx%d\n", ps2::g_options.output_width, ps2::g_options.output_height, drawable_width, drawable_height);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_AudioSpec want{}, have{};
     want.freq = 48000;

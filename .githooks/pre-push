@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+root="$(git rev-parse --show-toplevel)"
+python3 "$root/scripts/audit_public.py"

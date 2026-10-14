@@ -22,6 +22,7 @@
 #endif
 
 #include <algorithm>
+#include <cmath>
 #include <atomic>
 #include <cctype>
 #include <chrono>
@@ -56,6 +57,8 @@ std::uint64_t g_frames = 0;
 std::uint64_t g_iop_synced = 0;
 bool g_state_request = false;
 bool g_resumed = false;
+std::atomic<float> g_scene_aspect{0.0f};
+std::uint64_t g_scene_aspect_until = 0;
 
 std::uint64_t next_event_time() {
     std::uint64_t t = UINT64_MAX;
@@ -88,6 +91,31 @@ void dump_frame() {
     std::vector<std::uint32_t> rgba;
     std::uint32_t w = 0, h = 0;
     if (!gs::display(rgba, w, h)) return;
+    if (g_options.output_width && g_options.output_height) {
+        const unsigned output_width = g_options.output_width, output_height = g_options.output_height;
+        const unsigned viewport_width = std::min(output_width, unsigned(output_height * presentation_aspect()));
+        const unsigned viewport_height = std::min(output_height, unsigned(viewport_width / presentation_aspect()));
+        const unsigned left = (output_width - viewport_width) / 2, top = (output_height - viewport_height) / 2;
+        std::vector<std::uint32_t> output(std::size_t(output_width) * output_height, 0xff000000u);
+        // Resample the internally rendered image; never change the camera here.
+        for (unsigned y = 0; y < viewport_height; ++y) {
+            const float sy = std::clamp((y + 0.5f) * h / viewport_height - 0.5f, 0.0f, float(h - 1));
+            const unsigned y0 = unsigned(sy), y1 = std::min(y0 + 1, h - 1); const float fy = sy - y0;
+            for (unsigned x = 0; x < viewport_width; ++x) {
+                const float sx = std::clamp((x + 0.5f) * w / viewport_width - 0.5f, 0.0f, float(w - 1));
+                const unsigned x0 = unsigned(sx), x1 = std::min(x0 + 1, w - 1); const float fx = sx - x0;
+                std::uint32_t color = 0xff000000u;
+                for (unsigned shift = 0; shift < 24; shift += 8) {
+                    const float a = float((rgba[y0*w+x0] >> shift) & 255), b = float((rgba[y0*w+x1] >> shift) & 255);
+                    const float c = float((rgba[y1*w+x0] >> shift) & 255), d = float((rgba[y1*w+x1] >> shift) & 255);
+                    color |= unsigned(std::lround((a + (b-a)*fx)*(1-fy) + (c + (d-c)*fx)*fy)) << shift;
+                }
+                output[(y+top)*output_width+x+left] = color;
+            }
+        }
+        std::fprintf(stderr, "[capture] frame %llu: internal %ux%u -> output %ux%u, viewport %ux%u\n", (unsigned long long)g_frames, w, h, output_width, output_height, viewport_width, viewport_height);
+        rgba.swap(output); w = output_width; h = output_height;
+    }
     char name[512];
     std::snprintf(name, sizeof name, "%s/frame_%05llu.ppm", g_options.frames_dir.c_str(), static_cast<unsigned long long>(g_frames));
     std::FILE *f = std::fopen(name, "wb");
@@ -101,11 +129,21 @@ void dump_frame() {
 }
 
 void apply_presses() {
-    if (g_options.presses.empty()) return;
+    if (g_options.presses.empty() && g_options.axes.empty()) return;
     std::uint16_t mask = 0;
     for (const Press &p : g_options.presses)
         if (g_frames >= p.frame && g_frames < p.frame + p.frames) mask |= p.buttons;
     iop::sio2::set_buttons(0, mask);
+    for (unsigned axis = 0; axis < 4; ++axis) {
+        bool configured = false;
+        std::uint8_t value = 0x80;
+        for (const AxisInput &a : g_options.axes) {
+            if (a.axis != axis) continue;
+            configured = true;
+            if (g_frames >= a.frame && g_frames - a.frame < a.frames) value = a.value;
+        }
+        if (configured) iop::sio2::set_axis(0, static_cast<int>(axis), value);
+    }
 }
 
 void time_frames() {
@@ -126,6 +164,11 @@ void time_frames() {
 
 void vblank() {
     ++g_frames;
+    if (g_scene_aspect.load() > 0.0f && g_frames > g_scene_aspect_until) {
+        g_scene_aspect.store(0.0f);
+        if (g_options.on_scene_end) g_options.on_scene_end();
+        std::fprintf(stderr, "[presentation] scene override expired at frame %llu\n", (unsigned long long)g_frames);
+    }
     time_frames();
     apply_presses();
     if (g_options.on_vblank) g_options.on_vblank();
@@ -154,6 +197,18 @@ void idle(Cpu &c) {
     run_due_events();
 }
 
+}
+
+float presentation_aspect() {
+    const float scene = g_scene_aspect.load();
+    return scene > 0.0f ? scene : g_options.presentation_aspect;
+}
+
+void scene_aspect(float aspect) {
+    if (g_scene_aspect.load() != aspect)
+        std::fprintf(stderr, "[presentation] scene aspect %.6f at frame %llu\n", aspect, (unsigned long long)g_frames);
+    g_scene_aspect.store(aspect);
+    g_scene_aspect_until = g_frames + 2;
 }
 
 void save_context(const Cpu &c, ThreadContext &t) {
@@ -210,7 +265,8 @@ bool halted() { return g_halted; }
 namespace {
 
 constexpr char kStateMagic[8] = {'P', 'S', '2', 'S', 'T', 'A', 'T', 'E'};
-constexpr std::uint32_t kStateVersion = 2;
+// This fork adds i.Link PHY state; reject upstream/earlier snapshots explicitly.
+constexpr std::uint32_t kStateVersion = 3;
 
 std::function<void()> event_action(int id) {
     if (id == hw::kEventVblank) return vblank;

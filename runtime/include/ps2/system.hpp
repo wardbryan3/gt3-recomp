@@ -21,7 +21,16 @@ struct Press {
     std::uint16_t buttons;
 };
 
+struct AxisInput {
+    std::uint64_t frame;
+    std::uint32_t frames;
+    unsigned axis;
+    std::uint8_t value;
+};
+
 struct Options {
+    std::uint32_t output_width = 0, output_height = 0;
+    float presentation_aspect = 4.0f / 3.0f;
     bool trace_syscalls = false;
     bool trace_io = false;
     bool trace_threads = false;
@@ -35,7 +44,10 @@ struct Options {
     std::string frames_dir;
     std::uint32_t frame_every = 60;
     std::vector<Press> presses;
+    std::vector<AxisInput> axes;
     std::function<void()> on_vblank;
+    std::function<void(Cpu &, std::uint32_t)> on_probe;
+    std::function<void()> on_scene_end;
     std::function<void(const std::string &name, const std::uint8_t *code, std::size_t size)> on_vu_program;
     std::string memcard_path;
     std::function<void()> on_memcard_saved;
@@ -94,6 +106,8 @@ bool attach_window(const WindowTarget &target);
 void resize_window(std::uint32_t width, std::uint32_t height);
 bool present_frame();
 void init_graphics();
+float presentation_aspect();
+void scene_aspect(float aspect);
 void start_render_thread();
 void start_vu_thread();
 void run_vu_thread();

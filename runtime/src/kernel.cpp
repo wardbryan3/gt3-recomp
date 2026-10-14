@@ -126,7 +126,9 @@ Thread *best_ready() {
 
 void switch_to(Cpu &c, Thread *next) {
     Thread *cur = current();
-    if (cur == next) return;
+    // With no current thread and no ready successor (ExitDeleteThread),
+    // still enter the idle context instead of continuing deleted guest code.
+    if (cur && cur == next) return;
     if (cur && (cur->status == kRun || cur->status == kReady || cur->status == kWait || cur->status == kSuspend || cur->status == kWaitSuspend)) {
         save_context(c, cur->context);
         if (cur->status == kRun) cur->status = kReady;
