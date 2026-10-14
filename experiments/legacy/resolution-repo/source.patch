@@ -1,0 +1,3323 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1420ded..02ce741 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -105,6 +105,20 @@ if(PS2_GENERATED)
+ 
+     add_executable(ps2run host/main.cpp)
+     target_link_libraries(ps2run PRIVATE ps2game ps2runtime)
++    option(PS2_GT3_CLEAN_STEERING "Isolated GT3 steering replacements (requires gated generated copy)" OFF)
++    if(PS2_GT3_CLEAN_STEERING)
++        if(NOT PS2_GT3_SYNTHETIC_WHEEL)
++            message(FATAL_ERROR "Clean steering experiment requires PS2_GT3_SYNTHETIC_WHEEL=ON for its independent profile guards")
++        endif()
++        target_sources(ps2game PRIVATE host/gt3_clean_steering.cpp)
++        target_include_directories(ps2game PRIVATE "${CMAKE_SOURCE_DIR}/host")
++        target_compile_definitions(ps2run PRIVATE PS2_GT3_CLEAN_STEERING)
++    endif()
++    option(PS2_GT3_SYNTHETIC_WHEEL "Isolated GT3 v1.10 synthetic-wheel experiment (requires its probe profile)" OFF)
++    if(PS2_GT3_SYNTHETIC_WHEEL)
++        target_sources(ps2run PRIVATE host/gt3_synthetic_wheel.cpp)
++        target_compile_definitions(ps2run PRIVATE PS2_GT3_SYNTHETIC_WHEEL)
++    endif()
+     if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
+         target_sources(ps2run PRIVATE host/profile.cpp)
+         target_compile_definitions(ps2run PRIVATE PS2_PROFILE)
+diff --git a/host/gt3_controls.hpp b/host/gt3_controls.hpp
+new file mode 100644
+index 0000000..d3b2bda
+--- /dev/null
++++ b/host/gt3_controls.hpp
+@@ -0,0 +1,90 @@
++#pragma once
++#include <algorithm>
++#include <array>
++#include <cstdint>
++#include <stdexcept>
++
++namespace gt3 {
++// Selective decompilation of PBPX-95503 v1.10 EE routine 0x00210F90.
++// This helper normalizes a mapped input. Action names belong to its callers.
++inline std::uint32_t normalize_mapped_input(std::uint32_t channel_code,
++                                           std::uint32_t raw_value,
++                                           std::uint32_t sensitivity_percent,
++                                           const std::array<std::uint8_t, 256> &response_curve) {
++    if ((channel_code & 0xffu) < 4u) {
++        const std::uint32_t curved_value = response_curve[raw_value & 0xffu];
++        switch (channel_code & 0x300u) {
++        case 0x100u: return std::uint32_t(std::max(0, (128 - int(curved_value)) * 2));
++        case 0x200u: return std::uint32_t(std::max(0, (int(curved_value) - 128) * 2));
++        default: return curved_value;
++        }
++    }
++    if (!sensitivity_percent) throw std::invalid_argument("zero input sensitivity");
++    const std::uint32_t doubled_pressure = std::min((raw_value & 0xffu) * 2u, 256u);
++    return std::min(doubled_pressure * 100u / sensitivity_percent, 256u);
++}
++
++// 0x00217998: bank stride 0x50, variant stride 0x28, action stride 4.
++// The pointer must cover the selected bank/variant/action; dimensions are
++// deliberately not inferred from these strides alone.
++inline std::uint32_t binding_index(const std::uint32_t *mapping,
++                                   unsigned bank, unsigned variant, unsigned action) {
++    return mapping[bank * 20u + variant * 10u + action];
++}
++
++// Six-byte records at guest 0x002E2CF8. The first halfword's role is unknown.
++struct BindingRecord {
++    std::int16_t unknown;
++    std::int16_t primary_channel;   // 0x002178C8, signed lh at +2
++    std::int16_t secondary_channel; // 0x00217938, signed lh at +4
++};
++static_assert(sizeof(BindingRecord) == 6);
++enum class MappingField { primary, secondary };
++
++// 0x002115F8: wheel axis already resolved by the input object's virtual
++// channel getter. No pad response curve or pad dead zone is applied here.
++// This ordinary-integer reconstruction expects an axis in the tested 0..1023
++// domain; that domain is a fixture, not a proven hardware report range.
++inline std::int16_t wheel_steering_command(int axis) {
++    return std::int16_t(std::clamp((512 - axis) * 9, -4096, 4096));
++}
++
++// 0x002115D8: inverted pedal with a caller-supplied threshold (75 or 80).
++// Negative results are intentional: the caller writes only positive values,
++// leaving a prior pad/digital command untouched otherwise. raw is 0..255.
++inline int wheel_pedal_input(int raw, int threshold) {
++    const int value = (255 - raw - threshold) * 2;
++    return value > 255 ? 256 : value;
++}
++
++inline std::int16_t mapped_channel(const std::uint32_t *mapping,
++                                   const BindingRecord *bindings, unsigned bank,
++                                   unsigned variant, unsigned action, MappingField field) {
++    const auto &binding = bindings[binding_index(mapping, bank, variant, action)];
++    return field == MappingField::primary ? binding.primary_channel : binding.secondary_channel;
++}
++
++// Selective decompilation of 0x00211050 (primary) / 0x002111C0 (secondary).
++// raw_channels corresponds to words at input-object +0x38. output is the
++// first 16 bytes of the caller's block, not a declaration of its full layout.
++// Negative mappings leave both flags and values intact; a zero *value* still
++// sets the presence bit. Action labels remain numeric pending consumer RE.
++inline void fill_mapped_actions(const std::array<std::uint32_t, 256> &raw_channels,
++                                std::array<std::uint8_t, 16> &output,
++                                const std::uint32_t *mapping, const BindingRecord *bindings,
++                                unsigned bank, unsigned variant, MappingField field,
++                                const std::array<std::uint8_t, 256> &response_curve) {
++    for (unsigned action : {1u, 2u, 4u, 3u}) {
++        const auto channel = mapped_channel(mapping, bindings, bank, variant, action, field);
++        if (channel < 0) continue;
++        const unsigned sensitivity = field == MappingField::primary ? 100u :
++                                     action == 2u ? 65u : action == 4u ? 20u : 35u;
++        const auto value = normalize_mapped_input(std::uint32_t(channel),
++            raw_channels[unsigned(channel) & 0xffu], sensitivity, response_curve) << 4;
++        output[0] |= std::uint8_t(1u << action);
++        const unsigned offset = 6u + action * 2u;
++        output[offset] = std::uint8_t(value);
++        output[offset + 1u] = std::uint8_t(value >> 8);
++    }
++}
++}
+diff --git a/host/main.cpp b/host/main.cpp
+index 4962c70..efa6743 100644
+--- a/host/main.cpp
++++ b/host/main.cpp
+@@ -1,4 +1,13 @@
+ #include "ps2/system.hpp"
++#include "ps2/memory.hpp"
++#include <array>
++#ifdef PS2_GT3_CLEAN_STEERING
++#include "gt3_clean_steering.hpp"
++#endif
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++#include "gt3_synthetic_wheel.hpp"
++#include <memory>
++#endif
+ 
+ #ifdef PS2_WINDOW
+ #include "window.hpp"
+@@ -8,6 +17,7 @@
+ #endif
+ 
+ #include <cstdio>
++#include <cmath>
+ #include <cstdlib>
+ #include <cstring>
+ #include <string>
+@@ -24,7 +34,10 @@ int usage() {
+                  "              [--disc image.iso] [--memcard card.ps2] [--pal | --ntsc] [--trace-syscalls] [--trace-io] [--trace-threads]\n"
+                  "              [--trace-iop] [--trace-iop-hle] [--frames-dir dir] [--frame-every n]\n"
+                  "              [--press frame:button[+button][:frames]]... [--window] [--fullscreen]\n"
+-                 "              [--save-state frame:file] [--load-state file]\n");
++                 "              [--save-state frame:file] [--load-state file] [--output-size WxH] [--aspect W:H] [--render-scale 1..9] [--render-scale-y 1..9] [--ram-word address:expected:value] [--gt3-triple] [--axis frame:axis:value:duration]\n");
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++    std::fprintf(stderr, "              [--gt3-wheel -1..1] [--gt3-wheel-at frame:value]... [--gt3-wheel-trace new.jsonl]\n");
++#endif
+     return 2;
+ }
+ 
+@@ -34,7 +47,13 @@ int main(int argc, char **argv) {
+     if (argc < 2) return usage();
+     std::vector<std::string> args{argv[1]};
+     [[maybe_unused]] bool window = false, fullscreen = false;
++    bool gt3_triple = false;
+     std::string load_path;
++    std::vector<std::array<unsigned, 3>> ram_words;
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++    gt3::synthetic::Options wheel_options;
++    std::unique_ptr<gt3::synthetic::Experiment> wheel;
++#endif
+     for (int i = 2; i < argc; ++i) {
+         const std::string a = argv[i];
+         if (a == "--arg" && i + 1 < argc) args.push_back(argv[++i]);
+@@ -51,12 +70,70 @@ int main(int argc, char **argv) {
+         else if (a == "--memcard" && i + 1 < argc) ps2::g_options.memcard_path = argv[++i];
+         else if (a == "--trace-iop") ps2::g_options.trace_iop_modules = true;
+         else if (a == "--trace-iop-hle") ps2::g_options.trace_iop_hle = true;
++        else if (a == "--gt3-triple") gt3_triple = true;
++#ifdef PS2_GT3_CLEAN_STEERING
++        else if (a == "--gt3-clean-steering") {
++            gt3::clean::enabled = true;
++            std::atexit([] {
++                const auto &n=gt3::clean::counts;
++                std::fprintf(stderr,"[gt3-clean] normalized=%llu wheel_commands=%llu filters=%llu envelopes=%llu\n",
++                    (unsigned long long)n.normalized,(unsigned long long)n.wheel_commands,
++                    (unsigned long long)n.filters,(unsigned long long)n.envelopes);
++            });
++        }
++#endif
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++        else if (a == "--gt3-wheel" && i + 1 < argc) {
++            if (!gt3::synthetic::parse_value(argv[++i], wheel_options.value)) return usage();
++            wheel_options.enabled = true;
++        }
++        else if (a == "--gt3-wheel-at" && i + 1 < argc) {
++            gt3::synthetic::Event event;
++            if (!gt3::synthetic::parse_event(argv[++i], event) ||
++                (!wheel_options.events.empty() && event.frame <= wheel_options.events.back().frame)) return usage();
++            wheel_options.events.push_back(event);
++            wheel_options.enabled = true;
++        }
++        else if (a == "--gt3-wheel-trace" && i + 1 < argc) wheel_options.trace_path = argv[++i];
++#endif
++        else if (a == "--ram-word" && i + 1 < argc) {
++            std::array<unsigned, 3> patch{}; char extra = 0;
++            if (std::sscanf(argv[++i], "%x:%x:%x%c", &patch[0], &patch[1], &patch[2], &extra) != 3 || (patch[0] & 3) || patch[0] > ps2::kRamSize - 4) return usage();
++            ram_words.push_back(patch);
++        }
++        else if (a == "--output-size" && i + 1 < argc) {
++            unsigned w = 0, h = 0; char extra = 0;
++            if (std::sscanf(argv[++i], "%ux%u%c", &w, &h, &extra) != 2 || !w || !h || w > 8192 || h > 8192) return usage();
++            ps2::g_options.output_width = w; ps2::g_options.output_height = h;
++        }
++        else if (a == "--aspect" && i + 1 < argc) {
++            unsigned w = 0, h = 0; char extra = 0;
++            if (std::sscanf(argv[++i], "%u:%u%c", &w, &h, &extra) != 2 || !w || !h || w > 64 || h > 64) return usage();
++            ps2::g_options.presentation_aspect = float(w) / float(h);
++        }
++        else if (a == "--render-scale-y" && i + 1 < argc) {
++            char *end = nullptr; const long scale = std::strtol(argv[++i], &end, 10);
++            if (*end || scale < 1 || scale > 9) return usage();
++            setenv("PS2_SCALE_Y", argv[i], 1);
++        }
++        else if (a == "--render-scale" && i + 1 < argc) {
++            char *end = nullptr; const long scale = std::strtol(argv[++i], &end, 10);
++            if (*end || scale < 1 || scale > 9) return usage();
++            setenv("PS2_SCALE", argv[i], 1);
++        }
+         else if (a == "--frames-dir" && i + 1 < argc) ps2::g_options.frames_dir = argv[++i];
+         else if (a == "--press" && i + 1 < argc) {
+             ps2::Press press;
+             if (!ps2::parse_press(argv[++i], press)) return usage();
+             ps2::g_options.presses.push_back(press);
+         }
++        else if (a == "--axis" && i + 1 < argc) {
++            unsigned long long frame;
++            unsigned axis, value, duration;
++            char extra;
++            if (std::sscanf(argv[++i], "%llu:%u:%u:%u%c", &frame, &axis, &value, &duration, &extra) != 4 || axis > 3 || value > 255 || !duration) return usage();
++            ps2::g_options.axes.push_back({frame, duration, axis, static_cast<std::uint8_t>(value)});
++        }
+ #ifdef PS2_WINDOW
+         else if (a == "--window") window = true;
+         else if (a == "--fullscreen") window = fullscreen = true;
+@@ -73,6 +150,28 @@ int main(int argc, char **argv) {
+         else return usage();
+     }
+ 
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++    // Extra probes are inert unless explicitly enabled, including without --gt3-triple.
++    ps2::g_options.on_probe = [](ps2::Cpu &, unsigned) {};
++#endif
++    if (gt3_triple) {
++        // Address map is pinned to the fingerprint-checked GT3 PBPX-95503 v1.10 profile.
++        ps2::g_options.on_probe = [](ps2::Cpu &, std::uint32_t pc) {
++            if (pc == 0x0017e888u) {
++                ps2::st32(0x002f424cu, 1u); // GT3 display configuration: widescreen enabled.
++                ps2::scene_aspect(16.0f / 3.0f);
++            }
++        };
++        ps2::g_options.on_scene_end = [] { ps2::st32(0x002f424cu, 0u); };
++        ram_words.insert(ram_words.end(), {
++            {0x34fd04u, 0x3fb6d98cu, 0x3eb6d98cu},
++            {0x34fd74u, 0xc2d55556u, 0xc46e0000u},
++            {0x34fd78u, 0x443aaaaau, 0x44c70000u},
++            {0x34ffc8u, 0xc2d4dd70u, 0xc46e0000u},
++            {0x34ffccu, 0x443a9baeu, 0x44c70000u},
++        });
++    }
++
+ #ifdef PS2_WINDOW
+     if (window && !open_window(fullscreen)) return 1;
+ #endif
+@@ -84,8 +183,45 @@ int main(int argc, char **argv) {
+             std::fprintf(stderr, "cannot load %s\n", argv[1]);
+             return 1;
+         }
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++        if ((wheel_options.enabled || !wheel_options.trace_path.empty()) && !gt3::synthetic::profile_matches()) {
++            std::fprintf(stderr, "[gt3-wheel] unsupported steering instruction/vtable profile\n");
++            return 1;
++        }
++#endif
++#ifdef PS2_GT3_CLEAN_STEERING
++        if (gt3::clean::enabled && (!gt3::synthetic::profile_matches() || !gt3::clean::profile_matches())) {
++            std::fprintf(stderr,"[gt3-clean] unsupported GT3 profile\n"); return 1;
++        }
++#endif
+         ps2::boot(entry, args);
+         if (!load_path.empty() && !ps2::load_state(load_path)) return 1;
++#ifdef PS2_GT3_CLEAN_STEERING
++        if (gt3::clean::enabled && (!gt3::synthetic::profile_matches() || !gt3::clean::profile_matches())) {
++            std::fprintf(stderr,"[gt3-clean] unsupported restored GT3 profile\n"); return 1;
++        }
++#endif
++#ifdef PS2_GT3_SYNTHETIC_WHEEL
++        if (wheel_options.enabled || !wheel_options.trace_path.empty()) {
++            if (!gt3::synthetic::profile_matches()) return 1;
++            wheel = std::make_unique<gt3::synthetic::Experiment>(wheel_options);
++            if (!wheel->open_trace()) return 1;
++            const auto previous = ps2::g_options.on_probe;
++            ps2::g_options.on_probe = [&, previous](ps2::Cpu &cpu, unsigned pc) {
++                if (previous) previous(cpu, pc); // preserve existing triple-screen scene probe
++                wheel->probe(cpu, pc, ps2::frame_count());
++            };
++            std::fprintf(stderr, "[gt3-wheel] %s; scoped state at 002107ac -> original 002115f8\n",
++                         wheel_options.enabled ? "ENABLED" : "read-only trace");
++        }
++#endif
++        for (const auto &p : ram_words) {
++            const auto actual = ps2::ld32(p[0]);
++            if (actual != p[1] && actual != p[2]) {
++                std::fprintf(stderr, "[profile] data mismatch at %08x: got %08x\n", p[0], actual); return 1;
++            }
++        }
++        for (const auto &p : ram_words) ps2::st32(p[0], p[2]);
+ #ifdef PS2_PROFILE
+         const char *profile = std::getenv("PS2_PROFILE");
+         const char *profile_from = std::getenv("PS2_PROFILE_FROM");
+diff --git a/host/window.cpp b/host/window.cpp
+index f5e8d58..1c884ca 100644
+--- a/host/window.cpp
++++ b/host/window.cpp
+@@ -188,10 +188,16 @@ void show_pixels(const std::uint32_t *rgba, std::uint32_t w, std::uint32_t h) {
+     if (w != g_tex_w || h != g_tex_h) {
+         if (g_texture) SDL_DestroyTexture(g_texture);
+         g_texture = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, static_cast<int>(w), static_cast<int>(h));
+-        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w) * 3 / 4);
++        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w / ps2::presentation_aspect()));
+         g_tex_w = w;
+         g_tex_h = h;
+     }
++    static float last_aspect = 0.0f;
++    const float aspect = ps2::presentation_aspect();
++    if (last_aspect != aspect) {
++        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w / aspect));
++        last_aspect = aspect;
++    }
+     SDL_UpdateTexture(g_texture, nullptr, rgba, static_cast<int>(w * 4));
+     SDL_RenderClear(g_renderer);
+     SDL_RenderCopy(g_renderer, g_texture, nullptr, nullptr);
+@@ -285,11 +291,14 @@ bool open_window(bool fullscreen) {
+         return false;
+     }
+     const Uint32 flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0u);
+-    g_window = SDL_CreateWindow("ps2-web-recomp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 720, flags);
++    g_window = SDL_CreateWindow("ps2-web-recomp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ps2::g_options.output_width ? ps2::g_options.output_width : 960, ps2::g_options.output_height ? ps2::g_options.output_height : 720, flags);
+     if (!g_window) {
+         std::fprintf(stderr, "SDL: %s\n", SDL_GetError());
+         return false;
+     }
++    int drawable_width = 0, drawable_height = 0;
++    SDL_GetWindowSizeInPixels(g_window, &drawable_width, &drawable_height);
++    std::fprintf(stderr, "[window] requested %ux%u, drawable %dx%d\n", ps2::g_options.output_width, ps2::g_options.output_height, drawable_width, drawable_height);
+     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+     SDL_AudioSpec want{}, have{};
+     want.freq = 48000;
+diff --git a/runtime/include/ps2/system.hpp b/runtime/include/ps2/system.hpp
+index 0eb5552..8dcf8a1 100644
+--- a/runtime/include/ps2/system.hpp
++++ b/runtime/include/ps2/system.hpp
+@@ -21,7 +21,16 @@ struct Press {
+     std::uint16_t buttons;
+ };
+ 
++struct AxisInput {
++    std::uint64_t frame;
++    std::uint32_t frames;
++    unsigned axis;
++    std::uint8_t value;
++};
++
+ struct Options {
++    std::uint32_t output_width = 0, output_height = 0;
++    float presentation_aspect = 4.0f / 3.0f;
+     bool trace_syscalls = false;
+     bool trace_io = false;
+     bool trace_threads = false;
+@@ -35,7 +44,10 @@ struct Options {
+     std::string frames_dir;
+     std::uint32_t frame_every = 60;
+     std::vector<Press> presses;
++    std::vector<AxisInput> axes;
+     std::function<void()> on_vblank;
++    std::function<void(Cpu &, std::uint32_t)> on_probe;
++    std::function<void()> on_scene_end;
+     std::function<void(const std::string &name, const std::uint8_t *code, std::size_t size)> on_vu_program;
+     std::string memcard_path;
+     std::function<void()> on_memcard_saved;
+@@ -94,6 +106,8 @@ bool attach_window(const WindowTarget &target);
+ void resize_window(std::uint32_t width, std::uint32_t height);
+ bool present_frame();
+ void init_graphics();
++float presentation_aspect();
++void scene_aspect(float aspect);
+ void start_render_thread();
+ void start_vu_thread();
+ void run_vu_thread();
+diff --git a/runtime/src/dispatch.cpp b/runtime/src/dispatch.cpp
+index 654a6da..a9b39c8 100644
+--- a/runtime/src/dispatch.cpp
++++ b/runtime/src/dispatch.cpp
+@@ -162,6 +162,7 @@ void stop(Cpu &c, std::uint32_t pc, const char *what) {
+ }
+ 
+ void probe(Cpu &c, std::uint32_t pc) {
++    if (g_options.on_probe) { g_options.on_probe(c, pc); return; }
+     std::fprintf(stderr, "[probe] 0x%08X a0 %08X a1 %08X a2 %08X a3 %08X ra %08X v0 %08X\n", pc, c.r[4].w[0], c.r[5].w[0], c.r[6].w[0],
+                  c.r[7].w[0], c.r[31].w[0], c.r[2].w[0]);
+ }
+diff --git a/runtime/src/gs/gpu/gpu.cpp b/runtime/src/gs/gpu/gpu.cpp
+index f3f0992..4e43104 100644
+--- a/runtime/src/gs/gpu/gpu.cpp
++++ b/runtime/src/gs/gpu/gpu.cpp
+@@ -53,7 +53,7 @@ WGPUBindGroup g_blit_group = nullptr;
+ WGPUBuffer g_blit_params = nullptr;
+ std::uint32_t g_field = 0, g_last_width = 0, g_last_height = 0;
+ bool g_have_previous = false;
+-std::uint32_t g_scale = 1, g_copy_words = 1u << 20, g_field_words = 1u << 19;
++std::uint32_t g_scale_x = 1, g_scale_y = 1, g_copy_words = 1u << 20, g_field_words = 1u << 19;
+ 
+ std::uint32_t field_base(std::uint32_t field) { return g_copy_words + (field & 1u) * g_field_words; }
+ 
+@@ -343,9 +343,9 @@ std::vector<Span> g_spans;
+ std::vector<std::uint32_t> g_span_start;
+ 
+ void add_spans(const std::uint32_t *rec, std::uint32_t lo, std::uint32_t hi) {
+-    const int sc = static_cast<int>(g_scale);
+-    const int tx0 = static_cast<int>(lo & 0xFFFFu) * sc / 16, ty0 = static_cast<int>(lo >> 16) * sc / 16;
+-    const int tx1 = (static_cast<int>(hi & 0xFFFFu) * sc + sc - 1) / 16, ty1 = (static_cast<int>(hi >> 16) * sc + sc - 1) / 16;
++    const int scale_x = static_cast<int>(g_scale_x), scale_y = static_cast<int>(g_scale_y);
++    const int tx0 = static_cast<int>(lo & 0xFFFFu) * scale_x / 16, ty0 = static_cast<int>(lo >> 16) * scale_y / 16;
++    const int tx1 = (static_cast<int>(hi & 0xFFFFu) * scale_x + scale_x - 1) / 16, ty1 = (static_cast<int>(hi >> 16) * scale_y + scale_y - 1) / 16;
+     const auto whole = [&] {
+         for (int ty = ty0; ty <= ty1; ++ty) g_spans.push_back({static_cast<std::int16_t>(ty), static_cast<std::int16_t>(tx0), static_cast<std::int16_t>(tx1)});
+     };
+@@ -369,9 +369,9 @@ void add_spans(const std::uint32_t *rec, std::uint32_t lo, std::uint32_t hi) {
+         m[e] = kind[e] ? -cb / ca : cb;
+         q[e] = kind[e] ? -cc / ca : cc;
+     }
+-    const double span = 16.0 / static_cast<double>(sc);
++    const double span_x = 16.0 / scale_x, span_y = 16.0 / scale_y;
+     for (int ty = ty0; ty <= ty1; ++ty) {
+-        const double y0 = ty * span - 1.0, y1 = (ty + 1) * span + 1.0;
++        const double y0 = ty * span_y - 1.0, y1 = (ty + 1) * span_y + 1.0;
+         double left = -1e30, right = 1e30;
+         bool empty = false;
+         for (int e = 0; e < 3; ++e) {
+@@ -383,8 +383,8 @@ void add_spans(const std::uint32_t *rec, std::uint32_t lo, std::uint32_t hi) {
+         left -= 1.0;
+         right += 1.0;
+         if (empty || left > right) continue;
+-        const int rx0 = std::max(tx0, static_cast<int>(std::floor(std::max(left, -1.0) / span)));
+-        const int rx1 = std::min(tx1, static_cast<int>(std::floor(std::min(right, 4096.0) / span)));
++        const int rx0 = std::max(tx0, static_cast<int>(std::floor(std::max(left, -1.0) / span_x)));
++        const int rx1 = std::min(tx1, static_cast<int>(std::floor(std::min(right, 4096.0) / span_x)));
+         if (rx0 <= rx1) g_spans.push_back({static_cast<std::int16_t>(ty), static_cast<std::int16_t>(rx0), static_cast<std::int16_t>(rx1)});
+     }
+ }
+@@ -476,7 +476,7 @@ void plan_decodes(std::uint32_t prims) {
+         if (!inside(mu, w[18], tw) || !inside(mv, w[19], th)) continue;
+         const std::uint32_t words = 1u << (tw + th);
+         if (g_decoded_used + words > kDecodedWords) continue;
+-        if (g_scale > 1 && rendered(pages(w[12], w[13], w[14], 0, 0, (1 << tw) - 1, (1 << th) - 1))) continue;
++        if (g_scale_x * g_scale_y > 1 && rendered(pages(w[12], w[13], w[14], 0, 0, (1 << tw) - 1, (1 << th) - 1))) continue;
+         w[24] = g_decoded_used;
+         g_decodes.push_back({i, g_decoded_used, words});
+         g_decoded_used += words;
+@@ -507,7 +507,7 @@ std::uint32_t snapshot_batch(std::uint32_t prims, std::uint32_t &lo, std::uint32
+     lo = static_cast<std::uint32_t>(std::min<std::uint64_t>(shared.lo, kMemorySize) / 4);
+     hi = static_cast<std::uint32_t>(std::min<std::uint64_t>(shared.hi, kMemorySize) / 4);
+     if (hi <= lo) return 0;
+-    const std::uint32_t words = (hi - lo) * g_scale * g_scale;
++    const std::uint32_t words = (hi - lo) * g_scale_x * g_scale_y;
+     dispatch_linear(kSnapshot, words, push_params({lo, words}));
+     return words;
+ }
+@@ -905,7 +905,7 @@ void submit(WGPUTextureView present_view = nullptr) {
+         rd.colorAttachments = &color;
+         WGPURenderPassEncoder rp = wgpuCommandEncoderBeginRenderPass(enc, &rd);
+         const float w = static_cast<float>(g_surface_width), h = static_cast<float>(g_surface_height);
+-        const float vw = std::min(w, h * 4.0f / 3.0f), vh = vw * 3.0f / 4.0f;
++        const float vw = std::min(w, h * presentation_aspect()), vh = vw / presentation_aspect();
+         wgpuRenderPassEncoderSetViewport(rp, (w - vw) * 0.5f, (h - vh) * 0.5f, vw, vh, 0.0f, 1.0f);
+         wgpuRenderPassEncoderSetPipeline(rp, g_blit);
+         wgpuRenderPassEncoderSetBindGroup(rp, 0, g_blit_group, 0, nullptr);
+@@ -1171,13 +1171,22 @@ bool init(Mode m) {
+             g_profile_to = z;
+         }
+     }
+-    if (const char *scale = std::getenv("PS2_SCALE")) g_scale = std::clamp<std::uint32_t>(static_cast<std::uint32_t>(std::atoi(scale)), 1u, 3u);
+-    g_copy_words = (1u << 20) * g_scale * g_scale;
+-    g_tiles_per_row = (2048 * static_cast<int>(g_scale) + 15) / 16;
+-    g_tile_count.assign(static_cast<std::size_t>(g_tiles_per_row) * g_tiles_per_row, 0);
+-    g_tile_fill.assign(static_cast<std::size_t>(g_tiles_per_row) * g_tiles_per_row, 0);
+-    g_field_words = (1u << 19) * g_scale * g_scale;
+-    g_vram = make_buffer(static_cast<std::uint64_t>(kMemorySize) * g_scale * g_scale, WGPUBufferUsage_Storage | WGPUBufferUsage_CopySrc | WGPUBufferUsage_CopyDst);
++    if (const char *scale = std::getenv("PS2_SCALE")) g_scale_x = std::clamp<std::uint32_t>(static_cast<std::uint32_t>(std::atoi(scale)), 1u, 9u);
++    g_scale_y = g_scale_x;
++    if (const char *scale = std::getenv("PS2_SCALE_Y")) g_scale_y = std::clamp<std::uint32_t>(static_cast<std::uint32_t>(std::atoi(scale)), 1u, 9u);
++    const std::uint64_t scaled_scratch_bytes = (8ull << 20) * g_scale_x * g_scale_y;
++    if (scaled_scratch_bytes > supported.maxStorageBufferBindingSize || scaled_scratch_bytes > supported.maxBufferSize) {
++        std::fprintf(stderr, "[gpu] requested render scale exceeds adapter buffer limits\n");
++        return false;
++    }
++    std::fprintf(stderr, "[gpu] internal render scale %ux%u, presentation aspect %.6f\n", g_scale_x, g_scale_y, presentation_aspect());
++    g_copy_words = (1u << 20) * g_scale_x * g_scale_y;
++    g_tiles_per_row = (2048 * static_cast<int>(g_scale_x) + 15) / 16;
++    const int tile_rows = (2048 * static_cast<int>(g_scale_y) + 15) / 16;
++    g_tile_count.assign(static_cast<std::size_t>(g_tiles_per_row) * tile_rows, 0);
++    g_tile_fill.assign(static_cast<std::size_t>(g_tiles_per_row) * tile_rows, 0);
++    g_field_words = (1u << 19) * g_scale_x * g_scale_y;
++    g_vram = make_buffer(static_cast<std::uint64_t>(kMemorySize) * g_scale_x * g_scale_y, WGPUBufferUsage_Storage | WGPUBufferUsage_CopySrc | WGPUBufferUsage_CopyDst);
+     std::vector<std::uint32_t> tables;
+     swizzle_tables(tables);
+     g_tables = make_buffer(tables.size() * 4, WGPUBufferUsage_Storage | WGPUBufferUsage_CopyDst);
+@@ -1229,11 +1238,11 @@ bool init(Mode m) {
+         cd.layout = g_pipeline_layout;
+         cd.compute.module = module;
+         cd.compute.entryPoint = view(kEntryPoints[i]);
+-        WGPUConstantEntry constant = WGPU_CONSTANT_ENTRY_INIT;
+-        constant.key = view("SCALE");
+-        constant.value = static_cast<double>(g_scale);
+-        cd.compute.constantCount = 1;
+-        cd.compute.constants = &constant;
++        WGPUConstantEntry constants[2] = {WGPU_CONSTANT_ENTRY_INIT, WGPU_CONSTANT_ENTRY_INIT};
++        constants[0].key = view("SCALE_X"); constants[0].value = static_cast<double>(g_scale_x);
++        constants[1].key = view("SCALE_Y"); constants[1].value = static_cast<double>(g_scale_y);
++        cd.compute.constantCount = 2;
++        cd.compute.constants = constants;
+         g_pipelines[i] = wgpuDeviceCreateComputePipeline(g_device, &cd);
+         if (!g_pipelines[i]) return false;
+     }
+@@ -1272,8 +1281,8 @@ void draw(const State &st, const Vertex *v, int count) {
+     const int scay0 = static_cast<int>(setup[11] & 0xFFFFu), scay1 = static_cast<int>(setup[11] >> 16);
+     const auto sx = [&](const Vertex &p) { return (static_cast<float>(p.x) - static_cast<float>(ofx)) / 16.0f; };
+     const auto sy = [&](const Vertex &p) { return (static_cast<float>(p.y) - static_cast<float>(ofy)) / 16.0f; };
+-    const float samples = static_cast<float>(g_scale);
+-    const auto first = [&](float lo) { return static_cast<int>(std::floor(std::ceil(lo * samples) / samples)); };
++    const float samples_x = static_cast<float>(g_scale_x), samples_y = static_cast<float>(g_scale_y);
++    const auto first = [&](float lo, float samples) { return static_cast<int>(std::floor(std::ceil(lo * samples) / samples)); };
+ 
+     std::uint32_t rec[kPrimWords] = {};
+     int minx, miny, maxx, maxy;
+@@ -1283,9 +1292,9 @@ void draw(const State &st, const Vertex *v, int count) {
+         const float x0 = sx(v[0]), y0 = sy(v[0]), x1 = sx(v[1]), y1 = sy(v[1]), x2 = sx(v[2]), y2 = sy(v[2]);
+         const float area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0);
+         if (area == 0.0f) return;
+-        minx = std::max(scax0, first(std::min({x0, x1, x2})));
++        minx = std::max(scax0, first(std::min({x0, x1, x2}), samples_x));
+         maxx = std::min(scax1, static_cast<int>(std::ceil(std::max({x0, x1, x2}))) - 1);
+-        miny = std::max(scay0, first(std::min({y0, y1, y2})));
++        miny = std::max(scay0, first(std::min({y0, y1, y2}), samples_y));
+         maxy = std::min(scay1, static_cast<int>(std::ceil(std::max({y0, y1, y2}))) - 1);
+         rec[1] = 0;
+         const float xy[6] = {x0, y0, x1, y1, x2, y2};
+@@ -1468,8 +1477,8 @@ void local_copy(const State &s) {
+     const std::uint32_t write = push_params({static_cast<std::uint32_t>(buf >> 32) & 0x3FFFu, static_cast<std::uint32_t>(buf >> 48) & 0x3Fu, static_cast<std::uint32_t>(buf >> 56) & 0x3Fu,
+                                              static_cast<std::uint32_t>(pos >> 32) & 0x7FFu, static_cast<std::uint32_t>(pos >> 48) & 0x7FFu, w, h,
+                                              static_cast<std::uint32_t>(pos >> 59) & 3u});
+-    dispatch_linear(kCopyRead, w * h * g_scale * g_scale, read);
+-    dispatch_linear(kCopyWrite, w * h * g_scale * g_scale, write);
++    dispatch_linear(kCopyRead, w * h * g_scale_x * g_scale_y, read);
++    dispatch_linear(kCopyWrite, w * h * g_scale_x * g_scale_y, write);
+ }
+ 
+ void load_clut(std::uint64_t tex0, std::uint64_t texclut) {
+@@ -1540,10 +1549,10 @@ bool download_async(std::uint8_t *memory, std::uint32_t offset, std::uint32_t by
+         g_pending.buffer = make_buffer(bytes, WGPUBufferUsage_MapRead | WGPUBufferUsage_CopyDst);
+     }
+     flush_all();
+-    if (g_scale != 1) dispatch_linear(kResolve, bytes / 4, push_params({offset / 4}));
++    if (g_scale_x * g_scale_y != 1) dispatch_linear(kResolve, bytes / 4, push_params({offset / 4}));
+     submit();
+     WGPUCommandEncoder enc = wgpuDeviceCreateCommandEncoder(g_device, nullptr);
+-    wgpuCommandEncoderCopyBufferToBuffer(enc, g_scale == 1 ? g_vram : g_scratch, offset, g_pending.buffer, 0, bytes);
++    wgpuCommandEncoderCopyBufferToBuffer(enc, g_scale_x * g_scale_y == 1 ? g_vram : g_scratch, offset, g_pending.buffer, 0, bytes);
+     WGPUCommandBuffer cmd = wgpuCommandEncoderFinish(enc, nullptr);
+     wgpuQueueSubmit(g_queue, 1, &cmd);
+     wgpuCommandBufferRelease(cmd);
+@@ -1573,7 +1582,7 @@ bool finish_download(std::uint32_t serial) {
+ 
+ void download(std::uint8_t *memory, std::uint32_t offset, std::uint32_t bytes) {
+     flush_all();
+-    if (g_scale == 1) {
++    if (g_scale_x * g_scale_y == 1) {
+         submit();
+         read_back(g_vram, bytes, memory + offset, offset);
+         return;
+@@ -1586,8 +1595,8 @@ void download(std::uint8_t *memory, std::uint32_t offset, std::uint32_t bytes) {
+ void read_state(std::vector<std::uint32_t> &vram, std::uint32_t &scale, std::vector<std::uint32_t> &clut) {
+     flush_all();
+     submit();
+-    scale = g_scale;
+-    vram.resize(static_cast<std::size_t>(kMemorySize / 4) * g_scale * g_scale);
++    scale = g_scale_x == g_scale_y ? g_scale_x : (g_scale_x << 16) | g_scale_y;
++    vram.resize(static_cast<std::size_t>(kMemorySize / 4) * g_scale_x * g_scale_y);
+     read_back(g_vram, vram.size() * 4, vram.data());
+     clut.resize(kClutEntries);
+     read_back(g_clut, kClutEntries * 4, clut.data(), static_cast<std::uint64_t>(g_clut_slot) * kClutEntries * 4);
+@@ -1596,14 +1605,21 @@ void read_state(std::vector<std::uint32_t> &vram, std::uint32_t &scale, std::vec
+ void write_state(const std::vector<std::uint32_t> &vram, std::uint32_t scale, const std::vector<std::uint32_t> &clut) {
+     wait_idle();
+     const std::size_t words = kMemorySize / 4;
+-    const std::uint32_t from = scale * scale, to = g_scale * g_scale;
+-    std::fill(std::begin(g_rendered), std::end(g_rendered), from == to && to > 1);
+-    if (from == to && vram.size() == words * to) {
++    const std::uint32_t from_x = scale > 0xffff ? scale >> 16 : scale;
++    const std::uint32_t from_y = scale > 0xffff ? scale & 0xffff : scale;
++    if (!from_x || !from_y || from_x > 9 || from_y > 9) throw std::runtime_error("invalid GPU save-state scale");
++    const std::uint32_t from = from_x * from_y, to = g_scale_x * g_scale_y;
++    const bool same_scale = from_x == g_scale_x && from_y == g_scale_y;
++    if (vram.size() != words * from) throw std::runtime_error("invalid GPU save-state sample count");
++    std::fill(std::begin(g_rendered), std::end(g_rendered), same_scale && to > 1);
++    if (same_scale) {
+         wgpuQueueWriteBuffer(g_queue, g_vram, 0, vram.data(), vram.size() * 4);
+     } else {
+         std::vector<std::uint32_t> layers(words * to);
+         for (std::size_t w = 0; w < words; ++w)
+-            for (std::uint32_t k = 0; k < to; ++k) layers[w * to + k] = vram[w * from];
++            for (std::uint32_t y = 0; y < g_scale_y; ++y)
++                for (std::uint32_t x = 0; x < g_scale_x; ++x)
++                    layers[w * to + y * g_scale_x + x] = vram[w * from + (y * from_y / g_scale_y) * from_x + x * from_x / g_scale_x];
+         wgpuQueueWriteBuffer(g_queue, g_vram, 0, layers.data(), layers.size() * 4);
+     }
+     if (clut.size() >= kClutEntries) wgpuQueueWriteBuffer(g_queue, g_clut, static_cast<std::uint64_t>(g_clut_slot) * kClutEntries * 4, clut.data(), kClutEntries * 4);
+@@ -1742,10 +1758,10 @@ bool present(const DisplaySource &src) {
+     static const bool weave_off = std::getenv("PS2_NO_DEINTERLACE") != nullptr;
+     const bool blend = src.halved && g_have_previous && g_last_width == src.width && g_last_height == src.height && !weave_off;
+     const std::uint32_t param = push_params({src.fbp, src.fbw, src.psm, src.dbx, src.dby, src.width, src.height, src.halved ? 1u : 0u, current});
+-    g_commands.push_back({kDisplay, (src.width * g_scale + 7) / 8, (src.height * g_scale + 7) / 8, param});
++    g_commands.push_back({kDisplay, (src.width * g_scale_x + 7) / 8, (src.height * g_scale_y + 7) / 8, param});
+     const float sw = static_cast<float>(g_surface_width), sh = static_cast<float>(g_surface_height);
+-    const float vw = std::min(sw, sh * 4.0f / 3.0f), vh = vw * 3.0f / 4.0f;
+-    const std::uint32_t blit[8] = {src.width * g_scale, src.height * g_scale, current, previous, blend ? 1u : 0u, static_cast<std::uint32_t>(vw), static_cast<std::uint32_t>(vh), 0};
++    const float vw = std::min(sw, sh * presentation_aspect()), vh = vw / presentation_aspect();
++    const std::uint32_t blit[8] = {src.width * g_scale_x, src.height * g_scale_y, current, previous, blend ? 1u : 0u, static_cast<std::uint32_t>(vw), static_cast<std::uint32_t>(vh), 0};
+     wgpuQueueWriteBuffer(g_queue, g_blit_params, 0, blit, sizeof blit);
+     ++g_field;
+     g_have_previous = true;
+@@ -1812,7 +1828,7 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+     for (Copy &c : g_copies)
+         if (!c.busy) slot = &c;
+     if (slot) {
+-        const std::uint64_t bytes = static_cast<std::uint64_t>(src.width) * src.height * g_scale * g_scale * 4;
++        const std::uint64_t bytes = static_cast<std::uint64_t>(src.width) * src.height * g_scale_x * g_scale_y * 4;
+         if (slot->size < bytes) {
+             if (slot->buffer) wgpuBufferRelease(slot->buffer);
+             slot->size = bytes;
+@@ -1820,7 +1836,7 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+         }
+         flush_all();
+         const std::uint32_t param = push_params({src.fbp, src.fbw, src.psm, src.dbx, src.dby, src.width, src.height, src.halved ? 1u : 0u});
+-        g_commands.push_back({kDisplay, (src.width * g_scale + 7) / 8, (src.height * g_scale + 7) / 8, param});
++        g_commands.push_back({kDisplay, (src.width * g_scale_x + 7) / 8, (src.height * g_scale_y + 7) / 8, param});
+         submit();
+         WGPUCommandEncoder enc = wgpuDeviceCreateCommandEncoder(g_device, nullptr);
+         wgpuCommandEncoderCopyBufferToBuffer(enc, g_scratch, 0, slot->buffer, 0, bytes);
+@@ -1830,8 +1846,8 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+         wgpuCommandEncoderRelease(enc);
+         slot->busy = true;
+         slot->order = ++g_copy_order;
+-        slot->width = src.width * g_scale;
+-        slot->height = src.height * g_scale;
++        slot->width = src.width * g_scale_x;
++        slot->height = src.height * g_scale_y;
+         WGPUBufferMapCallbackInfo cb = WGPU_BUFFER_MAP_CALLBACK_INFO_INIT;
+         cb.mode = WGPUCallbackMode_AllowProcessEvents;
+         cb.callback = [](WGPUMapAsyncStatus status, WGPUStringView, void *copy, void *) {
+@@ -1848,10 +1864,10 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+ bool display(const DisplaySource &src, std::vector<std::uint32_t> &rgba, std::uint32_t &width, std::uint32_t &height) {
+     flush_all();
+     const std::uint32_t param = push_params({src.fbp, src.fbw, src.psm, src.dbx, src.dby, src.width, src.height, src.halved ? 1u : 0u});
+-    g_commands.push_back({kDisplay, (src.width * g_scale + 7) / 8, (src.height * g_scale + 7) / 8, param});
++    g_commands.push_back({kDisplay, (src.width * g_scale_x + 7) / 8, (src.height * g_scale_y + 7) / 8, param});
+     submit();
+-    width = src.width * g_scale;
+-    height = src.height * g_scale;
++    width = src.width * g_scale_x;
++    height = src.height * g_scale_y;
+     rgba.resize(static_cast<std::size_t>(width) * height);
+     read_back(g_scratch, rgba.size() * 4, rgba.data());
+     return true;
+diff --git a/runtime/src/gs/gpu/gs.wgsl b/runtime/src/gs/gpu/gs.wgsl
+index 10330e9..7d63851 100644
+--- a/runtime/src/gs/gpu/gs.wgsl
++++ b/runtime/src/gs/gpu/gs.wgsl
+@@ -11,7 +11,8 @@ struct Params {
+ @group(0) @binding(6) var<storage, read> cache: array<u32>;
+ @group(0) @binding(7) var<storage, read_write> decoded: array<u32>;
+ 
+-override SCALE: u32 = 1u;
++override SCALE_X: u32 = 1u;
++override SCALE_Y: u32 = 1u;
+ 
+ const PSMCT32: u32 = 0x00u;
+ const PSMCT24: u32 = 0x01u;
+@@ -217,12 +218,12 @@ fn addr(f: Fmt, x: u32, y: u32) -> Loc {
+ }
+ 
+ fn load_at(l: Loc, k: u32) -> u32 {
+-    return (atomicLoad(&vram[l.word * SCALE * SCALE + k]) >> l.shift) & l.mask;
++    return (atomicLoad(&vram[l.word * SCALE_X * SCALE_Y + k]) >> l.shift) & l.mask;
+ }
+ 
+ fn read_sample(psm: u32, bp: u32, bw: u32, x: u32, y: u32, k: u32) -> u32 {
+     let l = locate(psm, bp, bw, x, y);
+-    return (atomicLoad(&vram[l.word * SCALE * SCALE + k]) >> l.shift) & l.mask;
++    return (atomicLoad(&vram[l.word * SCALE_X * SCALE_Y + k]) >> l.shift) & l.mask;
+ }
+ 
+ fn read_pixel(psm: u32, bp: u32, bw: u32, x: u32, y: u32) -> u32 {
+@@ -230,7 +231,7 @@ fn read_pixel(psm: u32, bp: u32, bw: u32, x: u32, y: u32) -> u32 {
+ }
+ 
+ fn store(l: Loc, k: u32, value: u32) {
+-    let w = l.word * SCALE * SCALE + k;
++    let w = l.word * SCALE_X * SCALE_Y + k;
+     if (l.mask == 0xFFFFFFFFu) {
+         atomicStore(&vram[w], value);
+         return;
+@@ -245,7 +246,7 @@ fn write_sample(psm: u32, bp: u32, bw: u32, x: u32, y: u32, k: u32, value: u32)
+ 
+ fn write_pixel(psm: u32, bp: u32, bw: u32, x: u32, y: u32, value: u32) {
+     let l = locate(psm, bp, bw, x, y);
+-    for (var k = 0u; k < SCALE * SCALE; k = k + 1u) {
++    for (var k = 0u; k < SCALE_X * SCALE_Y; k = k + 1u) {
+         store(l, k, value);
+     }
+ }
+@@ -314,7 +315,7 @@ fn upload(@builtin(global_invocation_id) gid: vec3<u32>) {
+ fn copy_read(@builtin(global_invocation_id) gid: vec3<u32>) {
+     let i = gid.x + gid.y * 64u * 1024u;
+     let w = prm(5u);
+-    let n = SCALE * SCALE;
++    let n = SCALE_X * SCALE_Y;
+     if (i >= w * prm(6u) * n) {
+         return;
+     }
+@@ -329,7 +330,7 @@ fn copy_write(@builtin(global_invocation_id) gid: vec3<u32>) {
+     let i = gid.x + gid.y * 64u * 1024u;
+     let w = prm(5u);
+     let h = prm(6u);
+-    let n = SCALE * SCALE;
++    let n = SCALE_X * SCALE_Y;
+     if (i >= w * h * n) {
+         return;
+     }
+@@ -389,8 +390,8 @@ fn load_clut(@builtin(local_invocation_index) k: u32) {
+ 
+ @compute @workgroup_size(8, 8)
+ fn display(@builtin(global_invocation_id) gid: vec3<u32>) {
+-    let w = prm(5u) * SCALE;
+-    let h = prm(6u) * SCALE;
++    let w = prm(5u) * SCALE_X;
++    let h = prm(6u) * SCALE_Y;
+     if (gid.x >= w || gid.y >= h) {
+         return;
+     }
+@@ -399,7 +400,7 @@ fn display(@builtin(global_invocation_id) gid: vec3<u32>) {
+     if (prm(7u) != 0u) {
+         sy = gid.y / 2u;
+     }
+-    var c = read_sample(psm, prm(0u), prm(1u), prm(3u) + gid.x / SCALE, prm(4u) + sy / SCALE, (sy % SCALE) * SCALE + gid.x % SCALE);
++    var c = read_sample(psm, prm(0u), prm(1u), prm(3u) + gid.x / SCALE_X, prm(4u) + sy / SCALE_Y, (sy % SCALE_Y) * SCALE_X + gid.x % SCALE_X);
+     if (psm == PSMCT16 || psm == PSMCT16S) {
+         c = ((c & 0x1Fu) << 3u) | ((c & 0x3E0u) << 6u) | ((c & 0x7C00u) << 9u);
+     }
+@@ -554,7 +555,7 @@ var<private> snapshot_hi: u32 = 0u;
+ 
+ fn load_texel(l: Loc, k: u32) -> u32 {
+     if (l.word >= snapshot_lo && l.word < snapshot_hi) {
+-        return (scratch[(l.word - snapshot_lo) * SCALE * SCALE + k] >> l.shift) & l.mask;
++        return (scratch[(l.word - snapshot_lo) * SCALE_X * SCALE_Y + k] >> l.shift) & l.mask;
+     }
+     return load_at(l, k);
+ }
+@@ -1007,7 +1008,7 @@ fn shade_at(p: u32, s: Setup, x: i32, y: i32, k: u32, px: f32, py: f32) {
+             }
+             let cx = f32(x);
+             let cy = f32(y);
+-            if (SCALE > 1u && (cx < min(x0, x0 + dx) || cx >= max(x0, x0 + dx) || cy < min(y0, y0 + dy) || cy >= max(y0, y0 + dy))) {
++            if (SCALE_X * SCALE_Y > 1u && (cx < min(x0, x0 + dx) || cx >= max(x0, x0 + dx) || cy < min(y0, y0 + dy) || cy >= max(y0, y0 + dy))) {
+                 return;
+             }
+             var tx = 0.0;
+@@ -1090,7 +1091,7 @@ fn snapshot(@builtin(global_invocation_id) gid: vec3<u32>) {
+     if (i >= prm(1u)) {
+         return;
+     }
+-    scratch[i] = atomicLoad(&vram[prm(0u) * SCALE * SCALE + i]);
++    scratch[i] = atomicLoad(&vram[prm(0u) * SCALE_X * SCALE_Y + i]);
+ }
+ 
+ @compute @workgroup_size(64)
+@@ -1099,7 +1100,7 @@ fn resolve(@builtin(global_invocation_id) gid: vec3<u32>) {
+     if (i >= 1048576u) {
+         return;
+     }
+-    scratch[i] = atomicLoad(&vram[i * SCALE * SCALE]);
++    scratch[i] = atomicLoad(&vram[i * SCALE_X * SCALE_Y]);
+ }
+ 
+ @compute @workgroup_size(16, 16)
+@@ -1112,11 +1113,11 @@ fn raster(@builtin(workgroup_id) wid: vec3<u32>, @builtin(local_invocation_id) l
+     let origin = data[tile];
+     let sx = (origin & 0xFFFFu) * 16u + lid.x;
+     let sy = (origin >> 16u) * 16u + lid.y;
+-    let x = i32(sx / SCALE);
+-    let y = i32(sy / SCALE);
+-    let k = (sy % SCALE) * SCALE + sx % SCALE;
+-    let px = f32(x) + f32(sx % SCALE) / f32(SCALE);
+-    let py = f32(y) + f32(sy % SCALE) / f32(SCALE);
++    let x = i32(sx / SCALE_X);
++    let y = i32(sy / SCALE_Y);
++    let k = (sy % SCALE_Y) * SCALE_X + sx % SCALE_X;
++    let px = f32(x) + f32(sx % SCALE_X) / f32(SCALE_X);
++    let py = f32(y) + f32(sy % SCALE_Y) / f32(SCALE_Y);
+     let first = data[tile + 1u];
+     let count = data[tile + 3u] - first;
+     let lists = prm(4u);
+diff --git a/runtime/src/hw.cpp b/runtime/src/hw.cpp
+index 6a4d746..fbb0dd4 100644
+--- a/runtime/src/hw.cpp
++++ b/runtime/src/hw.cpp
+@@ -26,6 +26,9 @@ constexpr std::uint32_t kIntcStat = 0x1000F000u, kIntcMask = 0x1000F010u;
+ constexpr std::uint32_t kDmacStat = 0x1000E010u;
+ 
+ std::uint32_t g_intc_stat = 0, g_intc_mask = 0;
++// HLE handler delivery is distinct from the guest-visible hardware latch.
++// Games can poll INTC_STAT after the handler; guest W1C writes clear it.
++std::uint32_t g_intc_delivered = 0;
+ std::uint32_t g_dmac_stat = 0;
+ std::map<std::uint32_t, std::uint64_t> g_regs;
+ std::set<std::uint32_t> g_reported;
+@@ -109,6 +112,7 @@ bool is_timer(std::uint32_t a) { return a >= 0x10000000u && a < 0x10002000u && (
+ 
+ void reset() {
+     g_intc_stat = g_intc_mask = g_dmac_stat = 0;
++    g_intc_delivered = 0;
+     gs::reset();
+     gif::reset();
+     vif::reset();
+@@ -126,14 +130,15 @@ void vblank_start() {
+     schedule(kEventVblankEnd, now() + hblank_cycles() * 22u, [] { intc_raise(3); });
+ }
+ 
+-std::uint32_t intc_pending() { return g_intc_stat & g_intc_mask; }
++std::uint32_t intc_pending() { return g_intc_stat & g_intc_mask & ~g_intc_delivered; }
+ 
+ void intc_raise(unsigned cause) {
+     g_intc_stat |= 1u << cause;
++    g_intc_delivered &= ~(1u << cause);
+     if (g_intc_mask & (1u << cause)) kernel::wake_idle();
+ }
+ 
+-void intc_ack(unsigned cause) { g_intc_stat &= ~(1u << cause); }
++void intc_ack(unsigned cause) { g_intc_delivered |= 1u << cause; }
+ 
+ bool intc_set_mask(unsigned cause, bool enabled) {
+     const std::uint32_t bit = 1u << cause;
+@@ -204,7 +209,7 @@ std::uint32_t read32(std::uint32_t a) {
+ }
+ 
+ void write32(std::uint32_t a, std::uint32_t v) {
+-    if (a == kIntcStat) { g_intc_stat &= ~v; return; }
++    if (a == kIntcStat) { g_intc_stat &= ~v; g_intc_delivered &= ~v; return; }
+     if (a == kIntcMask) { g_intc_mask ^= v; return; }
+     if (a == kDmacStat) {
+         g_dmac_stat &= ~(v & 0xFFFFu);
+@@ -291,6 +296,7 @@ std::function<void()> event_action(int id) {
+ void state(ps2::state::Stream &s) {
+     s.tag("eehw");
+     s.pod(g_intc_stat);
++    s.pod(g_intc_delivered);
+     s.pod(g_intc_mask);
+     s.pod(g_dmac_stat);
+     s.map(g_regs);
+diff --git a/runtime/src/iop/hw.cpp b/runtime/src/iop/hw.cpp
+index 21f2405..941b1dd 100644
+--- a/runtime/src/iop/hw.cpp
++++ b/runtime/src/iop/hw.cpp
+@@ -83,6 +83,7 @@ struct Dma {
+ };
+ Dma g_dma[14];
+ std::uint32_t g_ohci[0x18];
++std::uint8_t g_ilink_phy[16];
+ 
+ int dma_channel(std::uint32_t a, std::uint32_t &reg) {
+     if (a >= 0x1F801080u && a < 0x1F8010F0u) {
+@@ -129,6 +130,7 @@ void reset() {
+     spu2::reset();
+     sio2::reset();
+     std::memset(g_ohci, 0, sizeof g_ohci);
++    std::memset(g_ilink_phy, 0, sizeof g_ilink_phy);
+ }
+ 
+ void raise_interrupt(unsigned line) {
+@@ -208,6 +210,8 @@ void ohci_write(std::uint32_t a, std::uint32_t v) {
+ }
+ 
+ std::uint32_t read(std::uint32_t a, unsigned size) {
++    if (a == 0x1F808400u) return 0xFFC00001u;
++    if (a == 0x1F80847Cu) return 0x10000001u;
+     if (a >= 0x1F900000u && a < 0x1F900800u) return spu2::read(a, size);
+     if (a >= 0x1F801600u && a < 0x1F801660u) return ohci_read(a);
+     if (a >= 0x1F808200u && a < 0x1F808280u) return sio2::read(a);
+@@ -236,6 +240,27 @@ std::uint32_t read(std::uint32_t a, unsigned size) {
+ }
+ 
+ void write(std::uint32_t a, std::uint32_t v, unsigned size) {
++    // i.Link control 2: enabling link power makes the serial clock ready.
++    // SCLKOK is hardware status, not a writable bit; the driver polls it
++    // before continuing initialization, including when no peers are attached.
++    if (a == 0x1F808410u) { g_regs[a] = (v & 2u) | 8u; return; }
++    if (a == 0x1F808408u) { g_regs[a] = v & ~0x00800000u; return; }
++    if (a == 0x1F808420u || a == 0x1F808428u || a == 0x1F808430u) {
++        g_regs[a] &= ~v;
++        return;
++    }
++    if (a == 0x1F808414u) {
++        if (v & 0x40000000u) {
++            g_ilink_phy[(v >> 8) & 15u] = static_cast<std::uint8_t>(v);
++            g_regs[a] = v & ~0x4000FFFFu;
++        } else if (v & 0x80000000u) {
++            const std::uint32_t reg = (v >> 24) & 15u;
++            g_regs[a] = (v & ~0x8000FFFFu) | (reg << 8) | g_ilink_phy[reg];
++            g_regs[0x1F808420u] |= 0x40000000u;
++            if (g_regs[0x1F808424u] & 0x40000000u) raise_interrupt(24);
++        } else g_regs[a] = v;
++        return;
++    }
+     if (a >= 0x1F900000u && a < 0x1F900800u) { spu2::write(a, v, size); return; }
+     if (a >= 0x1F801600u && a < 0x1F801660u) { ohci_write(a, v); return; }
+     if (a >= 0x1F808200u && a < 0x1F808280u) { sio2::write(a, v); return; }
+@@ -283,6 +308,7 @@ void state(ps2::state::Stream &s) {
+     s.map(g_regs);
+     s.pod(g_dma);
+     s.pod(g_ohci);
++    s.pod(g_ilink_phy);
+     s.pod(g_scratchpad);
+ }
+ 
+diff --git a/runtime/src/iop/sif.cpp b/runtime/src/iop/sif.cpp
+index 5c744c4..7bc85d0 100644
+--- a/runtime/src/iop/sif.cpp
++++ b/runtime/src/iop/sif.cpp
+@@ -84,9 +84,10 @@ std::uint64_t g_ee_dma_done = 0;
+ 
+ template <typename T>
+ T ee_read(std::uint32_t a) {
+-    T v;
+-    std::memcpy(&v, g_ram + (a & (kRamSize - 1)), sizeof v);
+-    return v;
++    // DMA lists may reside in EE scratchpad; masking them into RAM loses
++    // the transfer descriptors (GT3's movie streaming uses this path).
++    static_assert(sizeof(T) == sizeof(std::uint32_t));
++    return static_cast<T>(ld32(a));
+ }
+ 
+ void send(const void *packet, std::uint32_t size) {
+diff --git a/runtime/src/kernel.cpp b/runtime/src/kernel.cpp
+index e924f25..5715eae 100644
+--- a/runtime/src/kernel.cpp
++++ b/runtime/src/kernel.cpp
+@@ -126,7 +126,9 @@ Thread *best_ready() {
+ 
+ void switch_to(Cpu &c, Thread *next) {
+     Thread *cur = current();
+-    if (cur == next) return;
++    // With no current thread and no ready successor (ExitDeleteThread),
++    // still enter the idle context instead of continuing deleted guest code.
++    if (cur && cur == next) return;
+     if (cur && (cur->status == kRun || cur->status == kReady || cur->status == kWait || cur->status == kSuspend || cur->status == kWaitSuspend)) {
+         save_context(c, cur->context);
+         if (cur->status == kRun) cur->status = kReady;
+diff --git a/runtime/src/system.cpp b/runtime/src/system.cpp
+index ca8f06c..43101dd 100644
+--- a/runtime/src/system.cpp
++++ b/runtime/src/system.cpp
+@@ -22,6 +22,7 @@
+ #endif
+ 
+ #include <algorithm>
++#include <cmath>
+ #include <atomic>
+ #include <cctype>
+ #include <chrono>
+@@ -56,6 +57,8 @@ std::uint64_t g_frames = 0;
+ std::uint64_t g_iop_synced = 0;
+ bool g_state_request = false;
+ bool g_resumed = false;
++std::atomic<float> g_scene_aspect{0.0f};
++std::uint64_t g_scene_aspect_until = 0;
+ 
+ std::uint64_t next_event_time() {
+     std::uint64_t t = UINT64_MAX;
+@@ -88,6 +91,31 @@ void dump_frame() {
+     std::vector<std::uint32_t> rgba;
+     std::uint32_t w = 0, h = 0;
+     if (!gs::display(rgba, w, h)) return;
++    if (g_options.output_width && g_options.output_height) {
++        const unsigned output_width = g_options.output_width, output_height = g_options.output_height;
++        const unsigned viewport_width = std::min(output_width, unsigned(output_height * presentation_aspect()));
++        const unsigned viewport_height = std::min(output_height, unsigned(viewport_width / presentation_aspect()));
++        const unsigned left = (output_width - viewport_width) / 2, top = (output_height - viewport_height) / 2;
++        std::vector<std::uint32_t> output(std::size_t(output_width) * output_height, 0xff000000u);
++        // Resample the internally rendered image; never change the camera here.
++        for (unsigned y = 0; y < viewport_height; ++y) {
++            const float sy = std::clamp((y + 0.5f) * h / viewport_height - 0.5f, 0.0f, float(h - 1));
++            const unsigned y0 = unsigned(sy), y1 = std::min(y0 + 1, h - 1); const float fy = sy - y0;
++            for (unsigned x = 0; x < viewport_width; ++x) {
++                const float sx = std::clamp((x + 0.5f) * w / viewport_width - 0.5f, 0.0f, float(w - 1));
++                const unsigned x0 = unsigned(sx), x1 = std::min(x0 + 1, w - 1); const float fx = sx - x0;
++                std::uint32_t color = 0xff000000u;
++                for (unsigned shift = 0; shift < 24; shift += 8) {
++                    const float a = float((rgba[y0*w+x0] >> shift) & 255), b = float((rgba[y0*w+x1] >> shift) & 255);
++                    const float c = float((rgba[y1*w+x0] >> shift) & 255), d = float((rgba[y1*w+x1] >> shift) & 255);
++                    color |= unsigned(std::lround((a + (b-a)*fx)*(1-fy) + (c + (d-c)*fx)*fy)) << shift;
++                }
++                output[(y+top)*output_width+x+left] = color;
++            }
++        }
++        std::fprintf(stderr, "[capture] frame %llu: internal %ux%u -> output %ux%u, viewport %ux%u\n", (unsigned long long)g_frames, w, h, output_width, output_height, viewport_width, viewport_height);
++        rgba.swap(output); w = output_width; h = output_height;
++    }
+     char name[512];
+     std::snprintf(name, sizeof name, "%s/frame_%05llu.ppm", g_options.frames_dir.c_str(), static_cast<unsigned long long>(g_frames));
+     std::FILE *f = std::fopen(name, "wb");
+@@ -101,11 +129,21 @@ void dump_frame() {
+ }
+ 
+ void apply_presses() {
+-    if (g_options.presses.empty()) return;
++    if (g_options.presses.empty() && g_options.axes.empty()) return;
+     std::uint16_t mask = 0;
+     for (const Press &p : g_options.presses)
+         if (g_frames >= p.frame && g_frames < p.frame + p.frames) mask |= p.buttons;
+     iop::sio2::set_buttons(0, mask);
++    for (unsigned axis = 0; axis < 4; ++axis) {
++        bool configured = false;
++        std::uint8_t value = 0x80;
++        for (const AxisInput &a : g_options.axes) {
++            if (a.axis != axis) continue;
++            configured = true;
++            if (g_frames >= a.frame && g_frames - a.frame < a.frames) value = a.value;
++        }
++        if (configured) iop::sio2::set_axis(0, static_cast<int>(axis), value);
++    }
+ }
+ 
+ void time_frames() {
+@@ -126,6 +164,11 @@ void time_frames() {
+ 
+ void vblank() {
+     ++g_frames;
++    if (g_scene_aspect.load() > 0.0f && g_frames > g_scene_aspect_until) {
++        g_scene_aspect.store(0.0f);
++        if (g_options.on_scene_end) g_options.on_scene_end();
++        std::fprintf(stderr, "[presentation] scene override expired at frame %llu\n", (unsigned long long)g_frames);
++    }
+     time_frames();
+     apply_presses();
+     if (g_options.on_vblank) g_options.on_vblank();
+@@ -156,6 +199,18 @@ void idle(Cpu &c) {
+ 
+ }
+ 
++float presentation_aspect() {
++    const float scene = g_scene_aspect.load();
++    return scene > 0.0f ? scene : g_options.presentation_aspect;
++}
++
++void scene_aspect(float aspect) {
++    if (g_scene_aspect.load() != aspect)
++        std::fprintf(stderr, "[presentation] scene aspect %.6f at frame %llu\n", aspect, (unsigned long long)g_frames);
++    g_scene_aspect.store(aspect);
++    g_scene_aspect_until = g_frames + 2;
++}
++
+ void save_context(const Cpu &c, ThreadContext &t) {
+     std::memcpy(t.r, c.r, sizeof t.r);
+     t.hi = c.hi;
+diff --git a/scripts/gt3_scene.probes b/scripts/gt3_scene.probes
+new file mode 100644
+index 0000000..76c3aaa
+--- /dev/null
++++ b/scripts/gt3_scene.probes
+@@ -0,0 +1 @@
++17e888
+diff --git a/scripts/gt3_triple.py b/scripts/gt3_triple.py
+new file mode 100644
+index 0000000..cfe1129
+--- /dev/null
++++ b/scripts/gt3_triple.py
+@@ -0,0 +1,50 @@
++#!/usr/bin/env python3
++"""Verified GT3 v1.10 triple-width adaptation, applied BEFORE recompilation.
++Address leads: Silentwarior112, PCSX2-patches/Gran Turismo 3/USA PBPX-95503/8AA991B0.pnach.
++Names below describe verified instructions or candidate data roles, not recovered original symbols.
++Does not modify the ISO or input ELF. Refuses other executables.
++"""
++import argparse, hashlib, json, struct
++from pathlib import Path
++CORE_SHA256 = 'b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763'
++# (address, original word, replacement word, semantic name)
++CHANGES = [
++ (0x17e88c,0x10400007,0,'race_projection_skip_4_3_branch'),
++ (0x17e89c,0x3c013f40,0x3c013e80,'race_projection_horizontal_scale_0_25'),
++ (0x17e9ec,0x3c014348,0x3c014391,'mirror_rectangle_x_290'),
++ (0x17ea04,0x3c014370,0x3c014270,'mirror_rectangle_width_60'),
++ (0x193658,0x10600003,0,'hud_text_skip_4_3_branch'),
++ (0x193660,0x3c013f40,0x3c013e80,'hud_text_horizontal_scale_0_25'),
++ (0x18a950,0x3c013f40,0x3c013e80,'license_text_horizontal_scale_candidate'),
++ (0x22a190,0x3c013f40,0x3c013e80,'license_model_horizontal_scale_candidate'),
++ (0x21ed20,0x45010008,0x10000008,'visibility_branch_1_bypass'),
++ (0x21f9ac,0x45010002,0x10000002,'visibility_branch_2_bypass'),
++ (0x222278,0x4501000c,0x1000000c,'visibility_branch_3_bypass'),
++ (0x224238,0x45010002,0x10000002,'visibility_branch_4_bypass'),
++ (0x34fd04,0x3fb6d98c,0x3eb6d98c,'mirror_projection_scale'),
++ (0x34fd74,0xc2d55556,0xc46e0000,'hud_canvas_left_minus_952'),
++ (0x34fd78,0x443aaaaa,0x44c70000,'hud_canvas_right_1592'),
++ (0x34ffc8,0xc2d4dd70,0xc46e0000,'pause_canvas_left_minus_952'),
++ (0x34ffcc,0x443a9bae,0x44c70000,'pause_canvas_right_1592'),
++]
++def main():
++ p=argparse.ArgumentParser();p.add_argument('source');p.add_argument('output');p.add_argument('--manifest',required=True);a=p.parse_args()
++ source=Path(a.source);out=Path(a.output)
++ if source.resolve()==out.resolve():p.error('output must differ from source')
++ data=bytearray(source.read_bytes())
++ if hashlib.sha256(data).hexdigest()!=CORE_SHA256:p.error('unsupported core ELF SHA-256')
++ ph=struct.unpack_from('<I',data,28)[0];size,count=struct.unpack_from('<HH',data,42)
++ def offset(address):
++  for i in range(count):
++   kind,off,va,_,length,*_=struct.unpack_from('<8I',data,ph+i*size)
++   if kind==1 and va<=address and address+4<=va+length:return off+address-va
++  raise ValueError(f'unmapped {address:x}')
++ manifest=[]
++ for address,expected,value,name in CHANGES:
++  at=offset(address);actual=struct.unpack_from('<I',data,at)[0]
++  if actual!=expected:raise ValueError(f'{name}: expected {expected:08x}, got {actual:08x}')
++  struct.pack_into('<I',data,at,value)
++  manifest.append(dict(address=f'{address:08x}',expected=f'{expected:08x}',value=f'{value:08x}',name=name))
++ out.write_bytes(data);Path(a.manifest).write_text(json.dumps(dict(source_sha256=CORE_SHA256,output_sha256=hashlib.sha256(data).hexdigest(),aspect='16:3',patches=manifest),indent=2)+'\n')
++ print(f'Applied {len(manifest)} verified changes to separate output ELF')
++if __name__=='__main__':main()
+diff --git a/scripts/gt4_core.py b/scripts/gt4_core.py
+index c3ccb39..7814207 100644
+--- a/scripts/gt4_core.py
++++ b/scripts/gt4_core.py
+@@ -67,7 +67,7 @@ def elf(entry, segments):
+ 
+ 
+ def main():
+-    parser = argparse.ArgumentParser(description="Turn Gran Turismo 4's CORE.GT4 into an ELF the recompiler can read.")
++    parser = argparse.ArgumentParser(description="Turn Gran Turismo 3/4's CORE.GT3/CORE.GT4 into an ELF the recompiler can read.")
+     parser.add_argument('core')
+     parser.add_argument('output')
+     args = parser.parse_args()
+diff --git a/scripts/port.sh b/scripts/port.sh
+index 19920eb..2bad66b 100755
+--- a/scripts/port.sh
++++ b/scripts/port.sh
+@@ -86,10 +86,13 @@ echo "== [2/6] executable"
+ elf="$game/disc/$program"
+ if [ -f "$game/core.elf" ]; then
+   elf="$game/core.elf"
+-elif python3 -I "$here/disc.py" list "$iso" | awk '{print $4}' | grep -qx CORE.GT4; then
+-  python3 -I "$here/disc.py" extract "$iso" "$game/disc" CORE.GT4 > /dev/null
+-  python3 -I "$here/gt4_core.py" "$game/disc/CORE.GT4" "$game/core.elf" > /dev/null
+-  elf="$game/core.elf"
++else
++  core=$(python3 -I "$here/disc.py" list "$iso" | awk '$4 == "CORE.GT3" || $4 == "CORE.GT4" { print $4; exit }')
++  if [ -n "$core" ]; then
++    python3 -I "$here/disc.py" extract "$iso" "$game/disc" "$core" > /dev/null
++    python3 -I "$here/gt4_core.py" "$game/disc/$core" "$game/core.elf" > /dev/null
++    elf="$game/core.elf"
++  fi
+ fi
+ echo "${elf#$ROOT/}"
+ modules=()
+diff --git a/tests/anisotropic_test.cpp b/tests/anisotropic_test.cpp
+new file mode 100644
+index 0000000..da6cfcd
+--- /dev/null
++++ b/tests/anisotropic_test.cpp
+@@ -0,0 +1,26 @@
++#include "gs/gpu/gpu.hpp"
++#include <cstdio>
++#include <cstdlib>
++void require(bool ok, const char *what) { if (!ok) { std::fprintf(stderr,"FAIL: %s\n",what); std::exit(1); } }
++int main() {
++    using namespace ps2::gs;
++    setenv("PS2_SCALE","9",1); setenv("PS2_SCALE_Y","3",1);
++    require(gpu::init(gpu::Mode::primary),"GPU init");
++    std::vector<std::uint32_t> vram((kMemorySize/4)*27), clut;
++    for (unsigned k=0;k<27;++k) vram[k]=k*0x010305u;
++    gpu::write_state(vram,(9u<<16)|3u,clut);
++    std::vector<std::uint32_t> rgba; unsigned width=0,height=0;
++    gpu::DisplaySource source{0,1,0,0,0,1,1,false};
++    require(gpu::display(source,rgba,width,height),"display");
++    require(width==9 && height==3 && rgba.size()==27,"independent dimensions");
++    for (unsigned k=0;k<27;++k) require(rgba[k]==(0xff000000u|vram[k]),"independent x/y sample addressing");
++    unsigned scale=0; gpu::read_state(vram,scale,clut);
++    require(scale==((9u<<16)|3u) && vram.size()==(kMemorySize/4)*27,"anisotropic state round-trip");
++    vram.assign((kMemorySize/4)*9,0);
++    for(unsigned k=0;k<9;++k) vram[k]=k*0x010305u;
++    gpu::write_state(vram,3,clut);
++    require(gpu::display(source,rgba,width,height),"old isotropic state conversion");
++    for(unsigned y=0;y<3;++y) for(unsigned x=0;x<9;++x)
++        require(rgba[y*9+x]==(0xff000000u|vram[y*3+x/3]),"sample conversion preserves both axes");
++    std::puts("Anisotropic GPU samples and state conversion PASS");
++}
+diff --git a/tests/gt3_controls_test.cpp b/tests/gt3_controls_test.cpp
+new file mode 100644
+index 0000000..eb208da
+--- /dev/null
++++ b/tests/gt3_controls_test.cpp
+@@ -0,0 +1,110 @@
++#include "gt3_controls.hpp"
++#include "ps2/generated.hpp"
++#include "ps2/system.hpp"
++#include <array>
++#include <cstdio>
++#include <cstdlib>
++void register_generated_code();
++int main() {
++    register_generated_code();
++    unsigned checked = 0;
++    for (unsigned curve_kind : {0u, 1u}) {
++        std::array<std::uint8_t, 256> curve{};
++        for (unsigned i = 0; i < 256; ++i) {
++            curve[i] = curve_kind ? std::uint8_t(255-i) : std::uint8_t(i);
++            ps2::st8(0x003416f8u+i, curve[i]);
++        }
++        for (unsigned channel : {0u, 1u, 2u, 3u, 0x100u, 0x200u, 0x300u, 4u, 14u, 15u})
++            for (unsigned sensitivity : {20u, 35u, 65u, 90u, 100u})
++                for (unsigned raw = 0; raw < 256; ++raw) {
++                    ps2::Cpu cpu{};
++                    cpu.budget = 1000000;
++                    cpu.r[4].d[0] = channel; cpu.r[5].d[0] = raw; cpu.r[6].d[0] = sensitivity;
++                    cpu.r[31].d[0] = 0x01000000;
++                    cpu.pc = 0x00210f90;
++                    ps2::call(cpu, cpu.pc, 0);
++                    const unsigned expected = gt3::normalize_mapped_input(channel, raw, sensitivity, curve);
++                    if (cpu.r[2].w[0] != expected || cpu.pc != 0x01000000) {
++                        std::fprintf(stderr,"FAIL channel=%x raw=%u sensitivity=%u native=%u readable=%u pc=%x\n",channel,raw,sensitivity,cpu.r[2].w[0],expected,cpu.pc);
++                        return 1;
++                    }
++                    ++checked;
++                }
++    }
++    std::printf("GT3 control normalization differential PASS: %u cases\n", checked);
++
++    constexpr unsigned input_address = 0x00500000, mapping_address = 0x00600000;
++    constexpr unsigned output_address = 0x00610000, stack_address = 0x00700000;
++    constexpr std::array<std::int16_t, 14> codes{
++        -1, -32768, 0, 1, 2, 3, 0x100, 0x201, 0x302, 4, 14, 15, 0xff, 0x704};
++    std::array<std::uint32_t, 40> mapping{};
++    std::array<gt3::BindingRecord, 14> bindings{};
++    for (unsigned i = 0; i < mapping.size(); ++i) {
++        mapping[i] = (i * 3u + 1u) % bindings.size();
++        ps2::st32(mapping_address + i * 4u, mapping[i]);
++    }
++    unsigned actions_checked = 0;
++    for (unsigned curve_kind : {0u, 1u}) {
++        std::array<std::uint8_t, 256> curve{};
++        for (unsigned i = 0; i < curve.size(); ++i) {
++            curve[i] = curve_kind ? std::uint8_t((i * i + 17u) & 255u) : std::uint8_t(i);
++            ps2::st8(0x003416f8u + i, curve[i]);
++        }
++        for (unsigned scenario = 0; scenario < codes.size(); ++scenario) {
++            for (unsigned i = 0; i < bindings.size(); ++i) {
++                bindings[i] = {std::int16_t(0x1234), codes[(i + scenario) % codes.size()],
++                              codes[(i * 5u + scenario) % codes.size()]};
++                ps2::st16(0x002e2cf8u + i * 6u, std::uint16_t(bindings[i].unknown));
++                ps2::st16(0x002e2cfau + i * 6u, std::uint16_t(bindings[i].primary_channel));
++                ps2::st16(0x002e2cfcu + i * 6u, std::uint16_t(bindings[i].secondary_channel));
++            }
++            for (unsigned raw = 0; raw < 256; ++raw) {
++                std::array<std::uint32_t, 256> channels{};
++                for (unsigned i = 0; i < channels.size(); ++i) {
++                    // The normalization routine must ignore all but the low byte.
++                    channels[i] = 0xa5a50000u | ((raw + i * 13u) & 255u);
++                    ps2::st32(input_address + 0x38u + i * 4u, channels[i]);
++                }
++                for (unsigned bank : {0u, 1u}) for (unsigned variant : {0u, 1u})
++                    for (auto field : {gt3::MappingField::primary, gt3::MappingField::secondary}) {
++                        std::array<std::uint8_t, 16> output{};
++                        for (unsigned i = 0; i < 32; ++i) {
++                            const auto sentinel = std::uint8_t(0xa0u + i + (raw & 31u));
++                            ps2::st8(output_address + i, sentinel);
++                            if (i < output.size()) output[i] = sentinel;
++                        }
++                        gt3::fill_mapped_actions(channels, output, mapping.data(), bindings.data(),
++                                                bank, variant, field, curve);
++                        ps2::Cpu cpu{};
++                        cpu.budget = 1000000;
++                        cpu.r[4].d[0] = input_address;
++                        cpu.r[5].d[0] = output_address;
++                        cpu.r[6].d[0] = mapping_address;
++                        cpu.r[7].d[0] = bank;
++                        cpu.r[8].d[0] = variant; // EE fifth argument is t0, not the stack.
++                        cpu.r[29].d[0] = stack_address;
++                        cpu.r[31].d[0] = 0x01000000;
++                        cpu.pc = field == gt3::MappingField::primary ? 0x00211050 : 0x002111c0;
++                        const auto entry = cpu.pc;
++                        ps2::call(cpu, cpu.pc, 0);
++                        if (cpu.pc != 0x01000000 || cpu.r[29].w[0] != stack_address) {
++                            std::fprintf(stderr, "FAIL action return/stack entry=%x pc=%x\n", entry, cpu.pc);
++                            return 1;
++                        }
++                        for (unsigned i = 0; i < 32; ++i) {
++                            const auto expected = i < output.size() ? output[i] :
++                                std::uint8_t(0xa0u + i + (raw & 31u));
++                            if (ps2::ld8(output_address + i) != expected) {
++                                std::fprintf(stderr, "FAIL actions entry=%x curve=%u scenario=%u raw=%u bank=%u variant=%u byte=%u native=%u readable=%u\n",
++                                    entry, curve_kind, scenario, raw, bank, variant, i,
++                                    ps2::ld8(output_address + i), expected);
++                                return 1;
++                            }
++                        }
++                        ++actions_checked;
++                    }
++            }
++        }
++    }
++    std::printf("GT3 mapped actions differential PASS: %u cases (including lookup chain and output guards)\n", actions_checked);
++}
+diff --git a/tests/gt3_hardware.cpp b/tests/gt3_hardware.cpp
+new file mode 100644
+index 0000000..0ed8926
+--- /dev/null
++++ b/tests/gt3_hardware.cpp
+@@ -0,0 +1,65 @@
++#include "hw.hpp"
++#include "kernel.hpp"
++#include "ps2/system.hpp"
++#include "ps2/generated.hpp"
++#include "iop/hw.hpp"
++#include "iop/iop.hpp"
++#include "iop/sif.hpp"
++#include "ps2/memory.hpp"
++#include <cstdio>
++#include <cstdlib>
++
++void require(bool ok, const char *message) {
++    if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
++}
++int main() {
++    using namespace ps2;
++    hw::reset();
++    hw::intc_set_mask(2, true);
++    hw::intc_raise(2);
++    require(hw::intc_pending() == 4, "vblank interrupt pending");
++    hw::intc_ack(2);
++    require(hw::intc_pending() == 0, "delivered interrupt is not repeatedly dispatched");
++    require((hw::read32(0x1000F000) & 4) != 0, "hardware status remains visible to polling after HLE delivery");
++    hw::write32(0x1000F000, 4);
++    require((hw::read32(0x1000F000) & 4) == 0, "guest clears interrupt status by writing one");
++    hw::intc_raise(2);
++    require(hw::intc_pending() == 4, "next vblank is deliverable");
++    iop::hw::reset();
++    iop::hw::write(0x1F808410, 2, 4);
++    require((iop::hw::read(0x1F808410, 4) & 8) != 0, "i.Link serial clock ready");
++    iop::hw::write(0x1F808414, 0x400004A5, 4);
++    require((iop::hw::read(0x1F808414, 4) & 0x40000000) == 0, "PHY write completes");
++    iop::hw::write(0x1F808424, 0x40000000, 4);
++    iop::hw::set_interrupt_mask(24, true);
++    iop::hw::write(0x1F808414, 0x84000000, 4);
++    require((iop::hw::read(0x1F808414, 4) & 0x8000FFFF) == 0x04A5, "PHY read returns register and completes");
++    require(iop::hw::next_pending_interrupt() == 24, "PHY read delivers enabled i.Link interrupt");
++    iop::hw::write(0x1F808420, 0x40000000, 4);
++    require(iop::hw::read(0x1F808420, 4) == 0, "i.Link status is write-one-to-clear");
++    // Deliberately conflicting descriptors at RAM and scratchpad addresses.
++    // Reading scratchpad as a RAM alias would copy the wrong payload.
++    st32(0x70001000, 0x2000);
++    st32(0x70001004, 0x180000);
++    st32(0x70001008, 16);
++    st32(0x7000100C, 0);
++    st32(0x1000, 0x2100);
++    st32(0x1004, 0x180000);
++    st32(0x1008, 16);
++    st32(0x100C, 0);
++    for (unsigned i = 0; i < 16; ++i) {
++        st8(0x2000 + i, static_cast<unsigned char>(0xA0 + i));
++        st8(0x2100 + i, 0x55);
++    }
++    sif::set_dma(0x70001000, 1);
++    for (unsigned i = 0; i < 16; ++i)
++        require(iop::read8(0x180000 + i) == 0xA0 + i, "SIF descriptor is read from EE scratchpad, not a RAM alias");
++    kernel::reset();
++    kernel::start_main_thread(0x100000, 0, 0, 0);
++    g_cpu.pc = 0x100004;
++    g_cpu.r[3].w[0] = 0x24; // ExitDeleteThread: remove the only runnable thread.
++    kernel::handle_syscall(g_cpu, 0x100000);
++    require(kernel::current_thread() == 0, "last thread was deleted");
++    require((g_cpu.pc & ~kUnwind) == kIdle, "deleting the last runnable thread enters idle, not deleted guest code");
++    std::puts("GT3 hardware regressions PASS");
++}
+diff --git a/tests/run_gt3_hardware.sh b/tests/run_gt3_hardware.sh
+new file mode 100755
+index 0000000..8b566e5
+--- /dev/null
++++ b/tests/run_gt3_hardware.sh
+@@ -0,0 +1,9 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/native-gt3-usa-v110}"
++"${CXX:-clang++}" -std=c++20 -I"$root/runtime/include" -I"$root/runtime/src" \
++  "$root/tests/gt3_hardware.cpp" "$build/libps2runtime.a" \
++  "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm \
++  -o "$build/gt3_hardware_test"
++"$build/gt3_hardware_test"
+diff --git a/tests/run_resolution_tests.sh b/tests/run_resolution_tests.sh
+new file mode 100755
+index 0000000..b1593d2
+--- /dev/null
++++ b/tests/run_resolution_tests.sh
+@@ -0,0 +1,13 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/resolution-triple}"
++common=(-std=c++20 -O2 -I"$root/host" -I"$root/runtime/include" -I"$root/runtime/src")
++link=("$build/libps2runtime.a" "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm)
++"${CXX:-clang++}" "${common[@]}" "$root/tests/gt3_controls_test.cpp" "$build/libps2game.a" "${link[@]}" -o "$build/gt3_controls_test"
++"$build/gt3_controls_test"
++"${CXX:-clang++}" "${common[@]}" "$root/tests/gt3_steering_trace_test.cpp" "$build/libps2game.a" "${link[@]}" -o "$build/gt3_steering_trace_test"
++"$build/gt3_steering_trace_test" "$root/games/gt3-usa-v110/core.elf"
++"${CXX:-clang++}" "${common[@]}" "$root/tests/anisotropic_test.cpp" "${link[@]}" -o "$build/anisotropic_test"
++"$build/anisotropic_test"
++"$root/tests/run_gt3_hardware.sh" "$build"
+diff --git a/host/gt3_clean_steering.cpp b/host/gt3_clean_steering.cpp
+new file mode 100644
+index 0000000..36876ea
+--- /dev/null
++++ b/host/gt3_clean_steering.cpp
+@@ -0,0 +1,478 @@
++#include "gt3_clean_steering.hpp"
++#include "ps2/generated.hpp"
++#include <algorithm>
++#include <cstring>
++
++namespace gt3::clean {
++namespace {
++namespace fp = ps2::fp;
++thread_local ps2::Cpu *observation_cpu = nullptr;
++void store_state(unsigned address, const CarPartial &car);
++constexpr EeFloat zero = 0, one = 0x3f800000, fixed_scale = 0x39800000;
++bool less(EeFloat a, EeFloat b) { return fp::key(a) < fp::key(b); }
++bool le(EeFloat a, EeFloat b) { return fp::key(a) <= fp::key(b); }
++EeFloat neg(EeFloat x) { return x ^ fp::kSign; }
++EeFloat fixed(std::int16_t x) {
++    return fp::mul(fp::cvt_s_w(std::uint32_t(std::int32_t(x))), fixed_scale);
++}
++// Explicit wrapping reproduces EE 32-bit arithmetic, including out-of-report inputs.
++std::int32_t signed_word(std::uint32_t x) { return std::bit_cast<std::int32_t>(x); }
++int pedal(std::uint32_t raw, unsigned threshold) {
++    return std::min(signed_word((255u - raw - threshold) << 1), 256);
++}
++} // namespace
++std::int32_t normalize_mapped_channel(std::uint32_t channel, std::uint32_t raw,
++                                      std::int32_t sensitivity, const std::uint8_t *curve,
++                                      Cost &cost) {
++    if ((channel & 255) < 4) {
++        const int response = curve[raw & 255];
++        switch (channel & 0x300) {
++        case 0x100:
++            cost.add(23);
++            return std::max(0, (128 - response) * 2);
++        case 0x200:
++            cost.add(25);
++            return std::max(0, (response - 128) * 2);
++        default:
++            cost.add(20);
++            return response;
++        }
++    }
++    cost.add(21);
++    const int numerator = std::min(int((raw & 255) * 2), 256) * 100;
++    // EE DIV1 returns -1 for nonnegative numerator / zero. BREAK is handled by bridge.
++    return std::min(sensitivity ? numerator / sensitivity : -1, 256);
++}
++void build_wheel_command(const InputPartial &input, Command &command, Cost &cost) {
++    cost.add(13 + 2 + 8); // prologue + shipped digital getter + type decoding
++    const unsigned type = (input.type_bits >> 5) & 7;
++    if (type >= 4) {
++        cost.add(1 + 5);
++        return;
++    }
++    cost.add(2);
++    if (!type) {
++        cost.add(5);
++        return;
++    }
++    const auto mask = input.digital_mask;
++    // 0x00210EF8: digital actions clear analog bits, not the existing command wholesale.
++    for (unsigned i = 0; i < 4; ++i)
++        if (mask & (0x400u << i)) {
++            if (i == 0)
++                command.accelerator = 1;
++            if (i == 1)
++                command.brake = 1;
++            if (i == 2)
++                command.handbrake = 1;
++            if (i == 3)
++                command.auxiliary = 1;
++            command.analog_flags &= ~(i == 2 ? 16u : i == 3 ? 8u : 2u << i);
++            cost.add(4);
++        }
++    command.shift = mask & 0x8000 ? -1 : (mask >> 14) & 1;
++    cost.add(2 + 15 + (mask & 0x8000 ? 2 : 4));
++    const unsigned bank = (input.type_bits & 31) ? 16 : 0;
++    const auto raw = input.channels[bank];
++    const int q = signed_word((512u - raw) * 9u);
++    command.steering = std::clamp(q, -4096, 4096);
++    command.steering_mode = 4;
++    command.analog_flags |= 1;
++    cost.add(6 + 4 + 7 + 2 + 12 + 4);
++    const int accelerator = pedal(input.channels[bank + 1], 75);
++    cost.add(3 + 8 + 3);
++    if (accelerator > 0) {
++        command.accelerator = std::uint16_t(std::uint32_t(accelerator) << 4);
++        command.analog_flags |= 2;
++        cost.add(4);
++    }
++    cost.add(6 + 4);
++    const int brake = pedal(input.channels[bank + 2], 80);
++    cost.add(3 + 8 + 3);
++    if (brake > 0) {
++        command.brake = std::uint16_t(std::uint32_t(brake) << 4);
++        command.analog_flags |= 4;
++        cost.add(4);
++    }
++    cost.add(1 + 5);
++}
++EeFloat slew_limit(EeFloat current, EeFloat target, EeFloat step, Cost &cost) {
++    cost.add(4);
++    if (less(current, target)) {
++        current = fp::add(current, step);
++        cost.add(4 + 2);
++        if (less(target, current))
++            current = target;
++    } else {
++        cost.add(3);
++        if (less(target, current)) {
++            current = fp::sub(current, step);
++            cost.add(3 + 2);
++            if (less(current, target))
++                current = target;
++        }
++    }
++    cost.add(2);
++    return current;
++}
++void filter_stick(CarPartial &car, EeFloat target, EeFloat outward_rate, EeFloat return_rate,
++                  const Constants &k, Cost &cost) {
++    if (enabled)
++        ++counts.filters;
++    const auto old = car.steering;
++    auto acceleration =
++        fp::sub(fp::mul(fp::sub(target, old), k.spring), fp::mul(car.steering_rate, k.damping));
++    cost.add(15);
++    bool returning = false;
++    if (less(zero, old)) {
++        cost.add(4);
++        returning = less(target, old);
++    }
++    if (!returning) {
++        cost.add(4);
++        if (less(old, zero)) {
++            cost.add(4);
++            returning = less(old, target);
++        }
++    }
++    if (returning) {
++        outward_rate = return_rate;
++        acceleration = fp::sub(acceleration, fp::mul(old, k.return_spring));
++        cost.add(3);
++    }
++    // Positive/returning path reaches 43E0; nonnegative/nonreturning bypasses it.
++    if (returning || less(old, zero))
++        cost.add(1);
++    auto rate = fp::add(car.steering_rate, fp::mul(acceleration, car.dt));
++    cost.add(5);
++    if (less(outward_rate, rate)) {
++        rate = outward_rate;
++        cost.add(1);
++    } else {
++        cost.add(5);
++        if (less(rate, neg(outward_rate))) {
++            rate = neg(outward_rate);
++            cost.add(2);
++        }
++    }
++    const auto next = fp::add(old, fp::mul(rate, car.dt));
++    cost.add(4);
++    bool crossed = false;
++    if (le(old, target)) {
++        cost.add(4);
++        crossed = le(target, next);
++    }
++    if (!crossed) {
++        cost.add(4);
++        if (le(target, old)) {
++            cost.add(4);
++            crossed = le(next, target);
++            if (crossed)
++                cost.add(1);
++        }
++    }
++    cost.add(2);
++    car.steering = crossed ? target : next;
++    car.steering_rate = crossed ? zero : rate;
++}
++bool process_steering(CarPartial &car, const Command &command, std::uint8_t &kind, EeFloat high,
++                      EeFloat average, unsigned classification, const Constants &k, Cost &cost) {
++    cost.add(4);
++    bool extend = true;
++    if (command.steering_mode == 4) {
++        const int policy = car.wheel_policy;
++        cost.add(2 + 2 + 4); // call signed policy getter
++        EeFloat floor = high;
++        if (policy == 2) {
++            cost.add(2 + (classification == 1 ? 1 : 0));
++            floor = k.policy2[classification == 1];
++        } else {
++            cost.add(2);
++            if (policy < 3) {
++                cost.add(2);
++                if (policy != 1)
++                    cost.add(2);
++            } else {
++                cost.add(2);
++                if (policy == 3) {
++                    extend = false;
++                    cost.add(1);
++                } else {
++                    cost.add(2);
++                    extend = false;
++                    if (policy != 4) {
++                        extend = true;
++                        cost.add(2);
++                    }
++                }
++            }
++            if (policy == 1 || policy == 3) {
++                floor = k.policy1[classification == 1];
++                cost.add(2 + (classification == 1 ? 2 : 0));
++            }
++        }
++        if (policy == 1 || policy == 2 || policy == 3) {
++            cost.add(4);
++            if (less(high, floor)) {
++                high = floor;
++                cost.add(1);
++            } else
++                cost.add(2);
++        } else if (policy == 4)
++            cost.add(1);
++    } else
++        cost.add(1);
++    auto low = neg(high);
++    cost.add(2);
++    if (extend) {
++        cost.add(3);
++        bool outside = !le(low, average);
++        if (!outside) {
++            cost.add(3);
++            outside = !le(average, high);
++        }
++        if (!outside) {
++            car.envelope_ratio = zero;
++            cost.add(2 + 1);
++        } else {
++            cost.add(4);
++            if (less(zero, average)) {
++                high = average;
++                car.envelope_ratio = average;
++                cost.add(3 + 1);
++            } else {
++                cost.add(4);
++                if (less(average, zero)) {
++                    low = average;
++                    car.envelope_ratio = average;
++                    cost.add(2 + 1);
++                }
++            }
++        }
++    }
++    if (less(car.mechanical_limit, high))
++        high = car.mechanical_limit;
++    if (less(low, neg(car.mechanical_limit)))
++        low = neg(car.mechanical_limit);
++    car.unknown13a4 = one; // Assignment evidenced; field's larger purpose is not established.
++    cost.add(4 + 5 + 7);
++    const int q = command.steering;
++    if (!(command.analog_flags & 1)) {
++        kind = 1;
++        car.positive_limit = high;
++        car.negative_limit = low;
++        cost.add(7);
++        auto target = high;
++        if (q <= 0) {
++            cost.add(3);
++            target = q < 0 ? low : zero;
++            if (q == 0)
++                cost.add(2);
++        }
++        if (q != 0)
++            cost.add(1);
++        cost.add(10);
++        filter_stick(car, target, k.digital_outward[classification],
++                     k.digital_return[classification], k, cost);
++        cost.add(2);
++    } else {
++        cost.add(4);
++        if (command.steering_mode == 4) {
++            // Feed the independent, unchanged synthetic observer at its original semantic seams.
++            // These are observations of clean execution, not execution of skipped EE instructions.
++            if (observation_cpu) {
++                observation_cpu->f[20] = high;
++                observation_cpu->f[21] = low;
++                ps2::probe(*observation_cpu, 0x1e471c);
++            }
++            kind = 0;
++            car.previous_wheel_command = car.wheel_command;
++            car.wheel_command = q;
++            auto target = fixed(q);
++            const int policy = car.wheel_policy;
++            cost.add(12 + 2 + 3);
++            if (policy < 0) {
++                target = zero;
++                cost.add(1);
++            } else {
++                cost.add(2);
++                if (policy < 4) {
++                    const auto step = fp::mul(k.limit_slew, car.dt);
++                    cost.add(4);
++                    car.positive_limit = slew_limit(car.positive_limit, high, step, cost);
++                    cost.add(5);
++                    car.negative_limit = slew_limit(car.negative_limit, low, step, cost);
++                    cost.add(5 + 3);
++                    target = fp::mul(
++                        le(zero, target) ? car.positive_limit : neg(car.negative_limit), target);
++                } else {
++                    cost.add(2);
++                    if (policy == 4) {
++                        target = fp::mul(car.mechanical_limit, target);
++                        cost.add(2);
++                    } else {
++                        target = zero;
++                        cost.add(2 + 1);
++                    }
++                }
++            }
++            car.steering = target;
++            cost.add(2 + 1);
++            if (observation_cpu) {
++                store_state(observation_cpu->r[23].w[0], car);
++                ps2::st8(observation_cpu->r[19].w[0] + 3, kind);
++                ps2::probe(*observation_cpu, 0x1e48a0);
++            }
++        } else {
++            cost.add(4);
++            if (command.steering_mode == 2 || command.steering_mode == 3) {
++                car.positive_limit = high;
++                car.negative_limit = low;
++                auto target = fixed(q);
++                cost.add(13);
++                if (le(zero, target)) {
++                    target = fp::mul(high, target);
++                    cost.add(2);
++                } else {
++                    target = fp::mul(neg(low), target);
++                    cost.add(1);
++                }
++                cost.add(2);
++                if (q) {
++                    kind = command.steering_mode == 3 ? 1 : 2;
++                    cost.add(3 + (kind == 1 ? 1 : 0) + 1);
++                }
++                cost.add(4);
++                if (kind == 1) {
++                    cost.add(1 + 10);
++                    filter_stick(car, target, k.digital_outward[classification],
++                                 k.digital_return[classification], k, cost);
++                    cost.add(2);
++                } else {
++                    cost.add(7);
++                    filter_stick(car, target, k.analog_rate[classification],
++                                 k.analog_rate[classification], k, cost);
++                    cost.add(1);
++                }
++            }
++        }
++    }
++    bool invalid = false;
++    cost.add(5);
++    if (fp::key(car.envelope_ratio) != fp::key(zero)) {
++        const auto result = fp::div(car.steering, car.envelope_ratio);
++        invalid = result.invalid;
++        car.envelope_ratio = result.value;
++        cost.add(8 + 1);
++        if (less(car.envelope_ratio, zero)) {
++            car.envelope_ratio = zero;
++            cost.add(2);
++        } else {
++            cost.add(6);
++            if (less(one, car.envelope_ratio))
++                car.envelope_ratio = one;
++        }
++    }
++    return invalid;
++}
++bool profile_matches() {
++    return ps2::ld32(0x210f90) == 0x308300ff && ps2::ld32(0x1e4368) == 0xc4870ec0 &&
++           ps2::ld32(0x1e45a8) == 0x92510001 && ps2::ld32(0x1e48fc) == 0x24020001;
++}
++bool enabled = false;
++Counts counts;
++namespace {
++Constants constants(unsigned gp) {
++    Constants k{};
++    k.spring = ps2::ld32(gp - 20608);
++    k.damping = ps2::ld32(gp - 20604);
++    k.return_spring = ps2::ld32(gp - 20600);
++    k.limit_slew = ps2::ld32(gp - 20596);
++    for (unsigned i = 0; i < 2; ++i) {
++        k.policy1[i] = ps2::ld32(gp - 20592 + i * 4);
++        k.policy2[i] = ps2::ld32(gp - 20584 + i * 4);
++    }
++    for (unsigned i = 0; i < 3; ++i) {
++        k.digital_outward[i] = ps2::ld32(0x49d080 + i * 4);
++        k.digital_return[i] = ps2::ld32(0x49d090 + i * 4);
++        k.analog_rate[i] = ps2::ld32(0x49d0a0 + i * 4);
++    }
++    return k;
++}
++template <class T> T read(unsigned address) {
++    T result;
++    std::memcpy(&result, ps2::g_ram + address, sizeof(T));
++    return result;
++}
++void store_state(unsigned address, const CarPartial &car) {
++    // Only evidenced writes; never bulk-write opaque vehicle padding.
++    ps2::st32(address + 0x13a0, car.steering);
++    ps2::st32(address + 0x13a4, car.unknown13a4);
++    ps2::st32(address + 0x13a8, car.steering_rate);
++    ps2::st32(address + 0x1420, car.envelope_ratio);
++    ps2::st32(address + 0x142c, car.negative_limit);
++    ps2::st32(address + 0x1430, car.positive_limit);
++    ps2::st16(address + 0x16a4, car.wheel_command);
++    ps2::st16(address + 0x16a6, car.previous_wheel_command);
++}
++} // namespace
++bool replace(ps2::Cpu &cpu, std::uint32_t address) {
++    if (!enabled)
++        return false;
++    Cost cost;
++    if (address == 0x210f90) {
++        if (!cpu.r[6].d[0] && (cpu.r[4].w[0] & 255) >= 4)
++            ps2::breakpoint(cpu, 0x21102c);
++        ps2::set32(cpu.r[2], normalize_mapped_channel(cpu.r[4].w[0], cpu.r[5].w[0], cpu.r[6].sw[0],
++                                                      ps2::g_ram + 0x3416f8, cost));
++        ++counts.normalized;
++        cpu.pc = cpu.r[31].w[0];
++    } else if (address == 0x2115f8) {
++        if (cpu.r[4].w[0] > 0x2000000 - sizeof(InputPartial) ||
++            cpu.r[5].w[0] > 0x2000000 - sizeof(Command))
++            return false;
++        const auto input = read<InputPartial>(cpu.r[4].w[0]);
++        if (input.vtable != 0x33f7e0 || ps2::ld16(input.vtable + 0x28) ||
++            ps2::ld16(input.vtable + 0x40) || ps2::ld32(input.vtable + 0x2c) != 0x22dfa8 ||
++            ps2::ld32(input.vtable + 0x44) != 0x22e000)
++            return false;
++        auto command = read<Command>(cpu.r[5].w[0]);
++        build_wheel_command(input, command, cost);
++        std::memcpy(ps2::g_ram + cpu.r[5].w[0], &command, sizeof(command));
++        ++counts.wheel_commands;
++        cpu.pc = cpu.r[31].w[0];
++    } else if (address == 0x1e4368) {
++        const auto car_address = cpu.r[4].w[0];
++        if (car_address > 0x2000000 - sizeof(CarPartial))
++            return false;
++        auto car = read<CarPartial>(car_address);
++        filter_stick(car, cpu.f[12], cpu.f[13], cpu.f[14], constants(cpu.r[28].w[0]), cost);
++        ps2::st32(car_address + 0x13a0, car.steering);
++        ps2::st32(car_address + 0x13a8, car.steering_rate);
++        cpu.pc = cpu.r[31].w[0];
++    } else if (address == 0x1e45a8) {
++        const auto car_address = cpu.r[23].w[0];
++        if (car_address > 0x2000000 - sizeof(CarPartial) ||
++            cpu.r[18].w[0] > 0x2000000 - sizeof(Command) || cpu.r[19].w[0] > 0x2000000 - 4)
++            return false;
++        auto car = read<CarPartial>(car_address);
++        const auto command = read<Command>(cpu.r[18].w[0]);
++        auto kind = ps2::ld8(cpu.r[19].w[0] + 3);
++        if (cpu.r[21].w[0] > 2)
++            return false; // unevidenced classification/table indices stay generated
++        observation_cpu = &cpu;
++        if (process_steering(car, command, kind, cpu.f[0], cpu.f[22], cpu.r[21].w[0],
++                             constants(cpu.r[28].w[0]), cost))
++            cpu.fcr31 |= 0x30000;
++        observation_cpu = nullptr;
++        store_state(car_address, car);
++        ps2::st8(cpu.r[19].w[0] + 3, kind);
++        cpu.r[3].sd[0] = car.control_kind136d;
++        ++counts.envelopes;
++        cpu.pc = 0x1e48fc;
++    } else
++        return false;
++    cpu.budget -= cost.instructions;
++    return true;
++}
++} // namespace gt3::clean
+diff --git a/host/gt3_clean_steering.hpp b/host/gt3_clean_steering.hpp
+new file mode 100644
+index 0000000..66aa2db
+--- /dev/null
++++ b/host/gt3_clean_steering.hpp
+@@ -0,0 +1,83 @@
++#pragma once
++#include "ps2/cpu.hpp"
++#include <cstddef>
++#include <cstdint>
++
++// GT3 USA v1.10 only. Addresses and evidence ledger: docs/gt3-clean-steering.md.
++namespace gt3::clean {
++// Floating fields store EE bit patterns, not host arithmetic values.
++using EeFloat = std::uint32_t;
++struct Command {
++    std::uint8_t analog_flags, steering_mode;
++    std::int8_t shift;
++    std::uint8_t unknown03;
++    std::int16_t steering, opposing_pressure, accelerator, brake, auxiliary, handbrake;
++};
++struct InputPartial {
++    std::byte unknown00[0x14];
++    std::uint32_t type_bits;
++    std::byte unknown18[0x14];
++    std::uint32_t digital_mask;
++    std::byte unknown30[8];
++    std::uint32_t channels[32];
++    std::byte unknownb8[8];
++    std::uint32_t vtable;
++};
++struct CarPartial {
++    std::byte unknown00[0x68];
++    EeFloat mechanical_limit;
++    std::byte unknown6c[0xec0 - 0x6c];
++    EeFloat dt;
++    std::byte unknownec4[0x136d - 0xec4];
++    std::int8_t control_kind136d, unknown136e, wheel_policy;
++    std::byte unknown1370[0x13a0 - 0x1370];
++    EeFloat steering, unknown13a4, steering_rate;
++    std::byte unknown13ac[0x1420 - 0x13ac];
++    EeFloat envelope_ratio;
++    std::byte unknown1424[8];
++    EeFloat negative_limit, positive_limit;
++    std::byte unknown1434[0x16a4 - 0x1434];
++    std::int16_t wheel_command, previous_wheel_command;
++};
++static_assert(sizeof(Command) == 16 && offsetof(Command, steering) == 4 &&
++              offsetof(Command, accelerator) == 8);
++static_assert(offsetof(InputPartial, digital_mask) == 0x2c &&
++              offsetof(InputPartial, channels) == 0x38 && offsetof(InputPartial, vtable) == 0xc0);
++static_assert(offsetof(CarPartial, mechanical_limit) == 0x68 && offsetof(CarPartial, dt) == 0xec0);
++static_assert(offsetof(CarPartial, wheel_policy) == 0x136f &&
++              offsetof(CarPartial, steering) == 0x13a0);
++static_assert(offsetof(CarPartial, steering_rate) == 0x13a8 &&
++              offsetof(CarPartial, envelope_ratio) == 0x1420);
++static_assert(offsetof(CarPartial, negative_limit) == 0x142c &&
++              offsetof(CarPartial, positive_limit) == 0x1430);
++static_assert(offsetof(CarPartial, wheel_command) == 0x16a4 && sizeof(CarPartial) == 0x16a8);
++struct Constants {
++    EeFloat spring, damping, return_spring, limit_slew;
++    EeFloat policy1[2], policy2[2];
++    EeFloat digital_outward[3], digital_return[3], analog_rate[3];
++};
++struct Cost {
++    unsigned instructions = 0;
++    void add(unsigned n) { instructions += n; }
++};
++std::int32_t normalize_mapped_channel(std::uint32_t channel, std::uint32_t raw,
++                                      std::int32_t sensitivity, const std::uint8_t *curve,
++                                      Cost &cost);
++void build_wheel_command(const InputPartial &input, Command &command, Cost &cost);
++EeFloat slew_limit(EeFloat current, EeFloat target, EeFloat step, Cost &cost);
++void filter_stick(CarPartial &car, EeFloat target, EeFloat outward_rate, EeFloat return_rate,
++                  const Constants &constants, Cost &cost);
++// Original prefix supplies curve result, averaged wheel quantity and classification.
++// This is NOT a replacement for the pedal/control tail of 0x001E4478.
++bool process_steering(CarPartial &car, const Command &command, std::uint8_t &steering_kind,
++                      EeFloat curve_limit, EeFloat averaged_wheel_quantity, unsigned classification,
++                      const Constants &constants, Cost &cost);
++bool profile_matches();
++extern bool enabled;
++struct Counts {
++    std::uint64_t normalized = 0, wheel_commands = 0, filters = 0, envelopes = 0;
++};
++extern Counts counts;
++// Called only by the isolated generated copy. Returns false for unsupported input vtables.
++bool replace(ps2::Cpu &cpu, std::uint32_t address);
++} // namespace gt3::clean
+diff --git a/host/gt3_synthetic_wheel.cpp b/host/gt3_synthetic_wheel.cpp
+new file mode 100644
+index 0000000..e579297
+--- /dev/null
++++ b/host/gt3_synthetic_wheel.cpp
+@@ -0,0 +1,163 @@
++#include "gt3_synthetic_wheel.hpp"
++#include "ps2/memory.hpp"
++#include "ps2/system.hpp"
++#include <algorithm>
++#include <bit>
++#include <cerrno>
++#include <cmath>
++#include <cstdlib>
++#include <utility>
++
++namespace gt3::synthetic {
++namespace {
++bool ram(std::uint32_t address, unsigned size) {
++    return address && !(address & 3) && address <= ps2::kRamSize - size;
++}
++float f(std::uint32_t address) { return std::bit_cast<float>(ps2::ld32(address)); }
++float approach(float state, float target, float step) {
++    return state < target ? std::min(state + step, target) : std::max(state - step, target);
++}
++}
++bool parse_value(const char *text, double &value) {
++    if (!text || !*text) return false;
++    char *end = nullptr;
++    errno = 0;
++    const double parsed = std::strtod(text, &end);
++    if (errno || end == text || *end || !std::isfinite(parsed) || parsed < -1 || parsed > 1) return false;
++    value = parsed;
++    return true;
++}
++bool parse_event(const char *text, Event &event) {
++    if (!text || *text < '0' || *text > '9') return false;
++    char *end = nullptr;
++    errno = 0;
++    const auto frame = std::strtoull(text, &end, 10);
++    if (errno || end == text || *end != ':') return false;
++    double value;
++    if (!parse_value(end + 1, value)) return false;
++    event = {frame, value};
++    return true;
++}
++int axis_for_value(double value) {
++    if (!std::isfinite(value) || value < -1 || value > 1) return -1;
++    if (value == 1) return 0;
++    if (value == -1) return 1023;
++    return 512 - int(std::lround(value * (4096.0 / 9.0)));
++}
++bool profile_matches() {
++    // Unmodified steering instructions in original and triple GT3 v1.10.
++    // Full source/profile SHA-256 checks are additionally enforced by the build script.
++    for (const auto &word : std::array<std::array<unsigned, 2>, 8>{{
++             {0x2107ac, 0x0200202d}, {0x2107b0, 0x0c08457e},
++             {0x2107b8, 0x260400cc}, {0x2115f8, 0x27bdffc0},
++             {0x1e470c, 0x24020004}, {0x1e48a0, 0xc601049c},
++             {0x1e8910, 0x44800800}, {0x1e7328, 0x27bdffb0}}})
++        if (ps2::ld32(word[0]) != word[1]) return false;
++    return ps2::ld32(0x33f824) == 0x22e000 && ps2::ld32(0x33f808) == 0;
++}
++Experiment::Experiment(Options options) : options_(std::move(options)) {}
++Experiment::~Experiment() { if (trace_) std::fclose(trace_); }
++bool Experiment::open_trace() {
++    if (options_.trace_path.empty()) return true;
++    trace_ = std::fopen(options_.trace_path.c_str(), "wx"); // never overwrite existing evidence
++    if (!trace_) { std::perror("synthetic wheel trace"); return false; }
++    return true;
++}
++double Experiment::value_at(std::uint64_t frame) const {
++    double value = options_.value;
++    for (const auto &event : options_.events) {
++        if (event.frame > frame) break;
++        value = event.value;
++    }
++    return value;
++}
++void Experiment::record(const char *stage, std::uint32_t pc, std::uint64_t frame,
++                        double expected, double error) {
++    if (!trace_ || !player_car_) return;
++    std::fprintf(trace_,
++        "{\"stage\":\"%s\",\"pc\":%u,\"frame\":%llu,\"enabled\":%s,"
++        "\"car\":%u,\"input\":%u,\"host\":%.9g,\"axis\":%d,\"q\":%d,\"mode\":%u,\"flags\":%u,"
++        "\"policy\":%d,\"steering\":%.9g,\"high\":%.9g,\"low\":%.9g,\"mechanical\":%.9g,"
++        "\"rate\":%.9g,\"wheel0\":%.9g,\"wheel1\":%.9g,\"expected\":%.9g,\"error\":%.9g}\n",
++        stage, pc, static_cast<unsigned long long>(frame), options_.enabled ? "true" : "false",
++        player_car_, input_, value_, axis_, q_, mode_, flags_, policy_,
++        f(player_car_ + 0x13a0), f(player_car_ + 0x1430), f(player_car_ + 0x142c),
++        f(player_car_ + 0x68), f(player_car_ + 0x13a8),
++        f(player_car_ + 0xff0), f(player_car_ + 0x1094), expected, error);
++}
++void Experiment::probe(ps2::Cpu &c, std::uint32_t pc, std::uint64_t frame) {
++    if (pc == 0x1e4d38) {
++        const auto car = c.r[4].w[0];
++        context_car_ = ram(car, 0x1800) && ps2::ld8(car + 0x136d) == 0 &&
++            (!ps2::ld8(car + 0x14b8) || ps2::ld16(car + 0x14ba)) ? car : 0;
++    } else if (pc == 0x1e4d5c) {
++        context_car_ = 0; // input builder has returned; no stale scope in menus/other callers
++    } else if (pc == 0x2107ac) {
++        const auto input = c.r[16].w[0], command = c.r[17].w[0];
++        if (!context_car_ || !ram(input, 0x150) || !ram(command, 16) ||
++            ps2::ld32(context_car_ + 12) != input || ps2::ld32(input + 0xc0) != 0x33f7e0) return;
++        player_car_ = context_car_; input_ = input; command_ = command;
++        value_ = value_at(frame); axis_ = axis_for_value(value_);
++        if (options_.enabled) {
++            if (scoped_ || axis_ < 0) { ps2::halt("synthetic wheel invalid/nested scope"); return; }
++            channels_ = input + ((ps2::ld32(input + 0x14) & 31) ? 0x78 : 0x38);
++            saved_ = {ps2::ld32(input + 0x14), ps2::ld32(input + 0x2c),
++                      ps2::ld32(channels_), ps2::ld32(channels_ + 4), ps2::ld32(channels_ + 8)};
++            shift_ = ps2::ld8(command + 2);
++            ps2::st32(input + 0x14, (saved_[0] & ~0xe0u) | 0x20u);
++            ps2::st32(input + 0x2c, 0); // pad already built; don't reapply its digital actions
++            ps2::st32(channels_, axis_);
++            ps2::st32(channels_ + 4, 255); ps2::st32(channels_ + 8, 255); // no synthetic pedals
++            scoped_ = true;
++        }
++        record("input", pc, frame);
++    } else if (pc == 0x2107b8) {
++        if (c.r[16].w[0] != input_ || c.r[17].w[0] != command_) return;
++        if (scoped_) {
++            ps2::st32(input_ + 0x14, saved_[0]); ps2::st32(input_ + 0x2c, saved_[1]);
++            for (unsigned i = 0; i < 3; ++i) ps2::st32(channels_ + 4 * i, saved_[i + 2]);
++            ps2::st8(command_ + 2, shift_); // digital helper sets this even for a zero mask
++            scoped_ = false;
++        }
++        q_ = std::int16_t(ps2::ld16(command_ + 4));
++        mode_ = ps2::ld8(command_ + 1); flags_ = ps2::ld8(command_);
++        record("command", pc, frame);
++    } else if (pc == 0x1e4478 && c.r[4].w[0] == player_car_ && player_car_) {
++        const auto command = c.r[5].w[0];
++        if (!ram(command, 16)) return;
++        q_ = std::int16_t(ps2::ld16(command + 4)); mode_ = ps2::ld8(command + 1);
++        flags_ = ps2::ld8(command); policy_ = std::int8_t(ps2::ld8(player_car_ + 0x136f));
++        record("process", pc, frame);
++    } else if (pc == 0x1e471c && c.r[23].w[0] == player_car_ && player_car_) {
++        const float step = f(0x35297c) * f(player_car_ + 0xec0);
++        expected_high_ = f(player_car_ + 0x1430); expected_low_ = f(player_car_ + 0x142c);
++        rate_ = f(player_car_ + 0x13a8);
++        expected_ = 0;
++        if (policy_ >= 0 && policy_ < 4) {
++            expected_high_ = approach(expected_high_, std::bit_cast<float>(c.f[20]), step);
++            expected_low_ = approach(expected_low_, std::bit_cast<float>(c.f[21]), step);
++            expected_ = (q_ >= 0 ? expected_high_ : -expected_low_) * (float(q_) / 4096.0f);
++        } else if (policy_ == 4) expected_ = f(player_car_ + 0x68) * (float(q_) / 4096.0f);
++        record("mode4", pc, frame, expected_);
++    } else if (pc == 0x1e48a0 && c.r[23].w[0] == player_car_ && player_car_ && mode_ == 4 && (flags_ & 1)) {
++        const float error = std::max({std::abs(f(player_car_ + 0x13a0) - expected_),
++            std::abs(f(player_car_ + 0x1430) - expected_high_),
++            std::abs(f(player_car_ + 0x142c) - expected_low_),
++            std::abs(f(player_car_ + 0x13a8) - rate_)});
++        record("steering", pc, frame, expected_, error);
++    } else if (pc == 0x1e8910 && c.r[4].w[0] == player_car_ + 0x10 && player_car_) {
++        record("consume", pc, frame, f(player_car_ + 0x13a0),
++               std::abs(std::bit_cast<float>(c.f[12]) - f(player_car_ + 0x13a0)));
++    } else if (pc == 0x1e7328 && c.r[4].w[0] == player_car_ && player_car_) {
++        const float steering = f(player_car_ + 0x13a0);
++        float error = 0;
++        for (unsigned i = 0; i < 4; ++i) {
++            const float angle = (i < 2 ? steering * f(player_car_ + 0x120 +
++                4 * (steering < 0 ? 1 - i : i)) : 0) +
++                (i & 1 ? 1 : -1) * f(player_car_ + 0xe30 + 4 * (i >> 1));
++            error = std::max(error, std::abs(f(player_car_ + 0xff0 + i * 0xa4) - angle));
++        }
++        record("angles", pc, frame, steering, error);
++    }
++}
++}
+diff --git a/host/gt3_synthetic_wheel.hpp b/host/gt3_synthetic_wheel.hpp
+new file mode 100644
+index 0000000..b684d04
+--- /dev/null
++++ b/host/gt3_synthetic_wheel.hpp
+@@ -0,0 +1,49 @@
++#pragma once
++#include "ps2/cpu.hpp"
++#include <array>
++#include <cstdint>
++#include <cstdio>
++#include <string>
++#include <vector>
++
++namespace gt3::synthetic {
++struct Event { std::uint64_t frame; double value; };
++struct Options {
++    bool enabled = false;
++    double value = 0;
++    std::vector<Event> events; // strictly increasing guest-frame thresholds
++    std::string trace_path;   // optional; trace-only does not inject
++};
++bool parse_value(const char *text, double &value);
++bool parse_event(const char *text, Event &event);
++int axis_for_value(double value); // finite [-1,1]; positive means positive GT3 command
++bool profile_matches();
++
++// Experiment-local, EE-thread-only. No runtime dispatch or model replacement.
++class Experiment {
++public:
++    explicit Experiment(Options options);
++    ~Experiment();
++    Experiment(const Experiment &) = delete;
++    Experiment &operator=(const Experiment &) = delete;
++    bool open_trace();
++    void probe(ps2::Cpu &cpu, std::uint32_t pc, std::uint64_t frame);
++private:
++    Options options_;
++    FILE *trace_ = nullptr;
++    std::uint32_t context_car_ = 0, player_car_ = 0;
++    std::uint32_t input_ = 0, command_ = 0, channels_ = 0;
++    std::array<std::uint32_t, 5> saved_{};
++    std::uint8_t shift_ = 0;
++    bool scoped_ = false;
++    double value_ = 0;
++    int axis_ = 512, q_ = 0;
++    unsigned mode_ = 0, flags_ = 0;
++    int policy_ = 0;
++    float expected_ = 0, expected_high_ = 0, expected_low_ = 0;
++    float rate_ = 0;
++    double value_at(std::uint64_t frame) const;
++    void record(const char *stage, std::uint32_t pc, std::uint64_t frame,
++                double expected = 0, double error = 0);
++};
++}
+diff --git a/scripts/build_gt3_clean_steering.sh b/scripts/build_gt3_clean_steering.sh
+new file mode 100755
+index 0000000..61af228
+--- /dev/null
++++ b/scripts/build_gt3_clean_steering.sh
+@@ -0,0 +1,35 @@
++#!/usr/bin/env bash
++# Copy the preserved synthetic generated oracle, adding gates without altering it.
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++cd "$root"
++export PATH="/home/b/experiments/gt3-native-20261013/toolchain/bin:$PATH"
++build="$root/build/clean-steering"
++mkdir -p "$build/generated" "$build/tmp"
++export TMPDIR="$build/tmp"
++printf '%s\n' \
++ 'b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763  games/gt3-usa-v110/core.elf' \
++ '91c637e2a2b57d921f5309bda80dd3e0dacb21d3af32a28c9f98f1c4a6abb5f3  games/gt3-usa-v110/core-triple.elf' | sha256sum -c -
++if [[ ! -f "$build/preservation-before.sha256" ]]; then
++ sha256sum build/synthetic-wheel/ps2run build/synthetic-wheel/libps2game.a \
++  build/resolution-triple/ps2run games/gt3-usa-v110/core*.elf \
++  /home/b/experiments/gt3-native-20261013/validation/race-start.state > "$build/preservation-before.sha256"
++fi
++sha256sum -c "$build/preservation-before.sha256"
++python3 - "$root/build/synthetic-wheel/generated" "$build/generated" <<'PY'
++import pathlib,sys,shutil
++src,dst=map(pathlib.Path,sys.argv[1:])
++for p in src.iterdir():
++ if p.is_file(): shutil.copy2(p,dst/p.name)
++for name,sites in [('unit_0044.cpp', [('00210F90',None),('002115F8',None)]),
++                   ('unit_0039.cpp', [('001E4368',None),('001E45A8','001E48FC')])]:
++ p=dst/name;s=p.read_text();s='#include "gt3_clean_steering.hpp"\n'+s
++ for address,target in sites:
++  key='L_'+address+':\n';assert s.count(key)==1
++  action='goto L_'+target+';' if target else 'return;'
++  s=s.replace(key,key+f'    if (gt3::clean::replace(c, 0x{address}u)) {{ {action} }}\n')
++ p.write_text(s)
++PY
++cmake -S "$root" -B "$build" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ \
++ -DPS2_GENERATED="$build/generated" -DPS2_GT3_SYNTHETIC_WHEEL=ON -DPS2_GT3_CLEAN_STEERING=ON
++cmake --build "$build" --target ps2run -j 8
+diff --git a/scripts/build_gt3_synthetic_wheel.sh b/scripts/build_gt3_synthetic_wheel.sh
+new file mode 100755
+index 0000000..619d9f2
+--- /dev/null
++++ b/scripts/build_gt3_synthetic_wheel.sh
+@@ -0,0 +1,20 @@
++#!/usr/bin/env bash
++# Separate generated code/build; never regenerates or relinks the baseline.
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++cd "$root"
++export PATH="/home/b/experiments/gt3-native-20261013/toolchain/bin:$PATH"
++build="$root/build/synthetic-wheel"
++mkdir -p "$build/tmp"
++export TMPDIR="$build/tmp"
++printf '%s\n' \
++ 'b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763  games/gt3-usa-v110/core.elf' \
++ '91c637e2a2b57d921f5309bda80dd3e0dacb21d3af32a28c9f98f1c4a6abb5f3  games/gt3-usa-v110/core-triple.elf' | sha256sum -c -
++cmake -S "$root" -B "$build/tools" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++
++cmake --build "$build/tools" --target eerecomp vurecomp -j 8
++"$build/tools/eerecomp" games/gt3-usa-v110/core-triple.elf \
++ --entries games/gt3-usa-v110/entries.txt --probes scripts/gt3_wheel.probes --out "$build/generated"
++"$build/tools/vurecomp" games/gt3-usa-v110/vu1 "$build/generated"
++cmake -S "$root" -B "$build" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ \
++ -DPS2_GENERATED="$build/generated" -DPS2_GT3_SYNTHETIC_WHEEL=ON
++cmake --build "$build" --target ps2run -j 8
+diff --git a/scripts/gt3_wheel.probes b/scripts/gt3_wheel.probes
+new file mode 100644
+index 0000000..c53bb7e
+--- /dev/null
++++ b/scripts/gt3_wheel.probes
+@@ -0,0 +1,10 @@
++17e888
++1e4d38
++1e4d5c
++2107ac
++2107b8
++1e4478
++1e471c
++1e48a0
++1e8910
++1e7328
+diff --git a/scripts/play_gt3_clean_steering.sh b/scripts/play_gt3_clean_steering.sh
+new file mode 100755
+index 0000000..019d48d
+--- /dev/null
++++ b/scripts/play_gt3_clean_steering.sh
+@@ -0,0 +1,17 @@
++#!/usr/bin/env bash
++# Explicit clean-code experiment. Synthetic input is independently opt-in via its own flags.
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++for arg in "$@"; do
++ if [[ "$arg" == --memcard ]]; then echo 'This experiment always uses a disposable card.' >&2; exit 2; fi
++done
++sandbox="$(mktemp -d "$root/build/clean-steering/run-XXXXXX")"
++export PS2_ONE_THREAD=1
++export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
++export SDL_VIDEODRIVER="${SDL_VIDEODRIVER:-wayland}"
++cd "$root"
++echo "Clean-steering disposable run directory: $sandbox" >&2
++exec build/clean-steering/ps2run games/gt3-usa-v110/core-triple.elf \
++ --disc games/gt3-usa-v110/disc.iso --ntsc --window --gt3-triple --gt3-clean-steering \
++ --output-size 1920x360 --render-scale 3 --render-scale-y 1 \
++ --memcard "$sandbox/card.ps2" "$@"
+diff --git a/scripts/play_gt3_synthetic_wheel.sh b/scripts/play_gt3_synthetic_wheel.sh
+new file mode 100755
+index 0000000..050d7f7
+--- /dev/null
++++ b/scripts/play_gt3_synthetic_wheel.sh
+@@ -0,0 +1,17 @@
++#!/usr/bin/env bash
++# Explicit experiment launcher only. No production card, default launcher or display changes.
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++for arg in "$@"; do
++ if [[ "$arg" == --memcard ]]; then echo 'This experiment always uses a disposable card.' >&2; exit 2; fi
++done
++sandbox="$(mktemp -d "$root/build/synthetic-wheel/run-XXXXXX")"
++export PS2_ONE_THREAD=1
++export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
++export SDL_VIDEODRIVER="${SDL_VIDEODRIVER:-wayland}"
++cd "$root"
++echo "Synthetic-wheel disposable run directory: $sandbox" >&2
++exec build/synthetic-wheel/ps2run games/gt3-usa-v110/core-triple.elf \
++ --disc games/gt3-usa-v110/disc.iso --ntsc --window --gt3-triple \
++ --output-size 1920x360 --render-scale 3 --render-scale-y 1 \
++ --memcard "$sandbox/card.ps2" "$@"
+diff --git a/scripts/validate_gt3_clean_steering.py b/scripts/validate_gt3_clean_steering.py
+new file mode 100755
+index 0000000..339647c
+--- /dev/null
++++ b/scripts/validate_gt3_clean_steering.py
+@@ -0,0 +1,95 @@
++#!/usr/bin/env python3
++"""Reuse unchanged live synthetic validator with an isolated clean executable.
++Only enabled cases receive --gt3-clean-steering. Add a pad oracle comparison.
++All cards/captures/traces are disposable and --out must not exist.
++"""
++import importlib.util
++import json
++import os
++from pathlib import Path
++import re
++import subprocess
++import sys
++from types import SimpleNamespace
++
++ROOT = Path(__file__).resolve().parents[1]
++spec = importlib.util.spec_from_file_location('synthetic_validator', ROOT/'scripts/validate_gt3_synthetic_wheel.py')
++validator = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(validator)
++clean = ROOT/'build/clean-steering/ps2run'
++original = ROOT/'build/synthetic-wheel/ps2run'
++commands = {}
++
++def run(command, **kwargs):
++    tag = Path(command[command.index('--frames-dir')+1]).parent.name
++    if command[0] == str(original):
++        command[0] = str(clean)
++        if tag not in ('disabled','trace_only'):
++            command.append('--gt3-clean-steering')
++    commands[tag] = (command.copy(), kwargs.copy())
++    return subprocess.run(command, **kwargs)
++
++validator.subprocess = SimpleNamespace(run=run)
++validator.main()
++out = Path(sys.argv[sys.argv.index('--out')+1]).resolve()
++summary = json.loads((out/'summary.json').read_text())
++summary['generated_oracle_sha256'] = summary['experiment_sha256']
++summary['experiment_sha256'] = validator.digest(clean)
++summary['replacement_boundary'] = ['00210F90','002115F8 (shipped input vtable only)','001E4368','001E45A8..001E48FC']
++
++# Run the preserved generated executable again with identical inputs/settings.
++# This is a live generated-code oracle, separate from fixtures and reconstructed formulas.
++for tag, case in list(summary['cases'].items()):
++    if '--gt3-clean-steering' not in case['argv']: continue
++    directory = out/('oracle_'+tag)
++    directory.mkdir(); (directory/'shots').mkdir()
++    command = [s.replace(str(out/tag),str(directory)) for s in case['argv'] if s!='--gt3-clean-steering']
++    command[0] = str(original)
++    env = dict(commands[tag][1]['env'],PS2_DUMP=str(directory/'memory.bin'))
++    with (directory/'run.log').open('w') as log:
++        subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=log,timeout=90,check=True)
++    oracle_rows = [json.loads(s) for s in (directory/'trace.jsonl').read_text().splitlines()]
++    clean_rows = [json.loads(s) for s in (out/tag/'trace.jsonl').read_text().splitlines()]
++    assert clean_rows == oracle_rows, f'{tag}: live clean/original semantic traces differ'
++    captures = {p.name:validator.digest(p) for p in sorted((directory/'shots').glob('*.ppm'))}
++    assert captures == case['captures'], f'{tag}: clean/original captures differ'
++    car = next(r['car'] for r in clean_rows if r['stage']=='angles')
++    a = (out/tag/'memory.bin').read_bytes(); b = (directory/'memory.bin').read_bytes()
++    assert a[car:car+0x1800] == b[car:car+0x1800], f'{tag}: final vehicle differs'
++    case['generated_oracle'] = {'argv':command,'exact_trace_match':True,
++        'exact_capture_match':True,'exact_final_vehicle_match':True,
++        'memory_sha256':validator.digest(directory/'memory.bin'),'full_memory_match':a==b}
++
++# Clean pad path: exact per-frame semantic records and rendered captures against
++# the same new executable with its gates disabled. RAM stack scratch is not ABI state.
++command, kw = commands['trace_only']
++command = [s.replace(str(out/'trace_only'), str(out/'enabled_pad')) for s in command]
++command += ['--gt3-clean-steering']
++directory = out/'enabled_pad'
++directory.mkdir(); (directory/'shots').mkdir()
++kw['env'] = dict(kw['env'], PS2_DUMP=str(directory/'memory.bin'))
++with (directory/'run.log').open('w') as log:
++    subprocess.run(command,cwd=ROOT,env=kw['env'],stdout=log,stderr=log,timeout=90,check=True)
++rows = [json.loads(s) for s in (directory/'trace.jsonl').read_text().splitlines()]
++oracle = [json.loads(s) for s in (out/'trace_only/trace.jsonl').read_text().splitlines()]
++assert rows == oracle, 'clean pad semantic trace differs from generated oracle'
++shots = {p.name:validator.digest(p) for p in sorted((directory/'shots').glob('*.ppm'))}
++assert shots == summary['cases']['trace_only']['captures'], 'clean pad capture differs'
++car = next(r['car'] for r in rows if r['stage']=='angles')
++a = (directory/'memory.bin').read_bytes(); b = (out/'trace_only/memory.bin').read_bytes()
++assert a[car:car+0x1800] == b[car:car+0x1800], 'clean pad final vehicle bytes differ'
++summary['cases']['enabled_pad'] = {'argv':command,'records':len(rows),'captures':shots,
++    'exact_trace_match':True,'exact_final_vehicle_match':True,'full_memory_match':a==b,
++    'memory_sha256':validator.digest(directory/'memory.bin')}
++for tag, case in summary['cases'].items():
++    if '--gt3-clean-steering' not in case['argv']: continue
++    text = (out/tag/'run.log').read_text()
++    match = re.search(r'\[gt3-clean\] normalized=(\d+) wheel_commands=(\d+) filters=(\d+) envelopes=(\d+)',text)
++    assert match and int(match[4])>0, f'{tag}: no clean envelope execution'
++    values = dict(zip(['normalized','wheel_commands','filters','envelopes'],map(int,match.groups())))
++    assert values['wheel_commands']>0
++    if tag=='enabled_pad': assert values['filters']>0
++    case['clean_calls'] = values
++summary['evidence_note'] = 'mode4/steering seam records in clean cases are bridge observations; skipped generated instructions did not execute'
++(out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
++print('Clean pad: exact per-frame trace, captures and final vehicle bytes PASS')
+diff --git a/scripts/validate_gt3_synthetic_wheel.py b/scripts/validate_gt3_synthetic_wheel.py
+new file mode 100755
+index 0000000..eec389c
+--- /dev/null
++++ b/scripts/validate_gt3_synthetic_wheel.py
+@@ -0,0 +1,124 @@
++#!/usr/bin/env python3
++"""Opt-in live race continuation, not an EE fixture. Uses disposable cards only.
++The known race-start snapshot resumes at guest frame 4801. No source assets written.
++"""
++import argparse
++import hashlib
++import json
++import os
++from pathlib import Path
++import subprocess
++
++ROOT = Path(__file__).resolve().parents[1]
++
++def digest(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--snapshot', type=Path, required=True)
++    parser.add_argument('--out', type=Path, required=True, help='new experiment-only output directory')
++    parser.add_argument('--window', action='store_true', help='also show +0.5/-0.5 cases in native windows')
++    args = parser.parse_args()
++    snapshot = args.snapshot.resolve(strict=True)
++    out = args.out.resolve()
++    out.mkdir(parents=True, exist_ok=False)
++    env = dict(os.environ, PS2_ONE_THREAD='1', SDL_AUDIODRIVER='dummy')
++    if args.window:
++        env.setdefault('SDL_VIDEODRIVER', 'wayland')
++        env.setdefault('WAYLAND_DISPLAY', 'wayland-0')
++        env.setdefault('XDG_RUNTIME_DIR', f'/run/user/{os.getuid()}')
++    experiment = ROOT / 'build/synthetic-wheel/ps2run'
++    baseline = ROOT / 'build/resolution-triple/ps2run'
++    base = [str(ROOT / 'games/gt3-usa-v110/core-triple.elf'), '--disc',
++            str(ROOT / 'games/gt3-usa-v110/disc.iso'), '--ntsc', '--gt3-triple',
++            '--load-state', str(snapshot), '--frames', '5001', '--render-scale', '1',
++            '--render-scale-y', '1', '--output-size', '1280x240', '--frame-every', '100']
++    summary = {'snapshot': str(snapshot), 'snapshot_sha256': digest(snapshot),
++               'experiment_sha256': digest(experiment), 'baseline_sha256': digest(baseline), 'cases': {}}
++
++    def run(tag, extra, binary=experiment, window=False, trace=True):
++        directory = out / tag
++        directory.mkdir()
++        (directory / 'shots').mkdir()
++        command = [str(binary), *base, '--memcard', str(directory / 'card.ps2'),
++                   '--frames-dir', str(directory / 'shots'), *extra]
++        if trace:
++            command += ['--gt3-wheel-trace', str(directory / 'trace.jsonl')]
++        if window:
++            command += ['--window']
++        run_env = dict(env, PS2_DUMP=str(directory / 'memory.bin'))
++        with (directory / 'run.log').open('w') as log:
++            subprocess.run(command, cwd=ROOT, env=run_env, stdout=log, stderr=log, timeout=90, check=True)
++        text = (directory / 'run.log').read_text()
++        assert '[state] loaded frame 4801' in text and 'frame limit reached' in text, tag
++        frames = list((directory / 'shots').glob('*.ppm'))
++        assert frames, f'{tag}: no rendered race capture'
++        summary['cases'][tag] = {'argv': command, 'window': window,
++            'memory_sha256': digest(directory / 'memory.bin'),
++            'captures': {p.name: digest(p) for p in sorted(frames)}}
++        return [json.loads(line) for line in (directory / 'trace.jsonl').open()] if trace else []
++
++    def check(rows, value=None):
++        counts = {stage: sum(r['stage'] == stage for r in rows) for stage in
++                  ['input', 'command', 'process', 'mode4', 'steering', 'consume', 'angles']}
++        assert all(counts.values()), counts
++        assert counts['consume'] == 4 * counts['angles'], counts
++        assert counts['mode4'] == counts['steering'] == counts['angles'], counts
++        errors = [r['error'] for r in rows if r['stage'] in ['steering', 'consume', 'angles']]
++        assert max(errors) <= 2e-6, max(errors)
++        for row in rows:
++            if row['stage'] in ['command', 'process', 'mode4', 'steering']:
++                assert row['mode'] == 4 and row['flags'] & 1, row
++                axes = {-1: 1023, -0.5: 740, -0.25: 626, 0: 512, 0.25: 398, 0.5: 284, 1: 0}
++                assert row['axis'] == axes[row['host']], row
++                assert row['q'] == max(-4096, min(4096, (512 - row['axis']) * 9)), row
++            if row['stage'] == 'steering':
++                assert abs(row['steering'] - row['expected']) <= 2e-6, row
++                if value is not None:
++                    assert row['host'] == value, row
++                    assert row['steering'] * value > 0 if value else row['steering'] == 0, row
++        return {'counts': counts, 'max_reconstruction_error': max(errors),
++                'first_steering': next(r for r in rows if r['stage'] == 'steering'),
++                'last_angles': next(r for r in reversed(rows) if r['stage'] == 'angles')}
++
++    for value in [-1, -0.5, -0.25, 0, 0.25, 0.5, 1]:
++        tag = ('negative' if value < 0 else 'positive' if value > 0 else 'center') + str(abs(value))
++        rows = run(tag, ['--press', '4801:cross:1000', '--gt3-wheel', str(value)],
++                   window=args.window and abs(value) == 0.5)
++        summary['cases'][tag].update(check(rows, value))
++        print(tag, 'live mode4 -> steering -> wheel angles PASS')
++    rows = run('transition', ['--press', '4801:cross:1000', '--gt3-wheel', '0.5',
++                             '--gt3-wheel-at', '4881:0', '--gt3-wheel-at', '4941:-0.5'])
++    summary['cases']['transition'].update(check(rows))
++    for row in rows:
++        if row['stage'] == 'steering':
++            value = 0.5 if row['frame'] < 4881 else 0 if row['frame'] < 4941 else -0.5
++            assert row['host'] == value
++            assert row['steering'] * value > 0 if value else row['steering'] == 0
++    print('transition +0.5 -> center -> -0.5 PASS')
++    # Let the actual race accelerate straight first, then show a brief steering
++    # input at speed. These are full-game continuations, never direct car writes.
++    for sign in [1, -1]:
++        tag = 'moving_positive' if sign > 0 else 'moving_negative'
++        rows = run(tag, ['--frames', '5701', '--press', '4801:cross:2000',
++                         '--gt3-wheel', '0', '--gt3-wheel-at', f'5600:{sign * 0.5}'], window=args.window)
++        summary['cases'][tag].update(check(rows))
++        assert summary['cases'][tag]['last_angles']['steering'] * sign > 0
++        print(tag, 'accelerated live race and opposite-sign steering PASS')
++    run('baseline', ['--press', '4801:cross+left:1000'], binary=baseline, trace=False)
++    run('disabled', ['--press', '4801:cross+left:1000'], trace=False)
++    rows = run('trace_only', ['--press', '4801:cross+left:1000'])
++    assert not any(r['stage'] == 'mode4' for r in rows)
++    assert any(r['stage'] == 'process' and r['mode'] in (2, 3) for r in rows)
++    assert any(r['stage'] == 'angles' and abs(r['steering']) > 0 for r in rows)
++    reference = summary['cases']['baseline']
++    for tag in ['disabled', 'trace_only']:
++        assert summary['cases'][tag]['memory_sha256'] == reference['memory_sha256'], tag
++        assert summary['cases'][tag]['captures'] == reference['captures'], tag
++    print('disabled / trace-only: byte-identical RAM and captures to baseline with pad steering PASS')
++    assert digest(snapshot) == summary['snapshot_sha256'], 'snapshot changed'
++    (out / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
++
++if __name__ == '__main__':
++    main()
+diff --git a/tests/gt3_clean_steering_test.cpp b/tests/gt3_clean_steering_test.cpp
+new file mode 100644
+index 0000000..0eeb9d2
+--- /dev/null
++++ b/tests/gt3_clean_steering_test.cpp
+@@ -0,0 +1,168 @@
++#include "gt3_clean_steering.hpp"
++#define main unchanged_trace_main
++#include "gt3_steering_trace_test.cpp"
++#undef main
++#include <cstring>
++namespace {
++ps2::Cpu run(unsigned entry, unsigned a, unsigned b = 0, unsigned d = 0, unsigned f12 = 0,
++             unsigned f13 = 0, unsigned f14 = 0) {
++    ps2::Cpu c{};
++    c.budget = 1000000;
++    c.pc = entry;
++    c.r[4].d[0] = a;
++    c.r[5].d[0] = b;
++    c.r[6].d[0] = d;
++    c.r[28].d[0] = 0x3579f0;
++    c.r[29].d[0] = stack;
++    c.r[31].d[0] = 0x1000000;
++    c.f[12] = f12;
++    c.f[13] = f13;
++    c.f[14] = f14;
++    for (unsigned i = 16; i <= 23; ++i)
++        c.r[i].d[0] = 0xabc000 + i;
++    ps2::call(c, entry, 0);
++    if (c.pc != 0x1000000 || c.r[29].w[0] != stack)
++        std::abort();
++    for (unsigned i = 16; i <= 23; ++i)
++        if (c.r[i].d[0] != 0xabc000 + i)
++            std::abort();
++    return c;
++}
++unsigned random_word() {
++    static unsigned seed = 0x475433;
++    seed ^= seed << 13;
++    seed ^= seed >> 17;
++    seed ^= seed << 5;
++    return seed;
++}
++void compare(unsigned entry, unsigned case_id, const ps2::Cpu &oracle, const ps2::Cpu &replacement,
++             const void *expected, const void *actual, unsigned size) {
++    if (std::memcmp(expected, actual, size) || oracle.budget != replacement.budget) {
++        unsigned off = 0;
++        while (off < size &&
++               ((const unsigned char *)expected)[off] == ((const unsigned char *)actual)[off])
++            ++off;
++        std::fprintf(stderr,
++                     "FAIL clean entry=%x case=%u diff_offset=%x budget=%lld/%lld bytes=%x/%x\n",
++                     entry, case_id, off, (long long)oracle.budget, (long long)replacement.budget,
++                     off < size ? ((const unsigned char *)expected)[off] : 0,
++                     off < size ? ((const unsigned char *)actual)[off] : 0);
++        std::exit(1);
++    }
++}
++} // namespace
++int main(int argc, char **argv) {
++    if (argc != 2)
++        return 2;
++    register_generated_code();
++    unsigned entry;
++    if (!ps2::load_elf(argv[1], entry))
++        return 1;
++    if (!gt3::clean::profile_matches())
++        std::abort();
++    ps2::g_options.on_probe = [](ps2::Cpu &, unsigned) {};
++    unsigned checked = 0;
++    for (unsigned channel : {0u, 1u, 2u, 3u, 0x100u, 0x201u, 0x302u, 4u, 255u, 0xffffu})
++        for (int sensitivity : {-2147483647, -100, -1, 0, 1, 20, 35, 60, 65, 100, 2147483647})
++            for (unsigned raw = 0; raw < 256; ++raw) {
++                gt3::clean::enabled = false;
++                const auto original =
++                    run(0x210f90, channel, raw | 0xfeed0000, unsigned(sensitivity));
++                gt3::clean::enabled = true;
++                const auto clean = run(0x210f90, channel, raw | 0xfeed0000, unsigned(sensitivity));
++                compare(0x210f90, checked++, original, clean, &original.r[2], &clean.r[2], 8);
++            }
++    std::printf("Clean mapped normalization exact differential PASS: %u cases\n", checked);
++    checked = 0;
++    for (unsigned i = 0; i < 16384; ++i) {
++        clear(input, 0x150);
++        ps2::st32(input + 0xc0, 0x33f7e0);
++        ps2::st32(input + 0x14, ((i % 8) << 5) | ((i & 8) ? 8 : 0));
++        ps2::st32(input + 0x2c, random_word());
++        for (unsigned j = 0; j < 32; ++j)
++            ps2::st32(input + 0x38 + j * 4, random_word());
++        for (unsigned j = 0; j < 16; ++j)
++            ps2::st8(packet + j, random_word());
++        std::array<unsigned char, 16> before, expected, actual;
++        std::memcpy(before.data(), ps2::g_ram + packet, 16);
++        gt3::clean::enabled = false;
++        const auto original = run(0x2115f8, input, packet);
++        std::memcpy(expected.data(), ps2::g_ram + packet, 16);
++        std::memcpy(ps2::g_ram + packet, before.data(), 16);
++        gt3::clean::enabled = true;
++        const auto clean = run(0x2115f8, input, packet);
++        std::memcpy(actual.data(), ps2::g_ram + packet, 16);
++        compare(0x2115f8, checked++, original, clean, expected.data(), actual.data(), 16);
++    }
++    std::printf("Clean wheel command exact differential PASS: %u cases\n", checked);
++    const std::array<unsigned, 18> floats = {
++        0,          0x80000000, 1,          0x80000001, 0x3c888889, 0xbc888889,
++        0x3f000000, 0xbf000000, 0x3f800000, 0xbf800000, 0x41200000, 0xc1200000,
++        0x7f800000, 0xff800000, 0x7fc00000, 0xffc00000, 0x7f7fffff, 0xff7fffff};
++    checked = 0;
++    for (unsigned i = 0; i < 16000; ++i) {
++        clear(car, 0x1800);
++        ps2::st32(car + 0xec0, floats[random_word() % floats.size()]);
++        ps2::st32(car + 0x13a0, floats[random_word() % floats.size()]);
++        ps2::st32(car + 0x13a8, floats[random_word() % floats.size()]);
++        const unsigned target = floats[random_word() % floats.size()],
++                       out = floats[random_word() % floats.size()],
++                       ret = floats[random_word() % floats.size()];
++        std::array<unsigned char, 0x1800> before, expected;
++        std::memcpy(before.data(), ps2::g_ram + car, before.size());
++        gt3::clean::enabled = false;
++        const auto original = run(0x1e4368, car, 0, 0, target, out, ret);
++        std::memcpy(expected.data(), ps2::g_ram + car, expected.size());
++        std::memcpy(ps2::g_ram + car, before.data(), before.size());
++        gt3::clean::enabled = true;
++        const auto clean = run(0x1e4368, car, 0, 0, target, out, ret);
++        compare(0x1e4368, checked++, original, clean, expected.data(), ps2::g_ram + car,
++                expected.size());
++    }
++    std::printf("Clean stick filter exact differential PASS: %u cases\n", checked);
++    checked = 0;
++    for (unsigned i = 0; i < 20000; ++i) {
++        clear(car, 0x1800);
++        clear(race, 0xb800);
++        clear(packet, 16);
++        ps2::st32(car + 4, race);
++        ps2::st8(race + 0xb7ad, i % 3);
++        constexpr int policies[] = {-128, -1, 0, 1, 2, 3, 4, 5, 127};
++        ps2::st8(car + 0x136f, policies[(i / 256) % 9]);
++        ps2::st8(car + 0x1307, random_word() % 4);
++        for (unsigned curve = 0; curve < 3; ++curve) {
++            unsigned descriptor = car + 0x6c + curve * 0x3c, data = knots + curve * 16;
++            ps2::st16(descriptor, 2);
++            ps2::st32(descriptor + 4, data);
++            ps2::st32(descriptor + 8, data + 8);
++            store_float(data, 0);
++            store_float(data + 4, 100);
++            store_float(data + 8, .1f * (curve + 1));
++            store_float(data + 12, .1f * (curve + 1));
++        }
++        for (unsigned off :
++             {0x68u, 0xec0u, 0x105cu, 0x1100u, 0x13a0u, 0x13a8u, 0x1420u, 0x142cu, 0x1430u})
++            ps2::st32(car + off, floats[random_word() % floats.size()]);
++        ps2::st16(car + 0x16a4, random_word());
++        ps2::st16(car + 0x16a6, random_word());
++        ps2::st8(packet, random_word() & 1);
++        ps2::st8(packet + 1, i % 256);
++        ps2::st16(packet + 4, random_word());
++        std::array<unsigned char, 0x1800> before, expected;
++        std::memcpy(before.data(), ps2::g_ram + car, before.size());
++        gt3::clean::enabled = false;
++        const auto original = run(0x1e4478, car, packet, car + 0x1304);
++        std::memcpy(expected.data(), ps2::g_ram + car, expected.size());
++        std::memcpy(ps2::g_ram + car, before.data(), before.size());
++        gt3::clean::enabled = true;
++        const auto clean = run(0x1e4478, car, packet, car + 0x1304);
++        compare(0x1e4478, checked++, original, clean, expected.data(), ps2::g_ram + car,
++                expected.size());
++    }
++    std::printf("Clean steering envelope/full original tail exact differential PASS: %u cases\n",
++                checked);
++    gt3::clean::enabled = true;
++    wheel_commands();
++    wheel_driving();
++    return 0;
++}
+diff --git a/tests/gt3_pedal_discovery.cpp b/tests/gt3_pedal_discovery.cpp
+new file mode 100644
+index 0000000..685c4a2
+--- /dev/null
++++ b/tests/gt3_pedal_discovery.cpp
+@@ -0,0 +1,57 @@
++// Discovery fixture only: ORIGINAL generated calls, no replacement and no new input API.
++#include "ps2/generated.hpp"
++#include "ps2/system.hpp"
++#include <array>
++#include <bit>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++void register_generated_code();
++namespace {
++constexpr unsigned car=0x600000,input=0x501000,command=0x502000,race=0x700000,knots=0x710000;
++void f(unsigned a,float v) { ps2::st32(a,std::bit_cast<unsigned>(v)); }
++float get(unsigned a) { return std::bit_cast<float>(ps2::ld32(a)); }
++void call(unsigned entry,unsigned a,unsigned b=0) {
++    ps2::Cpu c{};c.pc=entry;c.budget=1000000;c.r[4].d[0]=a;c.r[5].d[0]=b;
++    c.r[28].d[0]=0x3579f0;c.r[29].d[0]=0x800000;c.r[31].d[0]=0x1000000;
++    ps2::call(c,entry,0);
++    if(c.pc!=0x1000000 || c.r[29].w[0]!=0x800000)std::abort();
++}
++}
++int main(int argc,char **argv) {
++    if(argc!=2)return 2;register_generated_code();unsigned entry;
++    if(!ps2::load_elf(argv[1],entry))return 1;
++    ps2::g_options.on_probe=[](ps2::Cpu &,unsigned){};
++    unsigned cases=0;
++    for(unsigned bank : {0u,16u}) for(unsigned raw : {0u,47u,48u,52u,53u,100u,174u,175u,179u,180u,255u}) {
++        std::memset(ps2::g_ram+car,0,0x1800);std::memset(ps2::g_ram+input,0,0x150);
++        std::memset(ps2::g_ram+race,0,0xb800);
++        ps2::st32(input+0xc0,0x33f7e0);ps2::st32(input+0x14,0x20|(bank?8:0));
++        ps2::st32(input+0x38+bank*4,512);ps2::st32(input+0x3c+bank*4,raw);ps2::st32(input+0x40+bank*4,raw);
++        call(0x1f4330,command);call(0x2115f8,input,command);
++        ps2::st32(car+4,race);f(car+0xec0,1.f/60);f(car+0x68,.5f);
++        for(unsigned i=0;i<3;++i) {
++            unsigned d=car+0x6c+i*0x3c,k=knots+i*16;
++            ps2::st16(d,2);ps2::st32(d+4,k);ps2::st32(d+8,k+8);
++            f(k,0);f(k+4,100);f(k+8,.5f);f(k+12,.5f);
++        }
++        // Identity response descriptors for an isolated synthetic state, NOT live calibration.
++        std::memset(ps2::g_ram+0x49d060,0,32);
++        call(0x1e4cb0,car,command);
++        if(ps2::ld32(car+0x1428)!=ps2::ld32(car+0x13ac))std::abort();
++        const unsigned brake=ps2::ld32(car+0x13b0);
++        for(unsigned i=0;i<4;++i)if(ps2::ld32(car+0x1074+i*0xa4)!=brake)std::abort();
++        f(car+0xe38,1);f(car+0xe3c,1);f(car+0xe40,1);
++        call(0x1e6ec8,car);
++        for(unsigned i=0;i<4;++i)if(ps2::ld32(car+0x1274+i*0x24)!=brake)std::abort();
++        // Neutral/free-engine branch: processed throttle -> original engine torque -> speed update.
++        ps2::st16(car+0x1d4,8000); // rev-limit configuration; zero would cut all torque
++        f(car+0x13cc,100);f(car+0x2bc,1);f(car+0x1434,1);f(car+0x1438,0);
++        call(0x1e7500,car);
++        const unsigned expected=ps2::fp::add(std::bit_cast<unsigned>(100.f),ps2::fp::mul(ps2::ld32(car+0x1428),ps2::ld32(car+0xec0)));
++        if(ps2::ld32(car+0x13cc)!=expected) { std::fprintf(stderr,"engine mismatch raw=%u actual=%08x expected=%08x\n",raw,ps2::ld32(car+0x13cc),expected); std::abort(); }
++        std::printf("{\"bank\":%u,\"raw\":%u,\"q_accelerator\":%d,\"q_brake\":%d,\"flags\":%u,\"throttle\":%.9g,\"brake\":%.9g,\"effective_throttle\":%.9g,\"wheel_brake\":%.9g,\"engine_rate\":%.9g}\n",bank,raw,(int)(short)ps2::ld16(command+8),(int)(short)ps2::ld16(command+10),ps2::ld8(command),get(car+0x13ac),get(car+0x13b0),get(car+0x1428),get(car+0x1274),get(car+0x13cc));
++        ++cases;
++    }
++    std::fprintf(stderr,"Original generated pedal discovery PASS: %u fixtures; no live pedal claim\n",cases);
++}
+diff --git a/tests/gt3_steering_trace_test.cpp b/tests/gt3_steering_trace_test.cpp
+new file mode 100644
+index 0000000..d22085a
+--- /dev/null
++++ b/tests/gt3_steering_trace_test.cpp
+@@ -0,0 +1,295 @@
++#include "gt3_controls.hpp"
++#include "ps2/generated.hpp"
++#include <array>
++#include "ps2/system.hpp"
++#include <algorithm>
++#include <bit>
++#include <cmath>
++#include <cstdio>
++#include <cstdlib>
++
++void register_generated_code();
++namespace {
++constexpr unsigned device = 0x00500000, input = 0x00501000, packet = 0x00502000;
++constexpr unsigned mapping = 0x00503000, car = 0x00600000, race = 0x00700000;
++constexpr unsigned knots = 0x00710000, stack = 0x00800000;
++void store_float(unsigned address, float value) { ps2::st32(address, std::bit_cast<unsigned>(value)); }
++float load_float(unsigned address) { return std::bit_cast<float>(ps2::ld32(address)); }
++void clear(unsigned address, unsigned size) {
++    for (unsigned i = 0; i < size; ++i) ps2::st8(address + i, 0);
++}
++void call(unsigned entry, unsigned a0, unsigned a1 = 0, unsigned a2 = 0,
++          unsigned a3 = 0, unsigned t0 = 0) {
++    ps2::Cpu cpu{};
++    cpu.budget = 1000000;
++    cpu.r[4].d[0] = a0; cpu.r[5].d[0] = a1; cpu.r[6].d[0] = a2;
++    cpu.r[7].d[0] = a3; cpu.r[8].d[0] = t0;
++    cpu.r[28].d[0] = 0x003579f0; // gp-0x5080 resolves to shipped constant 0x00352970.
++    cpu.r[29].d[0] = stack; cpu.r[31].d[0] = 0x01000000;
++    cpu.pc = entry;
++    ps2::call(cpu, entry, 0);
++    if (cpu.pc != 0x01000000 || cpu.r[29].w[0] != stack) {
++        std::fprintf(stderr, "FAIL steering trace return entry=%x pc=%x\n", entry, cpu.pc);
++        std::exit(1);
++    }
++}
++void near(unsigned address, float expected, unsigned raw, unsigned frame) {
++    const float actual = load_float(address);
++    if (!std::isfinite(actual) || std::abs(actual - expected) > 2e-6f) {
++        std::fprintf(stderr, "FAIL steering raw=%u frame=%u address=%x native=%.9g expected=%.9g\n",
++                     raw, frame, address, actual, expected);
++        std::exit(1);
++    }
++}
++// Exercise the real virtual calls, using the shipped input vtable rather
++// than substituting host hooks. Native getter 0x0022E000 resolves word channels.
++void wheel_commands() {
++    unsigned checked = 0;
++    // Device-state adapter: three recognized packed identifier pairs, plus
++    // an unrecognized pair. These are synthetic state objects, not USB reports.
++    for (const auto &id : std::array<std::array<unsigned, 2>, 4>{{
++             {0xc293046d, 1}, {0x000406f8, 2}, {0xc294046d, 3}, {0x12345678, 7}}}) {
++        for (unsigned axis : {0u, 512u, 1023u}) {
++            clear(device, 0x64); clear(input, 0x150);
++            ps2::st32(device, 1); ps2::st32(device + 0x58, id[0]);
++            ps2::st32(device + 0x24, axis);
++            ps2::st32(device + 0x3c, 255); ps2::st32(device + 0x40, 255);
++            call(0x00230d10, device, input);
++            if (ps2::ld32(input + 0x14) != id[1] * 32 ||
++                ps2::ld32(input + 0x38) != axis ||
++                ps2::ld32(input + 0x3c) != 255 || ps2::ld32(input + 0x40) != 255) {
++                std::fprintf(stderr, "FAIL wheel state adapter identifier=%x axis=%u\n", id[0], axis);
++                std::exit(1);
++            }
++            ++checked;
++        }
++    }
++    for (unsigned type = 0; type < 8; ++type) {
++        for (unsigned pad_type : {0u, 8u}) {
++            clear(input, 0x150);
++            ps2::st32(input + 0xc0, 0x0033f7e0);
++            ps2::st32(input + 0x14, (type << 5) | pad_type);
++            const unsigned base = pad_type ? 16 : 0;
++            for (unsigned axis = 0; axis < 1024; ++axis) {
++                // Both banks present, intentionally different to catch bank selection.
++                ps2::st32(input + 0x38, 1023 - axis);
++                ps2::st32(input + 0x78, 1023 - axis);
++                ps2::st32(input + 0x38 + base * 4, axis);
++                ps2::st32(input + 0x3c + base * 4, 255);
++                ps2::st32(input + 0x40 + base * 4, 255);
++                call(0x001f4330, packet);
++                ps2::st8(packet, 1); ps2::st8(packet + 1, 2);
++                ps2::st16(packet + 4, 1472); // a preceding stick command
++                call(0x002115f8, input, packet);
++                const bool enabled = type >= 1 && type <= 3;
++                const int expected = enabled ? gt3::wheel_steering_command(axis) : 1472;
++                if (int(std::int16_t(ps2::ld16(packet + 4))) != expected ||
++                    ps2::ld8(packet + 1) != (enabled ? 4u : 2u) || ps2::ld8(packet) != 1) {
++                    std::fprintf(stderr, "FAIL wheel command type=%u pad=%u axis=%u\n", type, pad_type, axis);
++                    std::exit(1);
++                }
++                ++checked;
++            }
++        }
++    }
++    // Pedal thresholds, analog precedence, digital fallbacks and no-write cases.
++    for (unsigned type : {1u, 2u, 3u}) for (unsigned pad_type : {0u, 8u}) {
++        clear(input, 0x150);
++        ps2::st32(input + 0xc0, 0x0033f7e0);
++        ps2::st32(input + 0x14, (type << 5) | pad_type);
++        const unsigned base = pad_type ? 16 : 0;
++        ps2::st32(input + 0x38 + base * 4, 512);
++        for (unsigned raw = 0; raw < 256; ++raw) for (unsigned buttons : {0u, 0xfc00u}) {
++            ps2::st32(input + 0x2c, buttons);
++            ps2::st32(input + 0x3c + base * 4, raw);
++            ps2::st32(input + 0x40 + base * 4, raw);
++            call(0x001f4330, packet);
++            ps2::st8(packet, 0x1e); // existing pad analog commands
++            ps2::st16(packet + 8, 777); ps2::st16(packet + 10, 999);
++            ps2::st16(packet + 12, 321); ps2::st16(packet + 14, 456);
++            call(0x002115f8, input, packet);
++            unsigned flags = buttons ? 1 : 0x1f;
++            for (unsigned pedal = 0; pedal < 2; ++pedal) {
++                const int value = gt3::wheel_pedal_input(raw, pedal ? 80 : 75);
++                const unsigned expected = value > 0 ? unsigned(value * 16) :
++                                          buttons ? 1 : pedal ? 999 : 777;
++                if (value > 0) flags |= 2u << pedal;
++                if (ps2::ld16(packet + 8 + pedal * 2) != expected) {
++                    std::fprintf(stderr, "FAIL wheel pedal=%u raw=%u buttons=%x\n", pedal, raw, buttons);
++                    std::exit(1);
++                }
++            }
++            if (ps2::ld8(packet) != flags || ps2::ld8(packet + 2) != (buttons ? 255u : 0u) ||
++                ps2::ld16(packet + 12) != (buttons ? 1u : 321u) ||
++                ps2::ld16(packet + 14) != (buttons ? 1u : 456u)) {
++                std::fprintf(stderr, "FAIL wheel digital fallback raw=%u buttons=%x\n", raw, buttons);
++                std::exit(1);
++            }
++            ++checked;
++        }
++    }
++    std::printf("GT3 wheel native virtual channels/override/pedals PASS: %u commands\n", checked);
++}
++void wheel_driving() {
++    constexpr float dt = 1.0f / 60.0f, mechanical_limit = 0.5f;
++    unsigned checked = 0;
++    for (int policy : {-1, 0, 1, 2, 3, 4, 5}) for (unsigned classification : {0u, 1u}) {
++        for (unsigned axis : {0u, 57u, 58u, 511u, 512u, 513u, 966u, 967u, 1023u}) {
++            clear(input, 0x150); clear(car, 0x1800); clear(race, 0xb800);
++            ps2::st32(input + 0xc0, 0x0033f7e0);
++            ps2::st32(input + 0x14, 0x20);
++            ps2::st32(input + 0x38, axis);
++            ps2::st32(input + 0x3c, 255); ps2::st32(input + 0x40, 255);
++            call(0x001f4330, packet);
++            call(0x002115f8, input, packet);
++            ps2::st32(car + 4, race);
++            // Race value 2 produces classification 1; race value 0 produces 0.
++            ps2::st8(race + 0xb7ad, classification ? 2 : 0);
++            ps2::st8(car + 0x136f, std::uint8_t(policy));
++            store_float(car + 0xec0, dt); store_float(car + 0x68, mechanical_limit);
++            // Distinct constant descriptors: stick=.45, wheel=.10, special=.30.
++            for (unsigned curve = 0; curve < 3; ++curve) {
++                const unsigned descriptor = car + 0x6c + curve * 0x3c;
++                const unsigned data = knots + curve * 16;
++                const float limit = curve == 0 ? 0.45f : curve == 1 ? 0.10f : 0.30f;
++                ps2::st16(descriptor, 2);
++                ps2::st32(descriptor + 4, data); ps2::st32(descriptor + 8, data + 8);
++                store_float(data, 0); store_float(data + 4, 100);
++                store_float(data + 8, limit); store_float(data + 12, limit);
++            }
++            // Nonzero mean tests policy-dependent envelope widening.
++            store_float(car + 0x105c, 0.4f); store_float(car + 0x1100, 0.4f);
++            store_float(car + 0x1430, 0.45f); store_float(car + 0x142c, -0.45f);
++            store_float(car + 0x13a0, -0.2f); store_float(car + 0x13a8, 7.0f);
++            ps2::st16(car + 0x16a4, 123);
++            store_float(car + 0x120, 1); store_float(car + 0x124, 0.75f);
++            store_float(car + 0xe30, 0); store_float(car + 0xe34, 0.02f);
++            float high = classification ? 0.30f : 0.10f;
++            if (policy == 1 || policy == 3)
++                high = std::max(high, load_float(classification ? 0x00352984 : 0x00352980));
++            else if (policy == 2)
++                high = std::max(high, load_float(classification ? 0x0035298c : 0x00352988));
++            float low = -high;
++            if (policy != 3 && policy != 4) high = std::max(high, 0.4f);
++            high = std::min(high, mechanical_limit); low = std::max(low, -mechanical_limit);
++            float high_state = 0.45f, low_state = -0.45f;
++            const float step = load_float(0x0035297c) * dt;
++            const int fixed = gt3::wheel_steering_command(axis);
++            auto approach = [step](float state, float target) {
++                return state < target ? std::min(state + step, target) : std::max(state - step, target);
++            };
++            for (unsigned frame = 1; frame <= 60; ++frame) {
++                call(0x001e4478, car, packet, car + 0x1304);
++                float steering = 0;
++                if (policy >= 0 && policy < 4) {
++                    high_state = approach(high_state, high); low_state = approach(low_state, low);
++                    steering = (fixed >= 0 ? high_state : -low_state) * (float(fixed) / 4096.0f);
++                } else if (policy == 4) steering = mechanical_limit * (float(fixed) / 4096.0f);
++                near(car + 0x13a0, steering, axis, frame);
++                near(car + 0x13a8, 7, axis, frame); // no call to the stick filter
++                near(car + 0x1430, high_state, axis, frame);
++                near(car + 0x142c, low_state, axis, frame);
++                if (ps2::ld8(car + 0x1307) != 0 ||
++                    ps2::ld16(car + 0x16a4) != std::uint16_t(fixed) ||
++                    ps2::ld16(car + 0x16a6) != (frame == 1 ? 123u : std::uint16_t(fixed))) {
++                    std::fprintf(stderr, "FAIL wheel policy=%d history/state frame=%u\n", policy, frame);
++                    std::exit(1);
++                }
++                call(0x001e8978, car);
++                near(car + 0xff0, steering * (steering < 0 ? 0.75f : 1.0f), axis, frame);
++                near(car + 0x1094, steering * (steering < 0 ? 1.0f : 0.75f), axis, frame);
++                near(car + 0x1138, -0.02f, axis, frame); near(car + 0x11dc, 0.02f, axis, frame);
++                ++checked;
++            }
++        }
++    }
++    std::printf("GT3 wheel mode-4 -> shared steering float -> wheel angles PASS: %u frames\n", checked);
++}
++}
++int main(int argc, char **argv) {
++    if (argc != 2) { std::fprintf(stderr, "usage: %s core.elf\n", argv[0]); return 1; }
++    register_generated_code();
++    unsigned entry;
++    // Loads original tables/constants, but does not boot or execute the ELF entry.
++    if (!ps2::load_elf(argv[1], entry)) return 1;
++    constexpr float dt = 1.0f / 60.0f, limit = 0.5f, rate_limit = 10.0f;
++    clear(mapping, 0xa0);
++    ps2::st32(mapping + 0x50, 1); // bank 1, variant 0, action 0 -> shipped record 1 -> channel 2.
++    if (ps2::ld16(0x002e2cfau + 6) != 2 ||
++        load_float(0x00352970) != 100.0f || load_float(0x00352974) != 5.0f ||
++        load_float(0x00352978) != 50.0f) {
++        std::fprintf(stderr, "FAIL unexpected steering constants/binding in supplied ELF\n");
++        return 1;
++    }
++    unsigned checked = 0;
++    for (unsigned raw = 0; raw < 256; ++raw) {
++        clear(device, 0x40); clear(input, 0x150); clear(car, 0x1800);
++        clear(race, 0xb800); clear(packet, 16);
++        ps2::st32(device, 1);
++        ps2::st8(device + 0xc, 0x79); // DualShock 2 pressure-mode packet ID.
++        ps2::st32(device + 0x10, 8);
++        ps2::st8(device + 0x14, 0); ps2::st8(device + 0x15, 0x79);
++        ps2::st8(device + 0x16, 0xff); ps2::st8(device + 0x17, 0xff); // no buttons
++        for (unsigned i = 0; i < 4; ++i) ps2::st8(device + 0x18 + i, 128);
++        ps2::st8(device + 0x1a, raw); // packet +6: left-stick X
++        call(0x0022fc30, device, input);
++        if (ps2::ld32(input + 0x40) != raw || (ps2::ld32(input + 0x14) & 31) != 8) {
++            std::fprintf(stderr, "FAIL pad decode raw=%u channel2=%u type=%u\n", raw,
++                         ps2::ld32(input + 0x40), ps2::ld32(input + 0x14));
++            return 1;
++        }
++        call(0x001f4330, packet);
++        // Type-8 dispatcher order: pressure D-pad first, mapped stick only if steering is zero.
++        call(0x00210da8, input, packet);
++        call(0x00210e68, input, packet, mapping, 1, 0);
++        const int fixed = (256 - 2 * int(ps2::ld8(0x003416f8u + raw))) * 16;
++        if (ps2::ld16(packet + 4) != std::uint16_t(fixed) ||
++            ps2::ld8(packet) != 1 || ps2::ld8(packet + 1) != 2) {
++            std::fprintf(stderr, "FAIL steering command raw=%u fixed=%d native=%d flags=%u mode=%u\n",
++                         raw, fixed, int(std::int16_t(ps2::ld16(packet + 4))),
++                         ps2::ld8(packet), ps2::ld8(packet + 1));
++            return 1;
++        }
++
++        ps2::st32(car + 4, race);
++        store_float(car + 0xec0, dt);
++        store_float(car + 0x68, limit);
++        ps2::st16(car + 0x6c, 2); // synthetic speed->steering-limit curve, constant 0.5
++        ps2::st32(car + 0x70, knots); ps2::st32(car + 0x74, knots + 8);
++        store_float(knots, 0); store_float(knots + 4, 100);
++        store_float(knots + 8, limit); store_float(knots + 12, limit);
++        store_float(0x0049d0a0, rate_limit); // synthetic runtime rate limit for selected class 0
++        store_float(car + 0x120, 1.0f); store_float(car + 0x124, 0.75f);
++        store_float(car + 0xe30, 0); store_float(car + 0xe34, 0.02f); // front/rear alignment
++        float steering = 0, velocity = 0;
++        const float target = limit * (float(fixed) / 4096.0f);
++        for (unsigned frame = 1; frame <= 60; ++frame) {
++            call(0x001e4478, car, packet, car + 0x1304);
++            float acceleration = (target - steering) * 100.0f - velocity * 5.0f;
++            if ((steering > 0 && target < steering) || (steering < 0 && target > steering))
++                acceleration -= steering * 50.0f;
++            velocity = std::clamp(velocity + acceleration * dt, -rate_limit, rate_limit);
++            const float next = steering + velocity * dt;
++            if ((steering <= target && target <= next) || (target <= steering && next <= target)) {
++                steering = target; velocity = 0;
++            } else steering = next;
++            near(car + 0x13a0, steering, raw, frame);
++            near(car + 0x13a8, velocity, raw, frame);
++            call(0x001e8978, car);
++            const float c0 = steering < 0 ? 0.75f : 1.0f;
++            const float c1 = steering < 0 ? 1.0f : 0.75f;
++            near(car + 0xff0, steering * c0, raw, frame);
++            near(car + 0x1094, steering * c1, raw, frame);
++            near(car + 0x1138, -0.02f, raw, frame);
++            near(car + 0x11dc, 0.02f, raw, frame);
++            ++checked;
++            if (raw == 64 && (frame == 1 || frame == 60))
++                std::printf("Steering fixture raw=64 curved=%u fixed=%d target=%.9g frame=%u steering=%.9g front=(%.9g,%.9g)\n",
++                    ps2::ld8(0x003416f8u + raw), fixed, target, frame,
++                    load_float(car + 0x13a0), load_float(car + 0xff0), load_float(car + 0x1094));
++        }
++    }
++    std::printf("GT3 steering controller-state -> processing -> wheel-angle trace PASS: %u frames\n", checked);
++    wheel_commands();
++    wheel_driving();
++}
+diff --git a/tests/gt3_synthetic_wheel_test.cpp b/tests/gt3_synthetic_wheel_test.cpp
+new file mode 100644
+index 0000000..92df0c4
+--- /dev/null
++++ b/tests/gt3_synthetic_wheel_test.cpp
+@@ -0,0 +1,112 @@
++#include "gt3_synthetic_wheel.hpp"
++#include "gt3_controls.hpp"
++#include "ps2/generated.hpp"
++#include "ps2/system.hpp"
++#include <bit>
++#include <cmath>
++#include <cstdio>
++#include <cstdlib>
++#include <limits>
++void register_generated_code();
++namespace {
++constexpr unsigned car = 0x600000, input = 0x501000, command = 0x502000;
++void require(bool ok, const char *what) { if (!ok) { std::fprintf(stderr, "FAIL synthetic wheel: %s\n", what); std::exit(1); } }
++void clear(unsigned at, unsigned n) { for (unsigned i = 0; i < n; ++i) ps2::st8(at + i, 0); }
++void sf(unsigned at, float v) { ps2::st32(at, std::bit_cast<unsigned>(v)); }
++float lf(unsigned at) { return std::bit_cast<float>(ps2::ld32(at)); }
++void guest_call(ps2::Cpu &c, unsigned pc, unsigned a0, unsigned a1 = 0, unsigned a2 = 0) {
++    c.r[4].d[0] = a0; c.r[5].d[0] = a1; c.r[6].d[0] = a2;
++    c.r[28].d[0] = 0x3579f0; c.r[29].d[0] = 0x800000; c.r[31].d[0] = 0x1000000;
++    c.budget = 1000000;
++    ps2::call(c, pc, 0);
++    require(c.pc == 0x1000000 && c.r[29].w[0] == 0x800000, "generated return/stack");
++}
++}
++int main(int argc, char **argv) {
++    require(argc == 2, "requires original core.elf");
++    using namespace gt3::synthetic;
++    double parsed;
++    for (auto s : {"-1", "-0.5", "-0.25", "0", "+0.25", "+0.5", "+1"}) require(parse_value(s, parsed), "valid value");
++    for (auto s : {"", "nan", "inf", "-inf", "1.01", "-1.01", "0.5junk", "1e9999"}) require(!parse_value(s, parsed), "invalid value rejected");
++    Event event;
++    require(parse_event("5000:+0.5", event) && event.frame == 5000 && event.value == 0.5, "scheduled value");
++    for (auto s : {"-1:0", "1:", "x:0", "1:nan", "1:2", "18446744073709551616:0"}) require(!parse_event(s, event), "invalid event rejected");
++    require(axis_for_value(std::numeric_limits<double>::quiet_NaN()) == -1 && axis_for_value(2) == -1, "adapter rejects invalid domain");
++    for (int i = -4096; i <= 4096; ++i) {
++        const double v = i / 4096.0;
++        const int axis = axis_for_value(v), q = gt3::wheel_steering_command(axis);
++        require(axis >= 0 && axis <= 1023 && std::abs(q / 4096.0 - v) <= 4.5 / 4096.0, "quantization bound");
++    }
++    register_generated_code();
++    unsigned entry;
++    require(ps2::load_elf(argv[1], entry) && profile_matches(), "ELF steering profile");
++    const unsigned saved_opcode = ps2::ld32(0x2107b0);
++    ps2::st32(0x2107b0, 0); require(!profile_matches(), "wrong profile rejected"); ps2::st32(0x2107b0, saved_opcode);
++    unsigned checked = 0;
++    for (double value : {-1.0, -0.5, -0.25, 0.0, 0.25, 0.5, 1.0})
++        for (unsigned pad : {0u, 8u}) for (unsigned mask : {0u, 0x400u, 0xfc00u}) {
++            clear(car, 0x1800); clear(input, 0x150);
++            ps2::st32(car + 12, input); ps2::st32(input + 0xc0, 0x33f7e0);
++            ps2::st32(input + 0x14, 0x100 | pad); ps2::st32(input + 0x2c, mask);
++            for (unsigned i = 0; i < 32; ++i) ps2::st32(input + 0x38 + i * 4, 0xa50000 + i);
++            std::array<unsigned char, 0x150> before_input{};
++            std::array<unsigned char, 16> before_command{};
++            for (unsigned i = 0; i < before_input.size(); ++i) before_input[i] = ps2::ld8(input + i);
++            for (unsigned i = 0; i < 16; ++i) ps2::st8(command + i, before_command[i] = 0x20 + i);
++            Options options; options.enabled = true; options.value = value;
++            Experiment experiment(options);
++            ps2::g_options.on_probe = [&](ps2::Cpu &cpu, unsigned pc) { experiment.probe(cpu, pc, 10); };
++            ps2::Cpu c{}; c.r[4].d[0] = car;
++            experiment.probe(c, 0x1e4d38, 10);
++            c.r[16].d[0] = input; c.r[17].d[0] = command;
++            experiment.probe(c, 0x2107ac, 10);
++            require((ps2::ld32(input + 0x14) & 0xe0) == 0x20, "wheel type enabled");
++            guest_call(c, 0x2115f8, input, command);
++            experiment.probe(c, 0x2107b8, 10);
++            for (unsigned i = 0; i < before_input.size(); ++i) require(ps2::ld8(input + i) == before_input[i], "all input state restored");
++            for (unsigned i = 0; i < 16; ++i) if (i != 0 && i != 1 && i != 4 && i != 5)
++                require(ps2::ld8(command + i) == before_command[i], "nonsteering command untouched");
++            const int q = gt3::wheel_steering_command(axis_for_value(value));
++            require(ps2::ld8(command) == (before_command[0] | 1) && ps2::ld8(command + 1) == 4 &&
++                std::int16_t(ps2::ld16(command + 4)) == q, "original wheel command");
++            // Original mode-4 policy 4, not a replacement: actual generated routines.
++            ps2::st32(car + 4, 0x700000); clear(0x700000, 0xb800);
++            ps2::st16(car + 0xa8, 2); ps2::st32(car + 0xac, 0x710000); ps2::st32(car + 0xb0, 0x710008);
++            sf(0x710000, 0); sf(0x710004, 100); sf(0x710008, 0.5); sf(0x71000c, 0.5);
++            sf(car + 0x68, 0.5); sf(car + 0xec0, 1.0f / 60); ps2::st8(car + 0x136f, 4);
++            sf(car + 0x13a8, 7); sf(car + 0x120, 1); sf(car + 0x124, 0.75);
++            guest_call(c, 0x1e4478, car, command, car + 0x1304);
++            const float expected = 0.5f * (q / 4096.0f);
++            require(std::abs(lf(car + 0x13a0) - expected) < 2e-6 && lf(car + 0x13a8) == 7, "generated mode4 steering");
++            guest_call(c, 0x1e8978, car);
++            require(std::abs(lf(car + 0xff0) - expected * (expected < 0 ? 0.75f : 1)) < 2e-6, "generated wheel consumer");
++            ++checked;
++        }
++    // Off, AI, stale context and wrong vtable must not write input or command.
++    for (unsigned scenario = 0; scenario < 4; ++scenario) {
++        clear(car, 0x1800); clear(input, 0x150); clear(command, 16);
++        ps2::st32(car + 12, input); ps2::st32(input + 0xc0, scenario == 3 ? 0 : 0x33f7e0);
++        if (scenario == 1) ps2::st8(car + 0x136d, 2);
++        Options options; options.enabled = scenario != 0; options.value = 0.5;
++        Experiment experiment(options); ps2::Cpu c{}; c.r[4].d[0] = car;
++        experiment.probe(c, 0x1e4d38, 0);
++        if (scenario == 2) experiment.probe(c, 0x1e4d5c, 0);
++        c.r[16].d[0] = input; c.r[17].d[0] = command;
++        experiment.probe(c, 0x2107ac, 0); experiment.probe(c, 0x2107b8, 0);
++        require(ps2::ld32(input + 0x14) == 0 && ps2::ld32(input + 0x38) == 0 && ps2::ld32(command) == 0, "off/scope/vtable guard");
++    }
++    // Scheduled transitions, including return to center.
++    Options options; options.enabled = true; options.events = {{20, 0.5}, {30, -0.5}, {40, 0}};
++    Experiment experiment(options); clear(car, 0x1800); clear(input, 0x150);
++    ps2::st32(car + 12, input); ps2::st32(input + 0xc0, 0x33f7e0);
++    ps2::g_options.on_probe = [](ps2::Cpu &, unsigned) {};
++    for (unsigned frame : {19u, 20u, 29u, 30u, 39u, 40u}) {
++        ps2::Cpu c{}; c.r[4].d[0] = car; experiment.probe(c, 0x1e4d38, frame);
++        c.r[16].d[0] = input; c.r[17].d[0] = command;
++        experiment.probe(c, 0x2107ac, frame); guest_call(c, 0x2115f8, input, command);
++        experiment.probe(c, 0x2107b8, frame);
++        const double value = frame < 20 || frame >= 40 ? 0 : frame < 30 ? 0.5 : -0.5;
++        require(std::int16_t(ps2::ld16(command + 4)) == gt3::wheel_steering_command(axis_for_value(value)), "scheduled transition");
++    }
++    std::printf("GT3 synthetic wheel adapter PASS: 8193 quantization values, %u native integrations, guards/parser/schedule\n", checked);
++}
+diff --git a/tests/project_metadata_test.py b/tests/project_metadata_test.py
+new file mode 100644
+index 0000000..837ec9a
+--- /dev/null
++++ b/tests/project_metadata_test.py
+@@ -0,0 +1,38 @@
++"""Negative consistency tests; never write or weaken immutable evidence."""
++import copy
++import importlib.util
++from pathlib import Path
++import unittest
++from unittest.mock import patch
++spec = importlib.util.spec_from_file_location('project', Path(__file__).resolve().parents[1] / 'tools/project.py')
++project = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(project)
++class MetadataTests(unittest.TestCase):
++    def setUp(self):
++        self.data = {name:project.load(name) for name in ('manifest','symbols','types','provenance')}
++    def rejected(self, mutation):
++        data=copy.deepcopy(self.data);mutation(data)
++        with patch.object(project,'load',side_effect=lambda name:data[name]):
++            with self.assertRaises(AssertionError):project.check()
++    def test_current(self): project.check()
++    def test_unknown_state_rejected(self):
++        self.rejected(lambda d:d['manifest']['functions'][0].update(lifecycle='looks-good'))
++    def test_missing_evidence_rejected(self):
++        self.rejected(lambda d:d['manifest']['functions'][0].update(evidence=['invented']))
++    def test_frozen_requires_independent_validation(self):
++        def mutate(d):
++            f=next(f for f in d['manifest']['functions'] if f['lifecycle']=='frozen')
++            f['live']['status']='not-validated'
++        self.rejected(mutate)
++    def test_partial_boundary_resume_rejected(self):
++        def mutate(d):
++            f=next(f for f in d['manifest']['functions'] if f.get('resume_address'))
++            f['resume_address']='0x001e48f8'
++        self.rejected(mutate)
++    def test_immutable_hash_rejected(self):
++        self.rejected(lambda d:d['provenance']['artifacts'][0].update(sha256='0'*64))
++    def test_duplicate_symbol_rejected(self):
++        self.rejected(lambda d:d['symbols']['functions'].append(d['symbols']['functions'][0]))
++    def test_offset_outside_partial_layout_rejected(self):
++        self.rejected(lambda d:d['types']['layouts'][0]['fields'][0].update(offset='0x20000'))
++if __name__ == '__main__':unittest.main()
+diff --git a/tests/run_gt3_clean_steering.sh b/tests/run_gt3_clean_steering.sh
+new file mode 100755
+index 0000000..232833d
+--- /dev/null
++++ b/tests/run_gt3_clean_steering.sh
+@@ -0,0 +1,9 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/clean-steering}"
++"${CXX:-clang++}" -std=c++20 -O2 -I"$root/host" -I"$root/runtime/include" \
++ "$root/tests/gt3_clean_steering_test.cpp" "$build/libps2game.a" "$build/libps2runtime.a" \
++ "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm -o "$build/gt3_clean_steering_test"
++"$build/gt3_clean_steering_test" "$root/games/gt3-usa-v110/core.elf"
++"$root/tests/run_gt3_synthetic_wheel.sh" "$build"
+diff --git a/tests/run_gt3_synthetic_wheel.sh b/tests/run_gt3_synthetic_wheel.sh
+new file mode 100755
+index 0000000..ebca25f
+--- /dev/null
++++ b/tests/run_gt3_synthetic_wheel.sh
+@@ -0,0 +1,11 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/synthetic-wheel}"
++"$root/tests/run_resolution_tests.sh" "$build"
++"${CXX:-clang++}" -std=c++20 -O2 -I"$root/host" -I"$root/runtime/include" \
++ "$root/tests/gt3_synthetic_wheel_test.cpp" "$root/host/gt3_synthetic_wheel.cpp" \
++ "$build/libps2game.a" "$build/libps2runtime.a" \
++ "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm \
++ -o "$build/gt3_synthetic_wheel_test"
++"$build/gt3_synthetic_wheel_test" "$root/games/gt3-usa-v110/core.elf"

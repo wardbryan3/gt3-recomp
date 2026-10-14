@@ -1,0 +1,2646 @@
+{
+  "schema_version": 1,
+  "profile": "gt3-usa-v110",
+  "functions": [
+    {
+      "address": "0x001d8fb8",
+      "native_name": "FUN_001d8fb8",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "selectors": [
+        "0x001d8fb8"
+      ],
+      "calls": [],
+      "name": "unclassified_001d8fb8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001d92e0",
+      "native_name": "FUN_001d92e0",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71"
+      ],
+      "selectors": [
+        "0x001d92e0"
+      ],
+      "calls": [],
+      "name": "evaluate_signed_response",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001db9e0",
+      "native_name": "FUN_001db9e0",
+      "evidence": [
+        "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e"
+      ],
+      "selectors": [
+        "0x001dbb84"
+      ],
+      "calls": [
+        "0x001d8dd0"
+      ],
+      "name": "unclassified_001db9e0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001dfd90",
+      "native_name": "FUN_001dfd90",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "selectors": [
+        "0x001dfd90"
+      ],
+      "calls": [],
+      "name": "compute_output_magnitudes_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e0068",
+      "native_name": "FUN_001e0068",
+      "evidence": [
+        "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e"
+      ],
+      "selectors": [
+        "0x001e05bc"
+      ],
+      "calls": [
+        "0x001d92e0",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "name": "unclassified_001e0068",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e0618",
+      "native_name": "FUN_001e0618",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "selectors": [
+        "0x001e0618"
+      ],
+      "calls": [
+        "0x002107d8"
+      ],
+      "name": "emit_vehicle_output_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e0c38",
+      "native_name": "FUN_001e0c38",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x001e0c38"
+      ],
+      "calls": [],
+      "name": "limit_engine_power_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e1768",
+      "native_name": "FUN_001e1768",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "selectors": [
+        "0x001e1768"
+      ],
+      "calls": [
+        "0x001e0c38"
+      ],
+      "name": "condition_engine_torque_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e17f0",
+      "native_name": "FUN_001e17f0",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x001e17f0"
+      ],
+      "calls": [
+        "0x001e0ed8",
+        "0x001e1768"
+      ],
+      "name": "evaluate_engine_torque_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e2d08",
+      "native_name": "FUN_001e2d08",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "selectors": [
+        "0x001e2d08"
+      ],
+      "calls": [
+        "0x001e2cc8",
+        "0x001e2cf8"
+      ],
+      "name": "unclassified_001e2d08",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e3068",
+      "native_name": "FUN_001e3068",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x001e3068"
+      ],
+      "calls": [
+        "0x001db9b8",
+        "0x001e2d08",
+        "0x001f2f90"
+      ],
+      "name": "transition_gear_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e3360",
+      "native_name": "FUN_001e3360",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x001e3360"
+      ],
+      "calls": [
+        "0x001db9b8",
+        "0x001e32d8",
+        "0x001e3338"
+      ],
+      "name": "evaluate_shift_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e35d8",
+      "native_name": "FUN_001e35d8",
+      "evidence": [
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "selectors": [
+        "0x001e35d8"
+      ],
+      "calls": [
+        "0x001eac90",
+        "0x001f2b98",
+        "0x001f7900",
+        "0x001f7ae0",
+        "0x001f8a00"
+      ],
+      "name": "unclassified_001e35d8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e3708",
+      "native_name": "FUN_001e3708",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "selectors": [
+        "0x001e3708"
+      ],
+      "calls": [
+        "0x001db9b8",
+        "0x0026a5f0"
+      ],
+      "name": "unclassified_001e3708",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e3a68",
+      "native_name": "FUN_001e3a68",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "selectors": [
+        "0x001e3a68"
+      ],
+      "calls": [
+        "0x001e3068",
+        "0x001e3360"
+      ],
+      "name": "update_transmission_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e3b18",
+      "native_name": "FUN_001e3b18",
+      "evidence": [
+        "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0",
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001e3b18"
+      ],
+      "calls": [
+        "0x001e2cf8",
+        "0x001e3338",
+        "0x001e3708",
+        "0x001e3a68",
+        "0x001e3ad0"
+      ],
+      "name": "unclassified_001e3b18",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e4180",
+      "native_name": "FUN_001e4180",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_b6ab11b03e8cb2096578c1eb74a3c596422398b054c371f442f77ec9c77b78b8"
+      ],
+      "selectors": [
+        "0x001e4180"
+      ],
+      "calls": [],
+      "name": "update_control_coupling_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e4290",
+      "native_name": "FUN_001e4290",
+      "evidence": [
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "selectors": [
+        "0x001e4290"
+      ],
+      "calls": [],
+      "name": "unclassified_001e4290",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e4320",
+      "native_name": "FUN_001e4320",
+      "evidence": [
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "selectors": [
+        "0x001e4320"
+      ],
+      "calls": [],
+      "name": "unclassified_001e4320",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e4368",
+      "native_name": "FUN_001e4368",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "selectors": [
+        "0x001e4368"
+      ],
+      "calls": [],
+      "name": "filter_stick",
+      "name_confidence": "high within bounded region",
+      "recovered_name": "filter_stick",
+      "replacement_boundary": [
+        "0x001e4368",
+        "0x001e4467"
+      ]
+    },
+    {
+      "address": "0x001e4470",
+      "native_name": "FUN_001e4470",
+      "evidence": [
+        "ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3"
+      ],
+      "selectors": [
+        "0x001e4470"
+      ],
+      "calls": [],
+      "name": "unclassified_001e4470",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e4478",
+      "native_name": "FUN_001e4478",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958",
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc"
+      ],
+      "selectors": [
+        "0x001e4478"
+      ],
+      "calls": [
+        "0x001d8fb8",
+        "0x001d92e0",
+        "0x001e4180",
+        "0x001e4320",
+        "0x001e4368",
+        "0x001e4470",
+        "0x001f2f68"
+      ],
+      "name": "process_driver_controls_partial",
+      "name_confidence": "high within bounded region",
+      "recovered_name": "process_steering",
+      "replacement_boundary": [
+        "0x001e45a8",
+        "0x001e48fb"
+      ]
+    },
+    {
+      "address": "0x001e4cb0",
+      "native_name": "FUN_001e4cb0",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "selectors": [
+        "0x001e4cb0"
+      ],
+      "calls": [
+        "0x001e4478",
+        "0x001eac60"
+      ],
+      "name": "apply_manual_command",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001e4cf0",
+      "native_name": "FUN_001e4cf0",
+      "evidence": [
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "selectors": [
+        "0x001e4cf0"
+      ],
+      "calls": [
+        "0x001f79f0"
+      ],
+      "name": "unclassified_001e4cf0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e4d38",
+      "native_name": "FUN_001e4d38",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_258503eb44a72bbfba935881d62a546fddbd2f7400ba1d97c66d3b557b0d5ae7"
+      ],
+      "selectors": [
+        "0x001e4d38"
+      ],
+      "calls": [
+        "0x001e35d8",
+        "0x001e4290",
+        "0x001e4cb0",
+        "0x001e4cf0",
+        "0x001f6588",
+        "0x001f6648",
+        "0x00210740"
+      ],
+      "name": "update_manual_driver",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001e4ff8",
+      "native_name": "FUN_001e4ff8",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "selectors": [
+        "0x001e4ff8"
+      ],
+      "calls": [
+        "0x001db9b8",
+        "0x001e4e80",
+        "0x001e4f10"
+      ],
+      "name": "unclassified_001e4ff8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e5458",
+      "native_name": "FUN_001e5458",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "selectors": [
+        "0x001e5458"
+      ],
+      "calls": [
+        "0x001e4e80"
+      ],
+      "name": "unclassified_001e5458",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e5690",
+      "native_name": "FUN_001e5690",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x001e5690"
+      ],
+      "calls": [
+        "0x001e4ff8",
+        "0x001e5458",
+        "0x001e5540",
+        "0x001e5600"
+      ],
+      "name": "unclassified_001e5690",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e57f8",
+      "native_name": "FUN_001e57f8",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x001e57f8"
+      ],
+      "calls": [],
+      "name": "unclassified_001e57f8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e6488",
+      "native_name": "FUN_001e6488",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x001e6488"
+      ],
+      "calls": [],
+      "name": "unclassified_001e6488",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e6928",
+      "native_name": "FUN_001e6928",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001e6928"
+      ],
+      "calls": [],
+      "name": "unclassified_001e6928",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e6a38",
+      "native_name": "FUN_001e6a38",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001e6a38"
+      ],
+      "calls": [
+        "0x00245d5c"
+      ],
+      "name": "unclassified_001e6a38",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e6d00",
+      "native_name": "FUN_001e6d00",
+      "evidence": [
+        "ev_93315930b3c1ce37727da406afb6ca5fce5416ff1d0d9a9a9ec1df1ce7f30031"
+      ],
+      "selectors": [
+        "0x001e6d00"
+      ],
+      "calls": [],
+      "name": "convert_engine_speed_to_display_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e6ec8",
+      "native_name": "FUN_001e6ec8",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x001e6ec8"
+      ],
+      "calls": [
+        "0x001e6d48"
+      ],
+      "name": "prepare_wheel_brake_requests",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001e7328",
+      "native_name": "FUN_001e7328",
+      "evidence": [
+        "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "selectors": [
+        "0x001e7328"
+      ],
+      "calls": [
+        "0x001e7068",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "name": "consume_wheel_motion",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001e73c0",
+      "native_name": "FUN_001e73c0",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "selectors": [
+        "0x001e73c0"
+      ],
+      "calls": [
+        "0x001d9098",
+        "0x001db9b8"
+      ],
+      "name": "unclassified_001e73c0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e7450",
+      "native_name": "FUN_001e7450",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "selectors": [
+        "0x001e7450"
+      ],
+      "calls": [],
+      "name": "unclassified_001e7450",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e7500",
+      "native_name": "FUN_001e7500",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "selectors": [
+        "0x001e7500"
+      ],
+      "calls": [
+        "0x001e17f0",
+        "0x001e6ca8",
+        "0x001e6d00"
+      ],
+      "name": "update_engine_and_driveline_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e77e0",
+      "native_name": "FUN_001e77e0",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "selectors": [
+        "0x001e77e0"
+      ],
+      "calls": [
+        "0x001e4e78",
+        "0x001e5690"
+      ],
+      "name": "unclassified_001e77e0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e7848",
+      "native_name": "FUN_001e7848",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x001e7848"
+      ],
+      "calls": [
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "name": "unclassified_001e7848",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e7c08",
+      "native_name": "FUN_001e7c08",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x001e7c08"
+      ],
+      "calls": [
+        "0x001d8c80",
+        "0x001d8fb8",
+        "0x001db9b8",
+        "0x001e7a68"
+      ],
+      "name": "unclassified_001e7c08",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e7d90",
+      "native_name": "FUN_001e7d90",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "selectors": [
+        "0x001e7d90"
+      ],
+      "calls": [
+        "0x001db9b8",
+        "0x001e7ad8",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "name": "update_vehicle_motion_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e8008",
+      "native_name": "FUN_001e8008",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "selectors": [
+        "0x001e8008"
+      ],
+      "calls": [],
+      "name": "update_vehicle_body_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001e8190",
+      "native_name": "FUN_001e8190",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001e8190"
+      ],
+      "calls": [
+        "0x001db9b8"
+      ],
+      "name": "unclassified_001e8190",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e8340",
+      "native_name": "FUN_001e8340",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001e8340"
+      ],
+      "calls": [
+        "0x001d9fe0"
+      ],
+      "name": "unclassified_001e8340",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e8598",
+      "native_name": "FUN_001e8598",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001e8598"
+      ],
+      "calls": [
+        "0x001e5768",
+        "0x001e57f8",
+        "0x001e5b98",
+        "0x001e6488",
+        "0x001e6ec8",
+        "0x001e73c0",
+        "0x001e7450",
+        "0x001e7500",
+        "0x001e77e0",
+        "0x001e7848",
+        "0x001e7c08",
+        "0x001e7d90",
+        "0x001e8008",
+        "0x001e84d8"
+      ],
+      "name": "unclassified_001e8598",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e8910",
+      "native_name": "FUN_001e8910",
+      "evidence": [
+        "ev_da6c18e33fd6fda47c8f784dd0bd67d8c60711b01d5521ad2254a0cbb68f3ef3"
+      ],
+      "selectors": [
+        "0x001e8910"
+      ],
+      "calls": [],
+      "name": "unclassified_001e8910",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001e8978",
+      "native_name": "FUN_001e8978",
+      "evidence": [
+        "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0"
+      ],
+      "selectors": [
+        "0x001e8978"
+      ],
+      "calls": [
+        "0x001e8910",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "name": "unclassified_001e8978",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001eac60",
+      "native_name": "FUN_001eac60",
+      "evidence": [
+        "ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "selectors": [
+        "0x001eac60"
+      ],
+      "calls": [],
+      "name": "broadcast_brake_request",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001eadb8",
+      "native_name": "FUN_001eadb8",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "selectors": [
+        "0x001eadb8"
+      ],
+      "calls": [],
+      "name": "unclassified_001eadb8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001eb218",
+      "native_name": "FUN_001eb218",
+      "evidence": [
+        "ev_93315930b3c1ce37727da406afb6ca5fce5416ff1d0d9a9a9ec1df1ce7f30031"
+      ],
+      "selectors": [
+        "0x001eb218"
+      ],
+      "calls": [
+        "0x001d8a80",
+        "0x001debb0",
+        "0x001df148",
+        "0x001df150",
+        "0x001df2b0",
+        "0x001dfc60",
+        "0x001e0068",
+        "0x001e06d8",
+        "0x001e0768",
+        "0x001e8b68",
+        "0x001e91a8",
+        "0x001e9348",
+        "0x001e96f0",
+        "0x001e9998",
+        "0x001e9d48",
+        "0x001e9de8",
+        "0x001e9e18",
+        "0x001ea4d8",
+        "0x001ea9b8",
+        "0x001eafc0"
+      ],
+      "name": "vehicle_post_update_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001ed000",
+      "native_name": "FUN_001ed000",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "selectors": [
+        "0x001ed000"
+      ],
+      "calls": [],
+      "name": "get_race_car_slot",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001ed458",
+      "native_name": "FUN_001ed458",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "selectors": [
+        "0x001ed458"
+      ],
+      "calls": [
+        "0x001ed028",
+        "0x001f2b68"
+      ],
+      "name": "unclassified_001ed458",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001ef060",
+      "native_name": "FUN_001ef060",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "selectors": [
+        "0x001ef060"
+      ],
+      "calls": [
+        "0x001de018",
+        "0x001edb40",
+        "0x001ee978",
+        "0x001f2b68",
+        "0x001f2b98",
+        "0x001fb838"
+      ],
+      "name": "unclassified_001ef060",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f2b18",
+      "native_name": "FUN_001f2b18",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "selectors": [
+        "0x001f2b18"
+      ],
+      "calls": [
+        "0x001796c0"
+      ],
+      "name": "race_countdown_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x001f2f68",
+      "native_name": "FUN_001f2f68",
+      "evidence": [
+        "ev_af3dd19042062aa9b513801fcc06cea1a5bd623e0da069a56aef983d37a92302",
+        "ev_b6ab11b03e8cb2096578c1eb74a3c596422398b054c371f442f77ec9c77b78b8"
+      ],
+      "selectors": [
+        "0x001f2f68"
+      ],
+      "calls": [],
+      "name": "unclassified_001f2f68",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f39d8",
+      "native_name": "FUN_001f39d8",
+      "evidence": [
+        "ev_3a3552772c621fa1a7a5ef53b281aa72606cbb03ad551c8c60fe5380ff33f873",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "selectors": [
+        "0x001f39d8"
+      ],
+      "calls": [
+        "0x001dfd90",
+        "0x001e0618",
+        "0x001e3b18",
+        "0x001e4d38",
+        "0x001e6928",
+        "0x001e6a38",
+        "0x001e7328",
+        "0x001e8190",
+        "0x001e8340",
+        "0x001e8598",
+        "0x001e8978",
+        "0x001ea428",
+        "0x001eadb8",
+        "0x001eb218",
+        "0x001ec098",
+        "0x001ed000",
+        "0x001ed458",
+        "0x001ef060",
+        "0x001f2b18",
+        "0x001f2b68",
+        "0x001f3950",
+        "0x001f59b0"
+      ],
+      "name": "update_vehicle_driver_dispatch",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x001f4330",
+      "native_name": "FUN_001f4330",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6"
+      ],
+      "selectors": [
+        "0x001f4330"
+      ],
+      "calls": [],
+      "name": "unclassified_001f4330",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f4660",
+      "native_name": "FUN_001f4660",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6"
+      ],
+      "selectors": [
+        "0x001f4660"
+      ],
+      "calls": [
+        "0x001f4330",
+        "0x001f4518",
+        "0x001f4570",
+        "0x001f5648",
+        "0x001f5678",
+        "0x001f56a8"
+      ],
+      "name": "unclassified_001f4660",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f4998",
+      "native_name": "FUN_001f4998",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6"
+      ],
+      "selectors": [
+        "0x001f4998"
+      ],
+      "calls": [
+        "0x001f4518",
+        "0x001f4830",
+        "0x001f4c00",
+        "0x001f56d8",
+        "0x001f5720",
+        "0x001f5768",
+        "0x0026ca38"
+      ],
+      "name": "unclassified_001f4998",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f79a0",
+      "native_name": "FUN_001f79a0",
+      "evidence": [
+        "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038"
+      ],
+      "selectors": [
+        "0x001f79a0"
+      ],
+      "calls": [],
+      "name": "unclassified_001f79a0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f79f0",
+      "native_name": "FUN_001f79f0",
+      "evidence": [
+        "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038"
+      ],
+      "selectors": [
+        "0x001f79f0"
+      ],
+      "calls": [
+        "0x001eac90"
+      ],
+      "name": "unclassified_001f79f0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x001f7ae0",
+      "native_name": "FUN_001f7ae0",
+      "evidence": [
+        "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038"
+      ],
+      "selectors": [
+        "0x001f7ae0"
+      ],
+      "calls": [
+        "0x0018fa10",
+        "0x001d8c80",
+        "0x001db9b8",
+        "0x001f2f90",
+        "0x001f6d70",
+        "0x001f7088",
+        "0x001f7590",
+        "0x001f7658",
+        "0x001f77b8",
+        "0x001f7810",
+        "0x001f7948",
+        "0x001f79a0",
+        "0x001fb870",
+        "0x001fb878",
+        "0x001fb880",
+        "0x00269fc8",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "name": "unclassified_001f7ae0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0020ffe8",
+      "native_name": "FUN_0020ffe8",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "selectors": [
+        "0x00210000"
+      ],
+      "calls": [
+        "0x0020ee70"
+      ],
+      "name": "unclassified_0020ffe8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210060",
+      "native_name": "FUN_00210060",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "selectors": [
+        "0x00210060"
+      ],
+      "calls": [
+        "0x002555a8"
+      ],
+      "name": "unclassified_00210060",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x002102e0",
+      "native_name": "FUN_002102e0",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "selectors": [
+        "0x002102e0"
+      ],
+      "calls": [
+        "0x0026c690",
+        "0x0027afa0"
+      ],
+      "name": "unclassified_002102e0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x002104e8",
+      "native_name": "FUN_002104e8",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "selectors": [
+        "0x002104e8"
+      ],
+      "calls": [
+        "0x001f4ed0",
+        "0x0022da98"
+      ],
+      "name": "unclassified_002104e8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210578",
+      "native_name": "FUN_00210578",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "selectors": [
+        "0x00210578"
+      ],
+      "calls": [
+        "0x001f4ed0",
+        "0x0022da98"
+      ],
+      "name": "unclassified_00210578",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210608",
+      "native_name": "FUN_00210608",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "selectors": [
+        "0x00210608"
+      ],
+      "calls": [
+        "0x001f4f20",
+        "0x0022db48"
+      ],
+      "name": "unclassified_00210608",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210740",
+      "native_name": "FUN_00210740",
+      "evidence": [
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea",
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc"
+      ],
+      "selectors": [
+        "0x00210740"
+      ],
+      "calls": [
+        "0x001f4330",
+        "0x001f4660",
+        "0x001f4998",
+        "0x00211430",
+        "0x002115f8"
+      ],
+      "name": "unclassified_00210740",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x002107d8",
+      "native_name": "FUN_002107d8",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "selectors": [
+        "0x002107d8"
+      ],
+      "calls": [
+        "0x00218660",
+        "0x0022e040"
+      ],
+      "name": "dispatch_control_output_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x00210a78",
+      "native_name": "FUN_00210a78",
+      "evidence": [
+        "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de"
+      ],
+      "selectors": [
+        "0x00210a78"
+      ],
+      "calls": [
+        "0x00218660"
+      ],
+      "name": "unclassified_00210a78",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210aa0",
+      "native_name": "FUN_00210aa0",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "selectors": [
+        "0x00210aa0"
+      ],
+      "calls": [
+        "0x002108f0",
+        "0x002109c0",
+        "0x0022dce8"
+      ],
+      "name": "unclassified_00210aa0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210d68",
+      "native_name": "FUN_00210d68",
+      "evidence": [
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea"
+      ],
+      "selectors": [
+        "0x00210d68"
+      ],
+      "calls": [],
+      "name": "unclassified_00210d68",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210da8",
+      "native_name": "FUN_00210da8",
+      "evidence": [
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea"
+      ],
+      "selectors": [
+        "0x00210da8"
+      ],
+      "calls": [],
+      "name": "unclassified_00210da8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210ef8",
+      "native_name": "FUN_00210ef8",
+      "evidence": [
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "selectors": [
+        "0x00210ef8"
+      ],
+      "calls": [],
+      "name": "unclassified_00210ef8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00210f90",
+      "native_name": "FUN_00210f90",
+      "calls": [],
+      "selectors": [
+        "0x00210f90"
+      ],
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "name": "normalize_mapped_channel",
+      "recovered_name": "normalize_mapped_channel",
+      "name_confidence": "high within bounded region",
+      "replacement_boundary": [
+        "0x00210f90",
+        "0x0021104f"
+      ]
+    },
+    {
+      "address": "0x00211050",
+      "native_name": "FUN_00211050",
+      "calls": [],
+      "selectors": [
+        "0x00211050"
+      ],
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "name": "fill_mapped_actions_primary",
+      "name_confidence": "high bounded standalone helper"
+    },
+    {
+      "address": "0x002111c0",
+      "native_name": "FUN_002111c0",
+      "calls": [],
+      "selectors": [
+        "0x002111c0"
+      ],
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "name": "fill_mapped_actions_secondary",
+      "name_confidence": "high bounded standalone helper"
+    },
+    {
+      "address": "0x00211398",
+      "native_name": "FUN_00211398",
+      "evidence": [
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "selectors": [
+        "0x00211398"
+      ],
+      "calls": [
+        "0x00211330"
+      ],
+      "name": "unclassified_00211398",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x002115d8",
+      "native_name": "FUN_002115d8",
+      "evidence": [
+        "ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3"
+      ],
+      "selectors": [
+        "0x002115d8"
+      ],
+      "calls": [],
+      "name": "wheel_pedal_input",
+      "name_confidence": "high bounded standalone helper"
+    },
+    {
+      "address": "0x002115f8",
+      "native_name": "FUN_002115f8",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6",
+        "ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3"
+      ],
+      "selectors": [
+        "0x002115f8"
+      ],
+      "calls": [
+        "0x00210ef8",
+        "0x002115d8"
+      ],
+      "name": "build_wheel_command",
+      "name_confidence": "high within bounded region",
+      "recovered_name": "build_wheel_command",
+      "replacement_boundary": [
+        "0x002115f8",
+        "0x0021174f"
+      ]
+    },
+    {
+      "address": "0x002178c8",
+      "native_name": "FUN_002178c8",
+      "calls": [],
+      "selectors": [
+        "0x002178c8"
+      ],
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "name": "mapped_channel_primary",
+      "name_confidence": "high bounded standalone helper"
+    },
+    {
+      "address": "0x00217938",
+      "native_name": "FUN_00217938",
+      "calls": [],
+      "selectors": [
+        "0x00217938"
+      ],
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "name": "mapped_channel_secondary",
+      "name_confidence": "high bounded standalone helper"
+    },
+    {
+      "address": "0x00217998",
+      "native_name": "FUN_00217998",
+      "calls": [],
+      "selectors": [
+        "0x00217998"
+      ],
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "name": "binding_index",
+      "name_confidence": "high bounded standalone helper"
+    },
+    {
+      "address": "0x0022d3c0",
+      "native_name": "FUN_0022d3c0",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "selectors": [
+        "0x0022d3c0"
+      ],
+      "calls": [
+        "0x002184a8",
+        "0x002184c8",
+        "0x00218518",
+        "0x00218660",
+        "0x0026c118",
+        "0x0026c380",
+        "0x0026c3a8",
+        "0x0026fb00",
+        "0x0026ff58",
+        "0x0026ffa0",
+        "0x0026ffb8",
+        "0x0026ffc0",
+        "0x00270010",
+        "0x002700a8",
+        "0x002700c8",
+        "0x00270258",
+        "0x00270398",
+        "0x0027db38"
+      ],
+      "name": "unclassified_0022d3c0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022da98",
+      "native_name": "FUN_0022da98",
+      "evidence": [
+        "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de"
+      ],
+      "selectors": [
+        "0x0022da98"
+      ],
+      "calls": [],
+      "name": "unclassified_0022da98",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022dba8",
+      "native_name": "FUN_0022dba8",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "selectors": [
+        "0x0022dba8"
+      ],
+      "calls": [],
+      "name": "unclassified_0022dba8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022dc10",
+      "native_name": "FUN_0022dc10",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "selectors": [
+        "0x0022dc10"
+      ],
+      "calls": [],
+      "name": "unclassified_0022dc10",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022dce8",
+      "native_name": "FUN_0022dce8",
+      "evidence": [
+        "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de"
+      ],
+      "selectors": [
+        "0x0022dce8"
+      ],
+      "calls": [],
+      "name": "unclassified_0022dce8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022de40",
+      "native_name": "FUN_0022de40",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "selectors": [
+        "0x0022de40"
+      ],
+      "calls": [],
+      "name": "unclassified_0022de40",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022ded8",
+      "native_name": "FUN_0022ded8",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "selectors": [
+        "0x0022ded8"
+      ],
+      "calls": [],
+      "name": "unclassified_0022ded8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022df40",
+      "native_name": "FUN_0022df40",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "selectors": [
+        "0x0022df58"
+      ],
+      "calls": [],
+      "name": "unclassified_0022df40",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022dfa8",
+      "native_name": "FUN_0022dfa8",
+      "evidence": [
+        "ev_2411c4e720643d02a91edf6b4d2e80e536d3fc3b3f397319bf46566b97f865c4",
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44"
+      ],
+      "selectors": [
+        "0x0022dfa8"
+      ],
+      "calls": [],
+      "name": "unclassified_0022dfa8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022e040",
+      "native_name": "FUN_0022e040",
+      "evidence": [
+        "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e"
+      ],
+      "selectors": [
+        "0x0022e040"
+      ],
+      "calls": [],
+      "name": "unclassified_0022e040",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022e470",
+      "native_name": "FUN_0022e470",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd",
+        "ev_af3dd19042062aa9b513801fcc06cea1a5bd623e0da069a56aef983d37a92302"
+      ],
+      "selectors": [
+        "0x0022e470"
+      ],
+      "calls": [
+        "0x0022fb60",
+        "0x002307f0"
+      ],
+      "name": "unclassified_0022e470",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022e4e0",
+      "native_name": "FUN_0022e4e0",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "selectors": [
+        "0x0022e4e0"
+      ],
+      "calls": [
+        "0x0022cc50",
+        "0x0022cc58",
+        "0x0022d0f0",
+        "0x0022d810",
+        "0x00230258"
+      ],
+      "name": "unclassified_0022e4e0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022e598",
+      "native_name": "FUN_0022e598",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "selectors": [
+        "0x0022e598"
+      ],
+      "calls": [
+        "0x0022d810",
+        "0x0022ffe8"
+      ],
+      "name": "unclassified_0022e598",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022e648",
+      "native_name": "FUN_0022e648",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "selectors": [
+        "0x0022e648"
+      ],
+      "calls": [
+        "0x0022d830"
+      ],
+      "name": "unclassified_0022e648",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022e7a0",
+      "native_name": "FUN_0022e7a0",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "selectors": [
+        "0x0022e7a0"
+      ],
+      "calls": [
+        "0x0022dba8",
+        "0x0022e470",
+        "0x0022f810",
+        "0x0022fb60",
+        "0x002307f0",
+        "0x00269b30"
+      ],
+      "name": "unclassified_0022e7a0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022edb0",
+      "native_name": "FUN_0022edb0",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "selectors": [
+        "0x0022edb0"
+      ],
+      "calls": [
+        "0x0022f210",
+        "0x0022fb00"
+      ],
+      "name": "unclassified_0022edb0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f268",
+      "native_name": "FUN_0022f268",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "selectors": [
+        "0x0022f268"
+      ],
+      "calls": [
+        "0x0027c408"
+      ],
+      "name": "unclassified_0022f268",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f2a8",
+      "native_name": "FUN_0022f2a8",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd"
+      ],
+      "selectors": [
+        "0x0022f2a8"
+      ],
+      "calls": [
+        "0x00269b00",
+        "0x0027db38"
+      ],
+      "name": "unclassified_0022f2a8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f328",
+      "native_name": "FUN_0022f328",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "selectors": [
+        "0x0022f328"
+      ],
+      "calls": [
+        "0x0022f2a8",
+        "0x00269b00",
+        "0x00269c10",
+        "0x00272140",
+        "0x002721c0",
+        "0x002722d8",
+        "0x00272360",
+        "0x002725a0",
+        "0x002726d8",
+        "0x00272790",
+        "0x00272848",
+        "0x00272a88",
+        "0x00272ae8",
+        "0x0027d8fc",
+        "0x0027db38"
+      ],
+      "name": "unclassified_0022f328",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f810",
+      "native_name": "FUN_0022f810",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "selectors": [
+        "0x0022f810"
+      ],
+      "calls": [
+        "0x0022f2a8",
+        "0x00269b30",
+        "0x00269c30",
+        "0x00271b90",
+        "0x00271df0",
+        "0x00272da0"
+      ],
+      "name": "unclassified_0022f810",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f938",
+      "native_name": "FUN_0022f938",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd"
+      ],
+      "selectors": [
+        "0x0022f938"
+      ],
+      "calls": [
+        "0x00272140"
+      ],
+      "name": "unclassified_0022f938",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f9b0",
+      "native_name": "FUN_0022f9b0",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "selectors": [
+        "0x0022f9b0"
+      ],
+      "calls": [
+        "0x00269c10"
+      ],
+      "name": "unclassified_0022f9b0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022f9e8",
+      "native_name": "FUN_0022f9e8",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd"
+      ],
+      "selectors": [
+        "0x0022f9e8"
+      ],
+      "calls": [],
+      "name": "unclassified_0022f9e8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022fac0",
+      "native_name": "FUN_0022fac0",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "selectors": [
+        "0x0022fac0"
+      ],
+      "calls": [],
+      "name": "unclassified_0022fac0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022fb00",
+      "native_name": "FUN_0022fb00",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "selectors": [
+        "0x0022fb00"
+      ],
+      "calls": [
+        "0x0022f210"
+      ],
+      "name": "unclassified_0022fb00",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022fb78",
+      "native_name": "FUN_0022fb78",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "selectors": [
+        "0x0022fb78"
+      ],
+      "calls": [
+        "0x0022f9e8",
+        "0x0022fbb0"
+      ],
+      "name": "unclassified_0022fb78",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022fbb0",
+      "native_name": "FUN_0022fbb0",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "selectors": [
+        "0x0022fbb0"
+      ],
+      "calls": [
+        "0x0022fa58",
+        "0x0022fac0"
+      ],
+      "name": "unclassified_0022fbb0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022fc30",
+      "native_name": "FUN_0022fc30",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "selectors": [
+        "0x0022fc30"
+      ],
+      "calls": [
+        "0x0022fac0"
+      ],
+      "name": "unclassified_0022fc30",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0022ffe8",
+      "native_name": "FUN_0022ffe8",
+      "evidence": [
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc",
+        "ev_f38920dea6e5dd0c8ed64f5922ccbdf694ffd890252d22ddd43933e777c64179"
+      ],
+      "selectors": [
+        "0x0022ffe8"
+      ],
+      "calls": [
+        "0x0022da98",
+        "0x0022db48",
+        "0x0022dc10",
+        "0x0022dfa8"
+      ],
+      "name": "unclassified_0022ffe8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00230388",
+      "native_name": "FUN_00230388",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x00230388"
+      ],
+      "calls": [
+        "0x00217aa0",
+        "0x00217ac0",
+        "0x00217ae0",
+        "0x00217b00",
+        "0x00217b20",
+        "0x00217b40",
+        "0x00217b60",
+        "0x00217b80"
+      ],
+      "name": "unclassified_00230388",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00230830",
+      "native_name": "FUN_00230830",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x00230830"
+      ],
+      "calls": [],
+      "name": "store_device_output_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x00230878",
+      "native_name": "FUN_00230878",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "selectors": [
+        "0x00230900"
+      ],
+      "calls": [],
+      "name": "unclassified_00230878",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00230938",
+      "native_name": "FUN_00230938",
+      "evidence": [
+        "ev_165b3c82d776f439e6f9eb8ec234f9c3643f2da7bd56c21118350a38d1144a2f"
+      ],
+      "selectors": [
+        "0x00230938",
+        "0x002309e0"
+      ],
+      "calls": [
+        "0x00266830",
+        "0x00266998"
+      ],
+      "name": "dispatch_device_output_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x00230a90",
+      "native_name": "FUN_00230a90",
+      "evidence": [
+        "ev_165b3c82d776f439e6f9eb8ec234f9c3643f2da7bd56c21118350a38d1144a2f"
+      ],
+      "selectors": [
+        "0x00230b70",
+        "0x00230bb4",
+        "0x00230cbc",
+        "0x00230cd8"
+      ],
+      "calls": [
+        "0x00218660",
+        "0x0022da98",
+        "0x0022db48",
+        "0x00230388",
+        "0x00230830",
+        "0x00230858",
+        "0x00230938",
+        "0x00265ea0",
+        "0x002660e0",
+        "0x00266830",
+        "0x00266998"
+      ],
+      "name": "unclassified_00230a90",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00230d10",
+      "native_name": "FUN_00230d10",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc"
+      ],
+      "selectors": [
+        "0x00230d10"
+      ],
+      "calls": [
+        "0x00230538",
+        "0x00230580",
+        "0x00230628",
+        "0x00230698",
+        "0x00230778"
+      ],
+      "name": "adapt_wheel_state",
+      "name_confidence": "high"
+    },
+    {
+      "address": "0x00230fb0",
+      "native_name": "FUN_00230fb0",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x00230fb0"
+      ],
+      "calls": [],
+      "name": "unclassified_00230fb0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00231038",
+      "native_name": "FUN_00231038",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x00231038"
+      ],
+      "calls": [],
+      "name": "unclassified_00231038",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00231120",
+      "native_name": "FUN_00231120",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "selectors": [
+        "0x00231120"
+      ],
+      "calls": [
+        "0x0022f268",
+        "0x0027c3e8"
+      ],
+      "name": "initialize_wheel_object_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x00265fc8",
+      "native_name": "FUN_00265fc8",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "selectors": [
+        "0x00265fc8"
+      ],
+      "calls": [
+        "0x00267008"
+      ],
+      "name": "unclassified_00265fc8",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00266830",
+      "native_name": "FUN_00266830",
+      "evidence": [
+        "ev_4ef76d60bb0dc49cb12cf462792b364808d21cba69e7e50d832f5cfcff2ff604"
+      ],
+      "selectors": [
+        "0x00266830"
+      ],
+      "calls": [
+        "0x00265fc8"
+      ],
+      "name": "submit_device_packet_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x00266998",
+      "native_name": "FUN_00266998",
+      "evidence": [
+        "ev_4ef76d60bb0dc49cb12cf462792b364808d21cba69e7e50d832f5cfcff2ff604"
+      ],
+      "selectors": [
+        "0x00266998"
+      ],
+      "calls": [],
+      "name": "assemble_device_packet_candidate",
+      "name_confidence": "medium"
+    },
+    {
+      "address": "0x0026a1a0",
+      "native_name": "FUN_0026a1a0",
+      "evidence": [
+        "ev_4255a44477d79bb26d836a40202151a69e68c20648fc72ff8d86565a51d314f0"
+      ],
+      "selectors": [
+        "0x0026a1a0"
+      ],
+      "calls": [],
+      "name": "unclassified_0026a1a0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x0026a5f0",
+      "native_name": "FUN_0026a5f0",
+      "evidence": [
+        "ev_4255a44477d79bb26d836a40202151a69e68c20648fc72ff8d86565a51d314f0"
+      ],
+      "selectors": [
+        "0x0026a5f0"
+      ],
+      "calls": [],
+      "name": "unclassified_0026a5f0",
+      "name_confidence": "low"
+    },
+    {
+      "address": "0x00272140",
+      "native_name": "FUN_00272140",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "selectors": [
+        "0x00272140"
+      ],
+      "calls": [
+        "0x00272090",
+        "0x0027d990"
+      ],
+      "name": "unclassified_00272140",
+      "name_confidence": "low"
+    }
+  ],
+  "data": [
+    {
+      "address": "0x002e2cf8",
+      "name": "binding_records",
+      "confidence": "high",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ]
+    },
+    {
+      "address": "0x00314150",
+      "name": "literal_usb_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00314160",
+      "name": "literal_usb_accel",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00314170",
+      "name": "literal_usb_brake",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00319fc8",
+      "name": "literal_gt_force1/set_gtforce",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00319fe0",
+      "name": "literal_gt_force2/set_gtforce",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00319ff8",
+      "name": "literal_gt_force1/calib_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031a010",
+      "name": "literal_gt_force2/calib_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031a4a8",
+      "name": "literal_force_feedback_off_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031a4c0",
+      "name": "literal_force_feedback_off_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031a4d8",
+      "name": "literal_force_feedback_on_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031a4f0",
+      "name": "literal_force_feedback_on_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031a6b8",
+      "name": "literal_race_laps",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031b058",
+      "name": "literal_multi_steering_force_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0031b070",
+      "name": "literal_multi_steering_force_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x003279b0",
+      "name": "literal_11RaceLapTime",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0032f190",
+      "name": "literal_14RaceLapDisplay",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00330f18",
+      "name": "literal_LapCountLabel",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x0033f7e0",
+      "name": "shipped_input_vtable",
+      "confidence": "high",
+      "evidence": [
+        "artifact:docs/gt3-wheel-evidence.json"
+      ]
+    },
+    {
+      "address": "0x003416f8",
+      "name": "pad_response_table",
+      "confidence": "high",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ]
+    },
+    {
+      "address": "0x00341c58",
+      "name": "wheel_initialization_data_candidate",
+      "confidence": "low",
+      "evidence": [
+        "artifact:evidence/rea/project-init.json"
+      ]
+    },
+    {
+      "address": "0x00351388",
+      "name": "literal_usb_l1",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00351390",
+      "name": "literal_usb_l2",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00351398",
+      "name": "literal_usb_l3",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x003513a0",
+      "name": "literal_usb_r1",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x003513a8",
+      "name": "literal_usb_r2",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x003513b0",
+      "name": "literal_usb_r3",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x003513b8",
+      "name": "literal_usb_nil",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x00352990",
+      "name": "nonzero_analog_pedal_floor",
+      "confidence": "high",
+      "evidence": [
+        "artifact:evidence/rea/project-init.json"
+      ]
+    },
+    {
+      "address": "0x0049d060",
+      "name": "wheel_accelerator_response_descriptor",
+      "confidence": "high",
+      "evidence": [
+        "artifact:evidence/rea/project-init.json"
+      ]
+    },
+    {
+      "address": "0x0049d070",
+      "name": "wheel_brake_response_descriptor",
+      "confidence": "high",
+      "evidence": [
+        "artifact:evidence/rea/project-init.json"
+      ]
+    },
+    {
+      "address": "0x20314150",
+      "name": "literal_usb_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x20314160",
+      "name": "literal_usb_accel",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x20314170",
+      "name": "literal_usb_brake",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x20319fc8",
+      "name": "literal_gt_force1/set_gtforce",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x20319fe0",
+      "name": "literal_gt_force2/set_gtforce",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x20319ff8",
+      "name": "literal_gt_force1/calib_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031a010",
+      "name": "literal_gt_force2/calib_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031a4a8",
+      "name": "literal_force_feedback_off_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031a4c0",
+      "name": "literal_force_feedback_off_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031a4d8",
+      "name": "literal_force_feedback_on_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031a4f0",
+      "name": "literal_force_feedback_on_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031a6b8",
+      "name": "literal_race_laps",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031b058",
+      "name": "literal_multi_steering_force_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2031b070",
+      "name": "literal_multi_steering_force_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x203279b0",
+      "name": "literal_11RaceLapTime",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x2032f190",
+      "name": "literal_14RaceLapDisplay",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x20330f18",
+      "name": "literal_LapCountLabel",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30414150",
+      "name": "literal_usb_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30414160",
+      "name": "literal_usb_accel",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30414170",
+      "name": "literal_usb_brake",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30419fc8",
+      "name": "literal_gt_force1/set_gtforce",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30419fe0",
+      "name": "literal_gt_force2/set_gtforce",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30419ff8",
+      "name": "literal_gt_force1/calib_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041a010",
+      "name": "literal_gt_force2/calib_steer",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041a4a8",
+      "name": "literal_force_feedback_off_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041a4c0",
+      "name": "literal_force_feedback_off_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041a4d8",
+      "name": "literal_force_feedback_on_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041a4f0",
+      "name": "literal_force_feedback_on_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041a6b8",
+      "name": "literal_race_laps",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041b058",
+      "name": "literal_multi_steering_force_1p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3041b070",
+      "name": "literal_multi_steering_force_2p",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x304279b0",
+      "name": "literal_11RaceLapTime",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x3042f190",
+      "name": "literal_14RaceLapDisplay",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    },
+    {
+      "address": "0x30430f18",
+      "name": "literal_LapCountLabel",
+      "confidence": "high literal; usage semantics unproved",
+      "evidence": [
+        "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32"
+      ]
+    }
+  ],
+  "notes": [
+    "Provider canonical entries differ from requested selectors: selectors are retained, not automatically aliases.",
+    "Static guest addresses; live object pointers vary.",
+    "Dependency calls are decompiler candidates, not exhaustive verified call graphs."
+  ],
+  "snapshot_context": {
+    "source_base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+    "validation_scope": "preserved-private-experiment",
+    "current_main_runtime_integration": "not-installed; compile-checked source snapshot only"
+  }
+}

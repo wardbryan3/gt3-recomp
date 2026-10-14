@@ -1,29 +1,24 @@
-# GT3 readable reconstruction roadmap
+# GT3 selective decompilation
 
-The goal is to understand and progressively reconstruct GT3 behavior, alongside
-its working local static-recompilation path. This is not a completed source
-recovery and not an invitation to commit bulk decompiler output.
+Understand and reconstruct only what the current milestone needs, preserving
+original behavior before modernization. This is not whole-game source recovery.
 
-## Current reference
+## Source checkpoint
 
-`host/gt3_controls.hpp`: readable input normalization, tested locally against the
-actual translated EE routine for 20,480 cases with positive sensitivities.
-The runtime still executes the translated game routine. Negative/high-bit or zero
-sensitivity semantics are not interchangeable: the original uses signed division
-and a trap at zero; the reference's domain is narrower. No original response-curve
-data is distributed; test curves are synthetic.
+- `host/gt3_controls.hpp`: normalization/binding/mapped-action references.
+- `host/gt3_clean_steering.*`: bounded EE-compatible normalization, shipped wheel
+  builder, stick filter and interior steering envelope, plus partial guest types.
+- `host/gt3_synthetic_wheel.*`: independent scoped adapter source.
+- `decomp/gt3/{manifest,symbols,types,provenance}.json`:132 selected records,
+ 129 canonical functions, private artifact/evidence references and explicit context.
+- Original-dependent test source is preserved; current source-only compilation and
+  synthetic consistency do not replace independent original differentials.
 
-## Next useful graphics work
+Four frozen statuses describe the old validated private experiment. Current main
+compiles the source library but does NOT install runtime/generated label gates.
+Revalidate that integration before enabling anything. No downstream physics rewrite.
 
-- Map one deterministic frame's EE submissions, DMA/VIF/GIF traffic and GS state.
-- Associate visible road/car/scenery/mirror/HUD passes with their producers.
-- Trace projection and HUD layout before trying further patches.
-- Identify VU programs through disassembly/traces; standalone VU decompilation
-  support has not been established.
-- Build reviewed replacements only after understanding their interfaces and
-  equivalence domain; preserve a reference/differential test path.
-
-Maintain a factual symbol ledger with confidence/provenance and test names.
-Keep raw assembly, pseudocode exports, memory and original program images in
-ignored local storage. Review new recovered code under
-`docs/gt3/PUBLICATION.md` before making it public.
+Public docs are curated findings/metadata. Raw assembly, pseudocode exports,
+original images/tables and generated game bodies stay private. See HANDOFF.md,
+docs/gt3/PUBLICATION.md and the site's bounded queue for next work; the queue does
+not authorize implementation. Pedals/FFB/AI/reset/step remain separate cycles.

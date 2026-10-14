@@ -1,0 +1,17 @@
+--- runtime/src/gs/queue.cpp	2026-10-13 10:32:23.884829420 -0700
++++ ../../performance/repo/runtime/src/gs/queue.cpp	2026-10-13 12:35:47.537467241 -0700
+@@ -107,8 +107,12 @@
+     std::memcpy(at, &h, sizeof h);
+     if (bytes) std::memcpy(at + sizeof h, data, bytes);
+     head_.store(head + need, std::memory_order_release);
+-    posted_.fetch_add(1);
+-    if (consumer_waiting_.exchange(0)) notify(posted_);
++    // SPSC: a new consumer waiter rechecks head after publishing waiting_.
++    // Advance the futex generation only when waking a published waiter.
++    if (consumer_waiting_.exchange(0)) {
++        posted_.fetch_add(1);
++        notify(posted_);
++    }
+ }
+ 
+ bool Ring::peek(Header &header, const std::uint8_t *&payload) {

@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GT3 • LAN driving test</title>
+<style>body{margin:0;background:#12151b;color:#e6ebf3;font:16px system-ui}main{max-width:1400px;margin:auto;padding:16px}video{width:100%;aspect-ratio:16/9;background:#000;display:block}button{background:#30476d;color:white;border:0;border-radius:6px;padding:10px 16px;margin:8px 8px 8px 0;cursor:pointer}button:disabled{opacity:.5}#status{color:#bce0ff}code{background:#263142;padding:2px 5px}details{margin:12px 0}.warn{color:#e6c79a}table{border-collapse:collapse}td{padding:4px 20px 4px 0}</style>
+<main><h2>GT3 — 1080p LAN driving test</h2><p>Parallel + SSE4.1 + FIFO. The stream shows the <b>center 1920×1080</b> of the unchanged full-width 9×3 renderer. This is not a physical-monitor latency test.</p>
+<video id="video" autoplay playsinline></video>
+<button id="connect">Connect / reconnect</button><button id="disconnect">Disconnect</button><button id="sound">Enable sound</button><button id="fullscreen">Fullscreen</button><button id="restart">Restart race</button>
+<p id="status">Click Connect, then use the controls below. Keep this tab focused.</p><p id="stats"></p>
+<table><tr><td><code>Z</code></td><td>Accelerate / Cross / confirm</td></tr><tr><td><code>A</code></td><td>Brake / Square</td></tr><tr><td><code>←</code> <code>→</code></td><td>Steer</td></tr><tr><td><code>W</code></td><td>R1 — toggle bumper/chase camera</td></tr><tr><td><code>Q</code> (hold)</td><td>L1 — look behind</td></tr><tr><td><code>Enter</code></td><td>Start — pause/menu</td></tr><tr><td><code>↑ ↓ ← →</code></td><td>Navigate menus</td></tr><tr><td><code>X</code> / <code>S</code></td><td>Circle / Triangle (back/menu actions)</td></tr><tr><td><code>1</code> / <code>2</code></td><td>L2 / R2</td></tr><tr><td><code>Backspace</code></td><td>Select</td></tr></table>
+<details><summary>Controller and test limitations</summary><p>Standard browser-mapped gamepads: bottom face button accelerates, left face button brakes, left stick steers, right shoulder changes camera, left shoulder looks behind, Start pauses. Browser gamepad support may be unavailable over plain HTTP; keyboard controls do not require it. No controller rumble.</p><p class="warn">Streaming adds capture, encoding, network, browser buffering and decoding latency. Judge practical playability, not local scanout timing. The native renderer retains the expanded full-width view; this transmission is a center crop, not reduced render detail. Known overlay/replay limitations remain.</p></details></main>
+<script>
+const token=location.hash.slice(1),v=document.getElementById('video'),status=document.getElementById('status'),stats=document.getElementById('stats');
+let pc,channel,keys=new Set(),lastPing=0,rtt=0,lastStats;
+const map={Enter:3,ArrowUp:4,ArrowRight:5,ArrowDown:6,ArrowLeft:7,Digit1:8,Digit2:9,KeyQ:10,KeyW:11,KeyS:12,KeyX:13,KeyZ:14,KeyA:15,Backspace:0};
+function setStatus(s){status.textContent=s}
+async function api(path,body){let r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body||{})});if(!r.ok)throw Error(await r.text());return r.json()}
+function send(clear=false){if(!channel||channel.readyState!=='open')return;let buttons=0,axes=[128,128,128,128];
+ if(!clear){for(let k of keys)if(map[k]!==undefined)buttons|=1<<map[k];
+ try{let gp=Array.from(navigator.getGamepads?.()||[]).find(x=>x);if(gp){const gm={0:14,1:13,2:15,3:12,4:10,5:11,6:8,7:9,8:0,9:3,10:1,11:2,12:4,13:6,14:7,15:5};for(let [a,b]of Object.entries(gm))if(gp.buttons[a]?.pressed)buttons|=1<<b;let axis=x=>Math.abs(x||0)<.08?128:Math.max(0,Math.min(255,Math.round(((x||0)+1)*127.5)));axes=[axis(gp.axes[2]),axis(gp.axes[3]),axis(gp.axes[0]),axis(gp.axes[1])];}}catch(e){}
+ if(keys.has('ArrowLeft'))axes[2]=0;if(keys.has('ArrowRight'))axes[2]=255;if(keys.has('ArrowUp'))axes[3]=0;if(keys.has('ArrowDown'))axes[3]=255;}
+ let state={buttons,axes};let t=performance.now();if(t-lastPing>1000){state.ping=t;lastPing=t}channel.send(JSON.stringify(state));}
+window.addEventListener('keydown',e=>{if(map[e.code]!==undefined&&!e.metaKey&&!e.ctrlKey&&!e.altKey){e.preventDefault();keys.add(e.code);send()}});
+window.addEventListener('keyup',e=>{if(map[e.code]!==undefined){e.preventDefault();keys.delete(e.code);send()}});
+window.addEventListener('blur',()=>{keys.clear();send(true)});document.addEventListener('visibilitychange',()=>{if(document.hidden){keys.clear();send(true)}});
+setInterval(()=>send(document.hidden),1000/60);
+async function disconnect(){keys.clear();send(true);if(pc){let old=pc;pc=null;old.close()}channel=null;v.srcObject=null;setStatus('Disconnected');lastStats=null}
+document.getElementById('disconnect').onclick=disconnect;
+document.getElementById('connect').onclick=async()=>{try{await disconnect();if(!token)throw Error('Use the private link, including its #access token.');setStatus('Connecting…');
+ pc=new RTCPeerConnection({iceServers:[]});const p=pc;const media=new MediaStream();v.srcObject=media;
+ p.ontrack=e=>{media.addTrack(e.track);v.play().catch(()=>setStatus('Connected — click Enable sound to start playback.'))};
+ p.onconnectionstatechange=()=>setStatus('Connection: '+p.connectionState+(p.connectionState==='connected'?' — Z accelerates, arrows steer.':''));
+ p.addTransceiver('video',{direction:'recvonly'});p.addTransceiver('audio',{direction:'recvonly'});
+ channel=p.createDataChannel('input',{ordered:false,maxRetransmits:0});channel.onmessage=e=>{try{let d=JSON.parse(e.data);if(d.pong)rtt=performance.now()-d.pong}catch(err){}};
+ await p.setLocalDescription(await p.createOffer());if(p.iceGatheringState!=='complete')await new Promise(resolve=>{p.addEventListener('icegatheringstatechange',()=>{if(p.iceGatheringState==='complete')resolve()})});
+ await p.setRemoteDescription(await api('/offer',{sdp:p.localDescription.sdp,type:p.localDescription.type}));
+ }catch(e){setStatus('Error: '+e.message)}};
+document.getElementById('sound').onclick=()=>{v.muted=false;v.play().catch(e=>setStatus(e.message))};
+document.getElementById('fullscreen').onclick=()=>{if(v.requestFullscreen)v.requestFullscreen();else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen()};
+document.getElementById('restart').onclick=async()=>{keys.clear();send(true);try{setStatus('Restarting saved race…');await api('/restart');setStatus('Race restarted — Z accelerates.')}catch(e){setStatus(e.message)}};
+setInterval(async()=>{if(!pc||pc.connectionState!=='connected')return;try{let reports=await pc.getStats();reports.forEach(s=>{if(s.type==='inbound-rtp'&&s.kind==='video'){let fps=lastStats?(s.framesDecoded-lastStats.frames)/((s.timestamp-lastStats.time)/1000):0;let delay=s.jitterBufferEmittedCount?s.jitterBufferDelay/s.jitterBufferEmittedCount*1000:0;stats.textContent=`Decoded ${s.frameWidth||1920}×${s.frameHeight||1080} · ${fps.toFixed(1)} FPS · control RTT ${rtt.toFixed(0)} ms · average video jitter buffer ${delay.toFixed(0)} ms`;lastStats={frames:s.framesDecoded,time:s.timestamp}}})}catch(e){}},1000);
+</script></html>

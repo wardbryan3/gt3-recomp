@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "notes": [
+    "Restoration patches against exact old bases; not current-main integration.",
+    "No game/generated bodies, raw analysis, installed tooling, tokens or machine state included."
+  ],
+  "donors": [
+    {
+      "donor": "contributions/gt3-baseline",
+      "base": "a02cdd56a8ab5077724da2b5ff8ca683024d7cf4",
+      "branch": "(detached)",
+      "source_patch": "experiments/legacy/contributions-gt3-baseline/source.patch",
+      "sha256": "6c4a56145374b25432df72f6095c83e32da539f836165fef43e0f23e60b16db9",
+      "tracked_source_paths": [
+        "CMakeLists.txt"
+      ],
+      "untracked_source_paths": [
+        "tests/gt3_core_test.py",
+        "tests/gt3_initialization_test.cpp",
+        "tests/gt3_state_test.cpp",
+        "tests/kernel_exit_delete_thread_test.cpp",
+        "tests/sif_scratchpad_test.cpp"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "lan-play/repo",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "(detached)",
+      "source_patch": "experiments/legacy/lan-play-repo/source.patch",
+      "sha256": "cacbc0117a17fac3e787e4cb2dab7e7b63a2850380c533131d273756881fbe97",
+      "tracked_source_paths": [
+        "CMakeLists.txt",
+        "host/gt3_controls.hpp",
+        "host/main.cpp",
+        "host/window.cpp",
+        "runtime/include/ps2/system.hpp",
+        "runtime/src/dispatch.cpp",
+        "runtime/src/gs/gpu/gpu.cpp",
+        "runtime/src/gs/gpu/gs.wgsl",
+        "runtime/src/gs/gs.cpp",
+        "runtime/src/gs/queue.hpp",
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "runtime/src/system.cpp",
+        "scripts/gt3_scene.probes",
+        "scripts/gt3_triple.py",
+        "scripts/gt4_core.py",
+        "scripts/port.sh",
+        "tests/anisotropic_test.cpp",
+        "tests/gt3_controls_test.cpp",
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh",
+        "tests/run_resolution_tests.sh"
+      ],
+      "untracked_source_paths": [
+        "host/benchmark.hpp",
+        "host/lan_input.cpp",
+        "host/lan_input.hpp",
+        "host/presentation_probe.cpp",
+        "host/presentation_probe.hpp",
+        "tests/queue_stress.cpp"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "performance/repo",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "(detached)",
+      "source_patch": "experiments/legacy/performance-repo/source.patch",
+      "sha256": "61b6e867d43a9d1296d43bd835776ed8c18afba3d4d38f5a54772827c0916558",
+      "tracked_source_paths": [
+        "CMakeLists.txt",
+        "host/gt3_controls.hpp",
+        "host/main.cpp",
+        "host/window.cpp",
+        "runtime/include/ps2/system.hpp",
+        "runtime/src/dispatch.cpp",
+        "runtime/src/gs/gpu/gpu.cpp",
+        "runtime/src/gs/gpu/gs.wgsl",
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "runtime/src/system.cpp",
+        "scripts/gt3_scene.probes",
+        "scripts/gt3_triple.py",
+        "scripts/gt4_core.py",
+        "scripts/port.sh",
+        "tests/anisotropic_test.cpp",
+        "tests/gt3_controls_test.cpp",
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh",
+        "tests/run_resolution_tests.sh"
+      ],
+      "untracked_source_paths": [
+        "host/benchmark.hpp",
+        "tests/queue_stress.cpp"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "presentation/repo",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "(detached)",
+      "source_patch": "experiments/legacy/presentation-repo/source.patch",
+      "sha256": "4f156728e4cf59f23caa456836b730e3bced48252d0d94b4fad4d0dd1b0ee8d2",
+      "tracked_source_paths": [
+        "CMakeLists.txt",
+        "host/gt3_controls.hpp",
+        "host/main.cpp",
+        "host/window.cpp",
+        "runtime/include/ps2/system.hpp",
+        "runtime/src/dispatch.cpp",
+        "runtime/src/gs/gpu/gpu.cpp",
+        "runtime/src/gs/gpu/gs.wgsl",
+        "runtime/src/gs/gs.cpp",
+        "runtime/src/gs/queue.hpp",
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "runtime/src/system.cpp",
+        "scripts/gt3_scene.probes",
+        "scripts/gt3_triple.py",
+        "scripts/gt4_core.py",
+        "scripts/port.sh",
+        "tests/anisotropic_test.cpp",
+        "tests/gt3_controls_test.cpp",
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh",
+        "tests/run_resolution_tests.sh"
+      ],
+      "untracked_source_paths": [
+        "host/benchmark.hpp",
+        "host/presentation_probe.cpp",
+        "host/presentation_probe.hpp",
+        "tests/queue_stress.cpp"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "ps2-web-recomp",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "main",
+      "source_patch": "experiments/legacy/ps2-web-recomp/source.patch",
+      "sha256": "82bfc8b5a440d4ccf55ae8cd15e5f83f484e952c1f1504be2ce5de968f2531b9",
+      "tracked_source_paths": [
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "scripts/gt4_core.py",
+        "scripts/port.sh"
+      ],
+      "untracked_source_paths": [
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "repro/repo",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "(detached)",
+      "source_patch": "experiments/legacy/repro-repo/source.patch",
+      "sha256": "fa7813fecb771fd8ad8ff4f22150fecf567843b16109c80038a096330bb9ca9b",
+      "tracked_source_paths": [
+        "host/main.cpp",
+        "runtime/include/ps2/system.hpp",
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "runtime/src/system.cpp",
+        "scripts/gt4_core.py",
+        "scripts/port.sh"
+      ],
+      "untracked_source_paths": [
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "resolution/repo",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "(detached)",
+      "source_patch": "experiments/legacy/resolution-repo/source.patch",
+      "sha256": "94fda7f403352dd7912fc7e78a3bea201c8c1976dfe94f3471e845d56d5e23dd",
+      "tracked_source_paths": [
+        "CMakeLists.txt",
+        "host/gt3_controls.hpp",
+        "host/main.cpp",
+        "host/window.cpp",
+        "runtime/include/ps2/system.hpp",
+        "runtime/src/dispatch.cpp",
+        "runtime/src/gs/gpu/gpu.cpp",
+        "runtime/src/gs/gpu/gs.wgsl",
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "runtime/src/system.cpp",
+        "scripts/gt3_scene.probes",
+        "scripts/gt3_triple.py",
+        "scripts/gt4_core.py",
+        "scripts/port.sh",
+        "tests/anisotropic_test.cpp",
+        "tests/gt3_controls_test.cpp",
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh",
+        "tests/run_resolution_tests.sh"
+      ],
+      "untracked_source_paths": [
+        "host/gt3_clean_steering.cpp",
+        "host/gt3_clean_steering.hpp",
+        "host/gt3_synthetic_wheel.cpp",
+        "host/gt3_synthetic_wheel.hpp",
+        "scripts/build_gt3_clean_steering.sh",
+        "scripts/build_gt3_synthetic_wheel.sh",
+        "scripts/gt3_wheel.probes",
+        "scripts/play_gt3_clean_steering.sh",
+        "scripts/play_gt3_synthetic_wheel.sh",
+        "scripts/validate_gt3_clean_steering.py",
+        "scripts/validate_gt3_synthetic_wheel.py",
+        "tests/gt3_clean_steering_test.cpp",
+        "tests/gt3_pedal_discovery.cpp",
+        "tests/gt3_steering_trace_test.cpp",
+        "tests/gt3_synthetic_wheel_test.cpp",
+        "tests/project_metadata_test.py",
+        "tests/run_gt3_clean_steering.sh",
+        "tests/run_gt3_synthetic_wheel.sh"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    },
+    {
+      "donor": "validation/repo",
+      "base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+      "branch": "main",
+      "source_patch": "experiments/legacy/validation-repo/source.patch",
+      "sha256": "fa7813fecb771fd8ad8ff4f22150fecf567843b16109c80038a096330bb9ca9b",
+      "tracked_source_paths": [
+        "host/main.cpp",
+        "runtime/include/ps2/system.hpp",
+        "runtime/src/hw.cpp",
+        "runtime/src/iop/hw.cpp",
+        "runtime/src/iop/sif.cpp",
+        "runtime/src/kernel.cpp",
+        "runtime/src/system.cpp",
+        "scripts/gt4_core.py",
+        "scripts/port.sh"
+      ],
+      "untracked_source_paths": [
+        "tests/gt3_hardware.cpp",
+        "tests/run_gt3_hardware.sh"
+      ],
+      "disposition": "preserved historical source; not applied wholesale to newer main"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# Unified restoration patches require literal space-prefixed empty context lines.
+# Preserve exact bytes/hashes/applicability; normal source whitespace checks remain.
+experiments/legacy/**/*.patch whitespace=-blank-at-eol

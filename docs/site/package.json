@@ -1,0 +1,24 @@
+{
+  "name": "gt3-native-knowledge-base",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "docusaurus start --host 0.0.0.0 --port 3100",
+    "build": "docusaurus build",
+    "diagrams": "node scripts/diagrams.mjs",
+    "serve": "docusaurus serve --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.9.2",
+    "@docusaurus/preset-classic": "3.9.2",
+    "@docusaurus/theme-mermaid": "3.9.2",
+    "@mdx-js/react": "3.1.1",
+    "clsx": "2.1.1",
+    "prism-react-renderer": "2.4.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": { "jsdom": "26.1.0" },
+  "overrides": { "webpack": "5.99.9" },
+  "engines": { "node": ">=20" }
+}

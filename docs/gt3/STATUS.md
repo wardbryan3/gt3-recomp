@@ -1,5 +1,19 @@
 # Status and evidence boundaries
 
+## Selective-decompilation source checkpoint
+
+Current main preserves the later controls/mapping, clean steering and synthetic
+adapter source, partial layouts, original-dependent fixture source, inventories,
+curated site and legacy restoration patches. Root justfile is the workflow.
+Hardware/SIF and source consistency tests pass; documentation needs no private
+artifacts. Strict optional verification checks eleven hashes and66 evidence IDs.
+
+**Clean/synthetic source is compile checked, not installed into current runtime.**
+Its exact original differentials/live results describe the preserved older build.
+Snapshot3 remains current; old v2 race states are not portable by changing a byte.
+See HANDOFF.md and experiments/legacy/README.md. No pedal/physical-wheel/FFB/AI API
+has been implemented by this checkpoint.
+
 ## Private experiment observations (before the public-tree rebase)
 
 - GT3 USA v1.10 menus/races and scoped projection/camera changes exercised.
@@ -35,7 +49,8 @@ coverage must be established before a release. No release binaries are provided.
 
 ## Known limits / follow-up
 
-- Not complete game-source recovery; only a narrow readable control reference.
+- Not complete game-source recovery; selected controls/steering source only, with
+  newer-main runtime integration still requiring original-oracle/live validation.
 - Supported triple-profile fingerprint is specific to the tested USA revision.
 - Overlay/replay issues and full game-mode coverage remain.
 - i.Link initialization emulation does not implement network play.

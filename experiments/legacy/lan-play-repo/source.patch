@@ -1,0 +1,1871 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1420ded..4859107 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -59,6 +59,14 @@ add_library(ps2runtime STATIC
+ target_include_directories(ps2runtime PUBLIC runtime/include)
+ target_compile_options(ps2runtime PRIVATE -Wall -Wextra)
+ 
++option(PS2_EXPERIMENT_SSE41_GPU "Use SSE4.1 rounding in graphics preparation on gpu-01" OFF)
++if(PS2_EXPERIMENT_SSE41_GPU)
++    if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64" OR EMSCRIPTEN)
++        message(FATAL_ERROR "Graphics SSE4.1 experiment requires native x86-64 with SSE4.1")
++    endif()
++    set_source_files_properties(runtime/src/gs/gpu/gpu.cpp PROPERTIES COMPILE_OPTIONS "-msse4.1")
++endif()
++
+ set(PS2_WGPU_DIR "${CMAKE_SOURCE_DIR}/third_party/wgpu-native" CACHE PATH "wgpu-native release folder")
+ if(EMSCRIPTEN OR EXISTS "${PS2_WGPU_DIR}/lib/libwgpu_native.a")
+     set(PS2_GS_WGSL "${CMAKE_BINARY_DIR}/gs_wgsl.cpp")
+diff --git a/host/gt3_controls.hpp b/host/gt3_controls.hpp
+new file mode 100644
+index 0000000..04e61da
+--- /dev/null
++++ b/host/gt3_controls.hpp
+@@ -0,0 +1,26 @@
++#pragma once
++#include <algorithm>
++#include <array>
++#include <cstdint>
++#include <stdexcept>
++
++namespace gt3 {
++// Selective decompilation of PBPX-95503 v1.10 EE routine 0x00210F90.
++// This helper normalizes a mapped input. Action names belong to its callers.
++inline std::uint32_t normalize_mapped_input(std::uint32_t channel_code,
++                                           std::uint32_t raw_value,
++                                           std::uint32_t sensitivity_percent,
++                                           const std::array<std::uint8_t, 256> &response_curve) {
++    if ((channel_code & 0xffu) < 4u) {
++        const std::uint32_t curved_value = response_curve[raw_value & 0xffu];
++        switch (channel_code & 0x300u) {
++        case 0x100u: return std::uint32_t(std::max(0, (128 - int(curved_value)) * 2));
++        case 0x200u: return std::uint32_t(std::max(0, (int(curved_value) - 128) * 2));
++        default: return curved_value;
++        }
++    }
++    if (!sensitivity_percent) throw std::invalid_argument("zero input sensitivity");
++    const std::uint32_t doubled_pressure = std::min((raw_value & 0xffu) * 2u, 256u);
++    return std::min(doubled_pressure * 100u / sensitivity_percent, 256u);
++}
++}
+diff --git a/host/main.cpp b/host/main.cpp
+index 4962c70..3660336 100644
+--- a/host/main.cpp
++++ b/host/main.cpp
+@@ -1,4 +1,7 @@
+ #include "ps2/system.hpp"
++#include "ps2/memory.hpp"
++#include "benchmark.hpp"
++#include <array>
+ 
+ #ifdef PS2_WINDOW
+ #include "window.hpp"
+@@ -8,6 +11,7 @@
+ #endif
+ 
+ #include <cstdio>
++#include <cmath>
+ #include <cstdlib>
+ #include <cstring>
+ #include <string>
+@@ -24,7 +28,7 @@ int usage() {
+                  "              [--disc image.iso] [--memcard card.ps2] [--pal | --ntsc] [--trace-syscalls] [--trace-io] [--trace-threads]\n"
+                  "              [--trace-iop] [--trace-iop-hle] [--frames-dir dir] [--frame-every n]\n"
+                  "              [--press frame:button[+button][:frames]]... [--window] [--fullscreen]\n"
+-                 "              [--save-state frame:file] [--load-state file]\n");
++                 "              [--save-state frame:file] [--load-state file] [--output-size WxH] [--aspect W:H] [--render-scale 1..9] [--render-scale-y 1..9] [--ram-word address:expected:value] [--gt3-triple] [--axis frame:axis:value:duration]\n");
+     return 2;
+ }
+ 
+@@ -34,7 +38,10 @@ int main(int argc, char **argv) {
+     if (argc < 2) return usage();
+     std::vector<std::string> args{argv[1]};
+     [[maybe_unused]] bool window = false, fullscreen = false;
++    bool gt3_triple = false;
++    int benchmark_workers = -1;
+     std::string load_path;
++    std::vector<std::array<unsigned, 3>> ram_words;
+     for (int i = 2; i < argc; ++i) {
+         const std::string a = argv[i];
+         if (a == "--arg" && i + 1 < argc) args.push_back(argv[++i]);
+@@ -51,12 +58,45 @@ int main(int argc, char **argv) {
+         else if (a == "--memcard" && i + 1 < argc) ps2::g_options.memcard_path = argv[++i];
+         else if (a == "--trace-iop") ps2::g_options.trace_iop_modules = true;
+         else if (a == "--trace-iop-hle") ps2::g_options.trace_iop_hle = true;
++        else if (a == "--gt3-triple") gt3_triple = true;
++        else if (a == "--ram-word" && i + 1 < argc) {
++            std::array<unsigned, 3> patch{}; char extra = 0;
++            if (std::sscanf(argv[++i], "%x:%x:%x%c", &patch[0], &patch[1], &patch[2], &extra) != 3 || (patch[0] & 3) || patch[0] > ps2::kRamSize - 4) return usage();
++            ram_words.push_back(patch);
++        }
++        else if (a == "--output-size" && i + 1 < argc) {
++            unsigned w = 0, h = 0; char extra = 0;
++            if (std::sscanf(argv[++i], "%ux%u%c", &w, &h, &extra) != 2 || !w || !h || w > 8192 || h > 8192) return usage();
++            ps2::g_options.output_width = w; ps2::g_options.output_height = h;
++        }
++        else if (a == "--aspect" && i + 1 < argc) {
++            unsigned w = 0, h = 0; char extra = 0;
++            if (std::sscanf(argv[++i], "%u:%u%c", &w, &h, &extra) != 2 || !w || !h || w > 64 || h > 64) return usage();
++            ps2::g_options.presentation_aspect = float(w) / float(h);
++        }
++        else if (a == "--render-scale-y" && i + 1 < argc) {
++            char *end = nullptr; const long scale = std::strtol(argv[++i], &end, 10);
++            if (*end || scale < 1 || scale > 9) return usage();
++            setenv("PS2_SCALE_Y", argv[i], 1);
++        }
++        else if (a == "--render-scale" && i + 1 < argc) {
++            char *end = nullptr; const long scale = std::strtol(argv[++i], &end, 10);
++            if (*end || scale < 1 || scale > 9) return usage();
++            setenv("PS2_SCALE", argv[i], 1);
++        }
+         else if (a == "--frames-dir" && i + 1 < argc) ps2::g_options.frames_dir = argv[++i];
+         else if (a == "--press" && i + 1 < argc) {
+             ps2::Press press;
+             if (!ps2::parse_press(argv[++i], press)) return usage();
+             ps2::g_options.presses.push_back(press);
+         }
++        else if (a == "--axis" && i + 1 < argc) {
++            unsigned long long frame;
++            unsigned axis, value, duration;
++            char extra;
++            if (std::sscanf(argv[++i], "%llu:%u:%u:%u%c", &frame, &axis, &value, &duration, &extra) != 4 || axis > 3 || value > 255 || !duration) return usage();
++            ps2::g_options.axes.push_back({frame, duration, axis, static_cast<std::uint8_t>(value)});
++        }
+ #ifdef PS2_WINDOW
+         else if (a == "--window") window = true;
+         else if (a == "--fullscreen") window = fullscreen = true;
+@@ -70,9 +110,35 @@ int main(int argc, char **argv) {
+             ps2::g_options.save_state_path = spec.substr(colon + 1);
+         }
+         else if (a == "--load-state" && i + 1 < argc) load_path = argv[++i];
++        else if (a == "--benchmark-path" && i + 1 < argc) {
++            const std::string path = argv[++i];
++            if (path == "single") benchmark_workers = 0;
++            else if (path == "render") benchmark_workers = 1;
++            else if (path == "vu") benchmark_workers = 2;
++            else return usage();
++        }
++        else if (a == "--benchmark-capture" && i + 1 < argc) experiment::capture = argv[++i];
+         else return usage();
+     }
+ 
++    if (gt3_triple) {
++        // Address map is pinned to the fingerprint-checked GT3 PBPX-95503 v1.10 profile.
++        ps2::g_options.on_probe = [](ps2::Cpu &, std::uint32_t pc) {
++            if (pc == 0x0017e888u) {
++                ps2::st32(0x002f424cu, 1u); // GT3 display configuration: widescreen enabled.
++                ps2::scene_aspect(16.0f / 3.0f);
++            }
++        };
++        ps2::g_options.on_scene_end = [] { ps2::st32(0x002f424cu, 0u); };
++        ram_words.insert(ram_words.end(), {
++            {0x34fd04u, 0x3fb6d98cu, 0x3eb6d98cu},
++            {0x34fd74u, 0xc2d55556u, 0xc46e0000u},
++            {0x34fd78u, 0x443aaaaau, 0x44c70000u},
++            {0x34ffc8u, 0xc2d4dd70u, 0xc46e0000u},
++            {0x34ffccu, 0x443a9baeu, 0x44c70000u},
++        });
++    }
++
+ #ifdef PS2_WINDOW
+     if (window && !open_window(fullscreen)) return 1;
+ #endif
+@@ -86,6 +152,13 @@ int main(int argc, char **argv) {
+         }
+         ps2::boot(entry, args);
+         if (!load_path.empty() && !ps2::load_state(load_path)) return 1;
++        for (const auto &p : ram_words) {
++            const auto actual = ps2::ld32(p[0]);
++            if (actual != p[1] && actual != p[2]) {
++                std::fprintf(stderr, "[profile] data mismatch at %08x: got %08x\n", p[0], actual); return 1;
++            }
++        }
++        for (const auto &p : ram_words) ps2::st32(p[0], p[2]);
+ #ifdef PS2_PROFILE
+         const char *profile = std::getenv("PS2_PROFILE");
+         const char *profile_from = std::getenv("PS2_PROFILE_FROM");
+@@ -97,6 +170,10 @@ int main(int argc, char **argv) {
+         return ps2::run();
+ #endif
+     };
++    if (benchmark_workers >= 0) {
++        if (window || std::getenv("PS2_TIME") || !ps2::g_options.frames_dir.empty()) return usage();
++        return experiment::run(emulate, static_cast<unsigned>(benchmark_workers));
++    }
+ #ifdef PS2_WINDOW
+     if (window) return run_window(emulate);
+ #endif
+diff --git a/host/window.cpp b/host/window.cpp
+index f5e8d58..acb2470 100644
+--- a/host/window.cpp
++++ b/host/window.cpp
+@@ -1,4 +1,8 @@
+ #include "window.hpp"
++#include "presentation_probe.hpp"
++#include "lan_input.hpp"
++#include "../runtime/src/gs/gs.hpp"
++#include "../runtime/src/gs/queue.hpp"
+ 
+ #include "ps2/system.hpp"
+ 
+@@ -124,6 +128,8 @@ void rumble() {
+ }
+ 
+ void poll() {
++    // Controlled experiment: retain only scheduled game input, not desktop input.
++    if (std::getenv("PS2_WINDOW_BENCH")) return;
+     SDL_Event e;
+     while (SDL_PollEvent(&e)) {
+         if (e.type == SDL_QUIT) ps2::halt("window closed");
+@@ -137,12 +143,15 @@ void poll() {
+             SDL_GetWindowSizeInPixels(g_window, &w, &h);
+             ps2::resize_window(static_cast<std::uint32_t>(w), static_cast<std::uint32_t>(h));
+         }
+-        if (e.type == SDL_CONTROLLERDEVICEADDED && !g_pad) g_pad = SDL_GameControllerOpen(e.cdevice.which);
++        if (e.type == SDL_CONTROLLERDEVICEADDED && !g_pad && !std::getenv("PS2_LAN_VIDEO")) g_pad = SDL_GameControllerOpen(e.cdevice.which);
+         if (e.type == SDL_CONTROLLERDEVICEREMOVED && g_pad && e.cdevice.which == SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(g_pad))) {
+             SDL_GameControllerClose(g_pad);
+             g_pad = nullptr;
+         }
+     }
++    probe::pump();
++    if(std::getenv("PS2_LAN_VIDEO")) { lan::poll(); return; }
++    if (std::getenv("PS2_SCRIPTED_INPUT")) return;
+     const Uint8 *keys = SDL_GetKeyboardState(nullptr);
+     std::uint16_t pressed = 0;
+     for (const KeyBinding &b : kKeys)
+@@ -188,10 +197,16 @@ void show_pixels(const std::uint32_t *rgba, std::uint32_t w, std::uint32_t h) {
+     if (w != g_tex_w || h != g_tex_h) {
+         if (g_texture) SDL_DestroyTexture(g_texture);
+         g_texture = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, static_cast<int>(w), static_cast<int>(h));
+-        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w) * 3 / 4);
++        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w / ps2::presentation_aspect()));
+         g_tex_w = w;
+         g_tex_h = h;
+     }
++    static float last_aspect = 0.0f;
++    const float aspect = ps2::presentation_aspect();
++    if (last_aspect != aspect) {
++        SDL_RenderSetLogicalSize(g_renderer, static_cast<int>(w), static_cast<int>(w / aspect));
++        last_aspect = aspect;
++    }
+     SDL_UpdateTexture(g_texture, nullptr, rgba, static_cast<int>(w * 4));
+     SDL_RenderClear(g_renderer);
+     SDL_RenderCopy(g_renderer, g_texture, nullptr, nullptr);
+@@ -210,9 +225,13 @@ void present() {
+ constexpr Uint32 kAudioBytesPerMs = 48 * 4;
+ 
+ void pace() {
++    if (std::getenv("PS2_WINDOW_BENCH")) return;
+     if (g_audio) {
+         // The audio device clock paces emulation: wait while more than ~80 ms of sound is queued.
++        const auto before = SDL_GetQueuedAudioSize(g_audio);
++        const auto start = SDL_GetPerformanceCounter();
+         while (SDL_GetQueuedAudioSize(g_audio) > 80 * kAudioBytesPerMs) SDL_Delay(1);
++        probe::pace_sample(before, SDL_GetQueuedAudioSize(g_audio), double(SDL_GetPerformanceCounter()-start)*1000.0/SDL_GetPerformanceFrequency());
+         return;
+     }
+     const std::uint64_t frequency = SDL_GetPerformanceFrequency();
+@@ -242,6 +261,18 @@ double resident_mb() {
+ }
+ 
+ void show_speed() {
++    if (std::getenv("PS2_WINDOW_BENCH")) {
++        static unsigned completed = 0;
++        static std::uint64_t bench_start = 0;
++        ++completed;
++        if (completed == 300 || completed == 900) {
++            ps2::gs::flush_and_wait(); // This callback owns the GPU in both paths.
++            const auto now = SDL_GetPerformanceCounter();
++            if (completed == 300) bench_start = now;
++            else std::fprintf(stderr, "[window-benchmark] frames=600 warmup=300 ms/frame=%.4f\n",
++                double(now - bench_start) * 1000.0 / double(SDL_GetPerformanceFrequency()) / 600.0);
++        }
++    }
+     static std::uint64_t start = 0, frames = 0;
+     static double cpu_start = 0.0, gpu_start = 0.0;
+     const std::uint64_t now = SDL_GetPerformanceCounter();
+@@ -268,13 +299,24 @@ void show_speed() {
+ void on_vblank() {
+     show_speed();
+     poll();
++    lan::apply();
+     present();
+     pace();
+ }
+ 
+ void queue_audio(const std::int16_t *samples, std::size_t frames) {
+-    if (SDL_GetQueuedAudioSize(g_audio) > 500 * kAudioBytesPerMs) return;
+-    SDL_QueueAudio(g_audio, samples, static_cast<Uint32>(frames * 4));
++    const auto before = SDL_GetQueuedAudioSize(g_audio);
++    if (before > 500 * kAudioBytesPerMs) { probe::audio_push(frames,before,true,false); return; }
++    const bool failed = SDL_QueueAudio(g_audio, samples, static_cast<Uint32>(frames * 4)) != 0;
++    probe::audio_push(frames,before,false,failed);
++}
++
++void final_hold() {
++    if (const char *ms=std::getenv("PS2_PRESENT_HOLD_MS")) {
++        const auto until=SDL_GetTicks64()+std::strtoull(ms,nullptr,10);
++        std::fprintf(stderr,"[capture-hold] ready\n");
++        while(SDL_GetTicks64()<until) { probe::pump(); SDL_Delay(5); }
++    }
+ }
+ 
+ }
+@@ -285,11 +327,17 @@ bool open_window(bool fullscreen) {
+         return false;
+     }
+     const Uint32 flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0u);
+-    g_window = SDL_CreateWindow("ps2-web-recomp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 960, 720, flags);
++    g_window = SDL_CreateWindow("ps2-web-recomp", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ps2::g_options.output_width ? ps2::g_options.output_width : 960, ps2::g_options.output_height ? ps2::g_options.output_height : 720, flags);
+     if (!g_window) {
+         std::fprintf(stderr, "SDL: %s\n", SDL_GetError());
+         return false;
+     }
++    int drawable_width = 0, drawable_height = 0;
++    SDL_GetWindowSizeInPixels(g_window, &drawable_width, &drawable_height);
++    std::fprintf(stderr, "[window] requested %ux%u, drawable %dx%d\n", ps2::g_options.output_width, ps2::g_options.output_height, drawable_width, drawable_height);
++    if(std::getenv("PS2_REQUIRE_DRAWABLE") && (drawable_width!=5760 || drawable_height!=1080)) {
++        std::fprintf(stderr,"[validation] wrong drawable\n"); return false;
++    }
+     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+     SDL_AudioSpec want{}, have{};
+     want.freq = 48000;
+@@ -297,11 +345,14 @@ bool open_window(bool fullscreen) {
+     want.channels = 2;
+     want.samples = 1024;
+     g_audio = SDL_OpenAudioDevice(nullptr, 0, &want, &have, 0);
++    std::fprintf(stderr,"[audio-device] opened=%u backend=%s rate=%d channels=%u samples=%u error=%s\n",g_audio,SDL_GetCurrentAudioDriver(),have.freq,have.channels,have.samples,g_audio?"none":SDL_GetError());
+     if (g_audio) {
+         SDL_PauseAudioDevice(g_audio, 0);
+         ps2::set_audio_sink(queue_audio);
+     }
+-    for (int i = 0; i < SDL_NumJoysticks() && !g_pad; ++i)
++    if(std::getenv("PS2_REQUIRE_AUDIO") && !g_audio) return false;
++    if(!lan::init()) return false;
++    for (int i = 0; !std::getenv("PS2_LAN_VIDEO") && i < SDL_NumJoysticks() && !g_pad; ++i)
+         if (SDL_IsGameController(i)) g_pad = SDL_GameControllerOpen(i);
+     if (fullscreen) SDL_ShowCursor(SDL_DISABLE);
+     return true;
+@@ -311,14 +362,21 @@ int run_window(const std::function<int()> &emulate) {
+     ps2::init_graphics();
+     g_gpu_present = attach_gpu();
+     std::fprintf(stderr, "[window] %s\n", g_gpu_present ? "presenting through WebGPU" : "presenting through SDL");
++    if(std::getenv("PS2_REQUIRE_DRAWABLE") && !g_gpu_present) return 1;
+     if (!g_gpu_present && !create_renderer()) return 1;
++    probe::init(g_window,g_audio);
+     const bool threads = !std::getenv("PS2_ONE_THREAD") && !std::getenv("PS2_TIME") && ps2::g_options.frames_dir.empty();
+     if (!threads) {
+         ps2::g_options.on_vblank = on_vblank;
+-        return emulate();
++        const int result=emulate();
++        final_hold(); probe::finish(); SDL_Quit();
++        return result;
+     }
+-    ps2::g_options.on_vblank = [] {
+-        ps2::post_present();
++    std::atomic<unsigned> posted{0}, completed{0}, fenced{0};
++    const bool drain=std::getenv("PS2_PRESENT_CSV") != nullptr || std::getenv("PS2_LAN_VIDEO") != nullptr;
++    ps2::g_options.on_vblank = [&] {
++        lan::apply();
++        ps2::post_present(); ++posted;
+         pace();
+     };
+     ps2::start_render_thread();
+@@ -330,15 +388,23 @@ int run_window(const std::function<int()> &emulate) {
+     int result = 0;
+     std::thread emulation([&] {
+         result = emulate();
++        if(drain) {
++            const auto target=reinterpret_cast<std::uintptr_t>(&fenced);
++            ps2::gs::queue::post(ps2::gs::queue::kValidationFence,0,0,&target,sizeof target);
++        }
+         done.store(true);
+         ps2::wake_render_thread();
+     });
+     const std::function<void(const std::uint32_t *, std::uint32_t, std::uint32_t)> copy = show_pixels, none;
+-    while (!done.load()) {
++    while (!done.load() || (drain && !fenced.load())) {
+         poll();
+-        if (ps2::render_pending(g_gpu_present, g_gpu_present ? none : copy, show_speed, 8.0) == ps2::Rendered::idle) ps2::wait_render_work(4);
++        const auto rendered=ps2::render_pending(g_gpu_present, g_gpu_present ? none : copy, show_speed, 8.0);
++        if(rendered==ps2::Rendered::presented) ++completed;
++        if(rendered==ps2::Rendered::idle) ps2::wait_render_work(4);
+     }
+     emulation.join();
++    std::fprintf(stderr,"[shutdown] posted=%u completed=%u drain=%d fence_only=1 detached_vu_exit=1\n",posted.load(),completed.load(),drain);
++    final_hold(); probe::finish();
+     SDL_Quit();
+     std::fflush(nullptr);
+     std::_Exit(result);
+diff --git a/runtime/include/ps2/system.hpp b/runtime/include/ps2/system.hpp
+index 0eb5552..8d276a9 100644
+--- a/runtime/include/ps2/system.hpp
++++ b/runtime/include/ps2/system.hpp
+@@ -21,7 +21,16 @@ struct Press {
+     std::uint16_t buttons;
+ };
+ 
++struct AxisInput {
++    std::uint64_t frame;
++    std::uint32_t frames;
++    unsigned axis;
++    std::uint8_t value;
++};
++
+ struct Options {
++    std::uint32_t output_width = 0, output_height = 0;
++    float presentation_aspect = 4.0f / 3.0f;
+     bool trace_syscalls = false;
+     bool trace_io = false;
+     bool trace_threads = false;
+@@ -35,12 +44,18 @@ struct Options {
+     std::string frames_dir;
+     std::uint32_t frame_every = 60;
+     std::vector<Press> presses;
++    std::vector<AxisInput> axes;
+     std::function<void()> on_vblank;
++    std::function<void(Cpu &, std::uint32_t)> on_probe;
++    std::function<void()> on_scene_end;
+     std::function<void(const std::string &name, const std::uint8_t *code, std::size_t size)> on_vu_program;
+     std::string memcard_path;
+     std::function<void()> on_memcard_saved;
+     std::string save_state_path;
+     std::uint64_t save_state_frame = 0;
++    // Experiment-only telemetry: 0=surface begin, 1=submitted, 2=reconfigure/failure.
++    std::function<void(unsigned, unsigned, unsigned)> on_surface_event;
++    std::function<void(const void *, unsigned, unsigned, unsigned)> on_video_capture;
+ };
+ 
+ extern Options g_options;
+@@ -94,6 +109,8 @@ bool attach_window(const WindowTarget &target);
+ void resize_window(std::uint32_t width, std::uint32_t height);
+ bool present_frame();
+ void init_graphics();
++float presentation_aspect();
++void scene_aspect(float aspect);
+ void start_render_thread();
+ void start_vu_thread();
+ void run_vu_thread();
+diff --git a/runtime/src/dispatch.cpp b/runtime/src/dispatch.cpp
+index 654a6da..a9b39c8 100644
+--- a/runtime/src/dispatch.cpp
++++ b/runtime/src/dispatch.cpp
+@@ -162,6 +162,7 @@ void stop(Cpu &c, std::uint32_t pc, const char *what) {
+ }
+ 
+ void probe(Cpu &c, std::uint32_t pc) {
++    if (g_options.on_probe) { g_options.on_probe(c, pc); return; }
+     std::fprintf(stderr, "[probe] 0x%08X a0 %08X a1 %08X a2 %08X a3 %08X ra %08X v0 %08X\n", pc, c.r[4].w[0], c.r[5].w[0], c.r[6].w[0],
+                  c.r[7].w[0], c.r[31].w[0], c.r[2].w[0]);
+ }
+diff --git a/runtime/src/gs/gpu/gpu.cpp b/runtime/src/gs/gpu/gpu.cpp
+index f3f0992..b1705dd 100644
+--- a/runtime/src/gs/gpu/gpu.cpp
++++ b/runtime/src/gs/gpu/gpu.cpp
+@@ -53,7 +53,7 @@ WGPUBindGroup g_blit_group = nullptr;
+ WGPUBuffer g_blit_params = nullptr;
+ std::uint32_t g_field = 0, g_last_width = 0, g_last_height = 0;
+ bool g_have_previous = false;
+-std::uint32_t g_scale = 1, g_copy_words = 1u << 20, g_field_words = 1u << 19;
++std::uint32_t g_scale_x = 1, g_scale_y = 1, g_copy_words = 1u << 20, g_field_words = 1u << 19;
+ 
+ std::uint32_t field_base(std::uint32_t field) { return g_copy_words + (field & 1u) * g_field_words; }
+ 
+@@ -343,9 +343,9 @@ std::vector<Span> g_spans;
+ std::vector<std::uint32_t> g_span_start;
+ 
+ void add_spans(const std::uint32_t *rec, std::uint32_t lo, std::uint32_t hi) {
+-    const int sc = static_cast<int>(g_scale);
+-    const int tx0 = static_cast<int>(lo & 0xFFFFu) * sc / 16, ty0 = static_cast<int>(lo >> 16) * sc / 16;
+-    const int tx1 = (static_cast<int>(hi & 0xFFFFu) * sc + sc - 1) / 16, ty1 = (static_cast<int>(hi >> 16) * sc + sc - 1) / 16;
++    const int scale_x = static_cast<int>(g_scale_x), scale_y = static_cast<int>(g_scale_y);
++    const int tx0 = static_cast<int>(lo & 0xFFFFu) * scale_x / 16, ty0 = static_cast<int>(lo >> 16) * scale_y / 16;
++    const int tx1 = (static_cast<int>(hi & 0xFFFFu) * scale_x + scale_x - 1) / 16, ty1 = (static_cast<int>(hi >> 16) * scale_y + scale_y - 1) / 16;
+     const auto whole = [&] {
+         for (int ty = ty0; ty <= ty1; ++ty) g_spans.push_back({static_cast<std::int16_t>(ty), static_cast<std::int16_t>(tx0), static_cast<std::int16_t>(tx1)});
+     };
+@@ -369,9 +369,9 @@ void add_spans(const std::uint32_t *rec, std::uint32_t lo, std::uint32_t hi) {
+         m[e] = kind[e] ? -cb / ca : cb;
+         q[e] = kind[e] ? -cc / ca : cc;
+     }
+-    const double span = 16.0 / static_cast<double>(sc);
++    const double span_x = 16.0 / scale_x, span_y = 16.0 / scale_y;
+     for (int ty = ty0; ty <= ty1; ++ty) {
+-        const double y0 = ty * span - 1.0, y1 = (ty + 1) * span + 1.0;
++        const double y0 = ty * span_y - 1.0, y1 = (ty + 1) * span_y + 1.0;
+         double left = -1e30, right = 1e30;
+         bool empty = false;
+         for (int e = 0; e < 3; ++e) {
+@@ -383,8 +383,8 @@ void add_spans(const std::uint32_t *rec, std::uint32_t lo, std::uint32_t hi) {
+         left -= 1.0;
+         right += 1.0;
+         if (empty || left > right) continue;
+-        const int rx0 = std::max(tx0, static_cast<int>(std::floor(std::max(left, -1.0) / span)));
+-        const int rx1 = std::min(tx1, static_cast<int>(std::floor(std::min(right, 4096.0) / span)));
++        const int rx0 = std::max(tx0, static_cast<int>(std::floor(std::max(left, -1.0) / span_x)));
++        const int rx1 = std::min(tx1, static_cast<int>(std::floor(std::min(right, 4096.0) / span_x)));
+         if (rx0 <= rx1) g_spans.push_back({static_cast<std::int16_t>(ty), static_cast<std::int16_t>(rx0), static_cast<std::int16_t>(rx1)});
+     }
+ }
+@@ -476,7 +476,7 @@ void plan_decodes(std::uint32_t prims) {
+         if (!inside(mu, w[18], tw) || !inside(mv, w[19], th)) continue;
+         const std::uint32_t words = 1u << (tw + th);
+         if (g_decoded_used + words > kDecodedWords) continue;
+-        if (g_scale > 1 && rendered(pages(w[12], w[13], w[14], 0, 0, (1 << tw) - 1, (1 << th) - 1))) continue;
++        if (g_scale_x * g_scale_y > 1 && rendered(pages(w[12], w[13], w[14], 0, 0, (1 << tw) - 1, (1 << th) - 1))) continue;
+         w[24] = g_decoded_used;
+         g_decodes.push_back({i, g_decoded_used, words});
+         g_decoded_used += words;
+@@ -507,7 +507,7 @@ std::uint32_t snapshot_batch(std::uint32_t prims, std::uint32_t &lo, std::uint32
+     lo = static_cast<std::uint32_t>(std::min<std::uint64_t>(shared.lo, kMemorySize) / 4);
+     hi = static_cast<std::uint32_t>(std::min<std::uint64_t>(shared.hi, kMemorySize) / 4);
+     if (hi <= lo) return 0;
+-    const std::uint32_t words = (hi - lo) * g_scale * g_scale;
++    const std::uint32_t words = (hi - lo) * g_scale_x * g_scale_y;
+     dispatch_linear(kSnapshot, words, push_params({lo, words}));
+     return words;
+ }
+@@ -905,7 +905,7 @@ void submit(WGPUTextureView present_view = nullptr) {
+         rd.colorAttachments = &color;
+         WGPURenderPassEncoder rp = wgpuCommandEncoderBeginRenderPass(enc, &rd);
+         const float w = static_cast<float>(g_surface_width), h = static_cast<float>(g_surface_height);
+-        const float vw = std::min(w, h * 4.0f / 3.0f), vh = vw * 3.0f / 4.0f;
++        const float vw = std::min(w, h * presentation_aspect()), vh = vw / presentation_aspect();
+         wgpuRenderPassEncoderSetViewport(rp, (w - vw) * 0.5f, (h - vh) * 0.5f, vw, vh, 0.0f, 1.0f);
+         wgpuRenderPassEncoderSetPipeline(rp, g_blit);
+         wgpuRenderPassEncoderSetBindGroup(rp, 0, g_blit_group, 0, nullptr);
+@@ -1171,13 +1171,22 @@ bool init(Mode m) {
+             g_profile_to = z;
+         }
+     }
+-    if (const char *scale = std::getenv("PS2_SCALE")) g_scale = std::clamp<std::uint32_t>(static_cast<std::uint32_t>(std::atoi(scale)), 1u, 3u);
+-    g_copy_words = (1u << 20) * g_scale * g_scale;
+-    g_tiles_per_row = (2048 * static_cast<int>(g_scale) + 15) / 16;
+-    g_tile_count.assign(static_cast<std::size_t>(g_tiles_per_row) * g_tiles_per_row, 0);
+-    g_tile_fill.assign(static_cast<std::size_t>(g_tiles_per_row) * g_tiles_per_row, 0);
+-    g_field_words = (1u << 19) * g_scale * g_scale;
+-    g_vram = make_buffer(static_cast<std::uint64_t>(kMemorySize) * g_scale * g_scale, WGPUBufferUsage_Storage | WGPUBufferUsage_CopySrc | WGPUBufferUsage_CopyDst);
++    if (const char *scale = std::getenv("PS2_SCALE")) g_scale_x = std::clamp<std::uint32_t>(static_cast<std::uint32_t>(std::atoi(scale)), 1u, 9u);
++    g_scale_y = g_scale_x;
++    if (const char *scale = std::getenv("PS2_SCALE_Y")) g_scale_y = std::clamp<std::uint32_t>(static_cast<std::uint32_t>(std::atoi(scale)), 1u, 9u);
++    const std::uint64_t scaled_scratch_bytes = (8ull << 20) * g_scale_x * g_scale_y;
++    if (scaled_scratch_bytes > supported.maxStorageBufferBindingSize || scaled_scratch_bytes > supported.maxBufferSize) {
++        std::fprintf(stderr, "[gpu] requested render scale exceeds adapter buffer limits\n");
++        return false;
++    }
++    std::fprintf(stderr, "[gpu] internal render scale %ux%u, presentation aspect %.6f\n", g_scale_x, g_scale_y, presentation_aspect());
++    g_copy_words = (1u << 20) * g_scale_x * g_scale_y;
++    g_tiles_per_row = (2048 * static_cast<int>(g_scale_x) + 15) / 16;
++    const int tile_rows = (2048 * static_cast<int>(g_scale_y) + 15) / 16;
++    g_tile_count.assign(static_cast<std::size_t>(g_tiles_per_row) * tile_rows, 0);
++    g_tile_fill.assign(static_cast<std::size_t>(g_tiles_per_row) * tile_rows, 0);
++    g_field_words = (1u << 19) * g_scale_x * g_scale_y;
++    g_vram = make_buffer(static_cast<std::uint64_t>(kMemorySize) * g_scale_x * g_scale_y, WGPUBufferUsage_Storage | WGPUBufferUsage_CopySrc | WGPUBufferUsage_CopyDst);
+     std::vector<std::uint32_t> tables;
+     swizzle_tables(tables);
+     g_tables = make_buffer(tables.size() * 4, WGPUBufferUsage_Storage | WGPUBufferUsage_CopyDst);
+@@ -1229,11 +1238,11 @@ bool init(Mode m) {
+         cd.layout = g_pipeline_layout;
+         cd.compute.module = module;
+         cd.compute.entryPoint = view(kEntryPoints[i]);
+-        WGPUConstantEntry constant = WGPU_CONSTANT_ENTRY_INIT;
+-        constant.key = view("SCALE");
+-        constant.value = static_cast<double>(g_scale);
+-        cd.compute.constantCount = 1;
+-        cd.compute.constants = &constant;
++        WGPUConstantEntry constants[2] = {WGPU_CONSTANT_ENTRY_INIT, WGPU_CONSTANT_ENTRY_INIT};
++        constants[0].key = view("SCALE_X"); constants[0].value = static_cast<double>(g_scale_x);
++        constants[1].key = view("SCALE_Y"); constants[1].value = static_cast<double>(g_scale_y);
++        cd.compute.constantCount = 2;
++        cd.compute.constants = constants;
+         g_pipelines[i] = wgpuDeviceCreateComputePipeline(g_device, &cd);
+         if (!g_pipelines[i]) return false;
+     }
+@@ -1272,8 +1281,8 @@ void draw(const State &st, const Vertex *v, int count) {
+     const int scay0 = static_cast<int>(setup[11] & 0xFFFFu), scay1 = static_cast<int>(setup[11] >> 16);
+     const auto sx = [&](const Vertex &p) { return (static_cast<float>(p.x) - static_cast<float>(ofx)) / 16.0f; };
+     const auto sy = [&](const Vertex &p) { return (static_cast<float>(p.y) - static_cast<float>(ofy)) / 16.0f; };
+-    const float samples = static_cast<float>(g_scale);
+-    const auto first = [&](float lo) { return static_cast<int>(std::floor(std::ceil(lo * samples) / samples)); };
++    const float samples_x = static_cast<float>(g_scale_x), samples_y = static_cast<float>(g_scale_y);
++    const auto first = [&](float lo, float samples) { return static_cast<int>(std::floor(std::ceil(lo * samples) / samples)); };
+ 
+     std::uint32_t rec[kPrimWords] = {};
+     int minx, miny, maxx, maxy;
+@@ -1283,9 +1292,9 @@ void draw(const State &st, const Vertex *v, int count) {
+         const float x0 = sx(v[0]), y0 = sy(v[0]), x1 = sx(v[1]), y1 = sy(v[1]), x2 = sx(v[2]), y2 = sy(v[2]);
+         const float area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0);
+         if (area == 0.0f) return;
+-        minx = std::max(scax0, first(std::min({x0, x1, x2})));
++        minx = std::max(scax0, first(std::min({x0, x1, x2}), samples_x));
+         maxx = std::min(scax1, static_cast<int>(std::ceil(std::max({x0, x1, x2}))) - 1);
+-        miny = std::max(scay0, first(std::min({y0, y1, y2})));
++        miny = std::max(scay0, first(std::min({y0, y1, y2}), samples_y));
+         maxy = std::min(scay1, static_cast<int>(std::ceil(std::max({y0, y1, y2}))) - 1);
+         rec[1] = 0;
+         const float xy[6] = {x0, y0, x1, y1, x2, y2};
+@@ -1468,8 +1477,8 @@ void local_copy(const State &s) {
+     const std::uint32_t write = push_params({static_cast<std::uint32_t>(buf >> 32) & 0x3FFFu, static_cast<std::uint32_t>(buf >> 48) & 0x3Fu, static_cast<std::uint32_t>(buf >> 56) & 0x3Fu,
+                                              static_cast<std::uint32_t>(pos >> 32) & 0x7FFu, static_cast<std::uint32_t>(pos >> 48) & 0x7FFu, w, h,
+                                              static_cast<std::uint32_t>(pos >> 59) & 3u});
+-    dispatch_linear(kCopyRead, w * h * g_scale * g_scale, read);
+-    dispatch_linear(kCopyWrite, w * h * g_scale * g_scale, write);
++    dispatch_linear(kCopyRead, w * h * g_scale_x * g_scale_y, read);
++    dispatch_linear(kCopyWrite, w * h * g_scale_x * g_scale_y, write);
+ }
+ 
+ void load_clut(std::uint64_t tex0, std::uint64_t texclut) {
+@@ -1540,10 +1549,10 @@ bool download_async(std::uint8_t *memory, std::uint32_t offset, std::uint32_t by
+         g_pending.buffer = make_buffer(bytes, WGPUBufferUsage_MapRead | WGPUBufferUsage_CopyDst);
+     }
+     flush_all();
+-    if (g_scale != 1) dispatch_linear(kResolve, bytes / 4, push_params({offset / 4}));
++    if (g_scale_x * g_scale_y != 1) dispatch_linear(kResolve, bytes / 4, push_params({offset / 4}));
+     submit();
+     WGPUCommandEncoder enc = wgpuDeviceCreateCommandEncoder(g_device, nullptr);
+-    wgpuCommandEncoderCopyBufferToBuffer(enc, g_scale == 1 ? g_vram : g_scratch, offset, g_pending.buffer, 0, bytes);
++    wgpuCommandEncoderCopyBufferToBuffer(enc, g_scale_x * g_scale_y == 1 ? g_vram : g_scratch, offset, g_pending.buffer, 0, bytes);
+     WGPUCommandBuffer cmd = wgpuCommandEncoderFinish(enc, nullptr);
+     wgpuQueueSubmit(g_queue, 1, &cmd);
+     wgpuCommandBufferRelease(cmd);
+@@ -1573,7 +1582,7 @@ bool finish_download(std::uint32_t serial) {
+ 
+ void download(std::uint8_t *memory, std::uint32_t offset, std::uint32_t bytes) {
+     flush_all();
+-    if (g_scale == 1) {
++    if (g_scale_x * g_scale_y == 1) {
+         submit();
+         read_back(g_vram, bytes, memory + offset, offset);
+         return;
+@@ -1586,8 +1595,8 @@ void download(std::uint8_t *memory, std::uint32_t offset, std::uint32_t bytes) {
+ void read_state(std::vector<std::uint32_t> &vram, std::uint32_t &scale, std::vector<std::uint32_t> &clut) {
+     flush_all();
+     submit();
+-    scale = g_scale;
+-    vram.resize(static_cast<std::size_t>(kMemorySize / 4) * g_scale * g_scale);
++    scale = g_scale_x == g_scale_y ? g_scale_x : (g_scale_x << 16) | g_scale_y;
++    vram.resize(static_cast<std::size_t>(kMemorySize / 4) * g_scale_x * g_scale_y);
+     read_back(g_vram, vram.size() * 4, vram.data());
+     clut.resize(kClutEntries);
+     read_back(g_clut, kClutEntries * 4, clut.data(), static_cast<std::uint64_t>(g_clut_slot) * kClutEntries * 4);
+@@ -1596,14 +1605,21 @@ void read_state(std::vector<std::uint32_t> &vram, std::uint32_t &scale, std::vec
+ void write_state(const std::vector<std::uint32_t> &vram, std::uint32_t scale, const std::vector<std::uint32_t> &clut) {
+     wait_idle();
+     const std::size_t words = kMemorySize / 4;
+-    const std::uint32_t from = scale * scale, to = g_scale * g_scale;
+-    std::fill(std::begin(g_rendered), std::end(g_rendered), from == to && to > 1);
+-    if (from == to && vram.size() == words * to) {
++    const std::uint32_t from_x = scale > 0xffff ? scale >> 16 : scale;
++    const std::uint32_t from_y = scale > 0xffff ? scale & 0xffff : scale;
++    if (!from_x || !from_y || from_x > 9 || from_y > 9) throw std::runtime_error("invalid GPU save-state scale");
++    const std::uint32_t from = from_x * from_y, to = g_scale_x * g_scale_y;
++    const bool same_scale = from_x == g_scale_x && from_y == g_scale_y;
++    if (vram.size() != words * from) throw std::runtime_error("invalid GPU save-state sample count");
++    std::fill(std::begin(g_rendered), std::end(g_rendered), same_scale && to > 1);
++    if (same_scale) {
+         wgpuQueueWriteBuffer(g_queue, g_vram, 0, vram.data(), vram.size() * 4);
+     } else {
+         std::vector<std::uint32_t> layers(words * to);
+         for (std::size_t w = 0; w < words; ++w)
+-            for (std::uint32_t k = 0; k < to; ++k) layers[w * to + k] = vram[w * from];
++            for (std::uint32_t y = 0; y < g_scale_y; ++y)
++                for (std::uint32_t x = 0; x < g_scale_x; ++x)
++                    layers[w * to + y * g_scale_x + x] = vram[w * from + (y * from_y / g_scale_y) * from_x + x * from_x / g_scale_x];
+         wgpuQueueWriteBuffer(g_queue, g_vram, 0, layers.data(), layers.size() * 4);
+     }
+     if (clut.size() >= kClutEntries) wgpuQueueWriteBuffer(g_queue, g_clut, static_cast<std::uint64_t>(g_clut_slot) * kClutEntries * 4, clut.data(), kClutEntries * 4);
+@@ -1622,10 +1638,12 @@ void configure_surface() {
+     config.device = g_device;
+     config.format = g_surface_format;
+     config.usage = WGPUTextureUsage_RenderAttachment;
++    if(g_options.on_video_capture) config.usage |= WGPUTextureUsage_CopySrc;
+     config.width = std::max(g_surface_width, 1u);
+     config.height = std::max(g_surface_height, 1u);
+     config.presentMode = g_present_mode;
+     config.alphaMode = WGPUCompositeAlphaMode_Auto;
++    std::fprintf(stderr, "[surface] %ux%u present_mode=%u format=%u\n", config.width, config.height, unsigned(config.presentMode), unsigned(config.format));
+     wgpuSurfaceConfigure(g_surface, &config);
+ }
+ 
+@@ -1659,6 +1677,10 @@ bool attach_surface(const SurfaceTarget &target) {
+         g_surface = nullptr;
+         return false;
+     }
++    if(g_options.on_video_capture && !(caps.usages & WGPUTextureUsage_CopySrc)) {
++        std::fprintf(stderr,"[lan] surface copy-source unavailable\n");
++        wgpuSurfaceCapabilitiesFreeMembers(caps); return false;
++    }
+     g_surface_format = caps.formats[0];
+     for (std::size_t i = 0; i < caps.formatCount; ++i)
+         if (caps.formats[i] == WGPUTextureFormat_BGRA8Unorm || caps.formats[i] == WGPUTextureFormat_RGBA8Unorm) {
+@@ -1669,6 +1691,9 @@ bool attach_surface(const SurfaceTarget &target) {
+     for (const WGPUPresentMode wanted : {WGPUPresentMode_Immediate, WGPUPresentMode_Mailbox})
+         for (std::size_t i = 0; i < caps.presentModeCount; ++i)
+             if (caps.presentModes[i] == wanted) g_present_mode = wanted;
++    // Opt-in isolated presentation comparison; preserve existing default mode.
++    if (const char *mode=std::getenv("PS2_PRESENT_MODE"); mode && std::strcmp(mode,"fifo")==0)
++        g_present_mode=WGPUPresentMode_Fifo;
+     wgpuSurfaceCapabilitiesFreeMembers(caps);
+     g_surface_width = target.width;
+     g_surface_height = target.height;
+@@ -1735,17 +1760,56 @@ void resize_surface(std::uint32_t width, std::uint32_t height) {
+ 
+ bool has_surface() { return g_surface != nullptr; }
+ 
++// Capture the center 1920x1080 of the actual full-width swapchain.
++// Three asynchronous readbacks avoid serializing emulation on streaming.
++struct StreamCopy { WGPUBuffer buffer=nullptr; bool busy=false; std::uint64_t id=0; } g_stream_copy[3];
++std::uint64_t g_stream_next=0,g_stream_published=0;
++void stream_copy(WGPUTexture texture) {
++    if(!g_options.on_video_capture || g_surface_width<1920 || g_surface_height!=1080) return;
++    wgpuDevicePoll(g_device,false,nullptr);
++    StreamCopy *slot=nullptr;
++    for(auto &s:g_stream_copy) if(!s.busy) { slot=&s; break; }
++    if(!slot) return;
++    constexpr unsigned bytes=1920u*1080u*4u;
++    if(!slot->buffer) slot->buffer=make_buffer(bytes,WGPUBufferUsage_MapRead|WGPUBufferUsage_CopyDst);
++    WGPUTexelCopyTextureInfo source=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
++    source.texture=texture; source.origin.x=(g_surface_width-1920)/2;
++    WGPUTexelCopyBufferInfo dest=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
++    dest.buffer=slot->buffer; dest.layout.bytesPerRow=1920*4; dest.layout.rowsPerImage=1080;
++    WGPUExtent3D size{1920,1080,1};
++    WGPUCommandEncoder enc=wgpuDeviceCreateCommandEncoder(g_device,nullptr);
++    wgpuCommandEncoderCopyTextureToBuffer(enc,&source,&dest,&size);
++    WGPUCommandBuffer cmd=wgpuCommandEncoderFinish(enc,nullptr);
++    wgpuQueueSubmit(g_queue,1,&cmd); wgpuCommandBufferRelease(cmd); wgpuCommandEncoderRelease(enc);
++    slot->busy=true; slot->id=++g_stream_next;
++    WGPUBufferMapCallbackInfo cb=WGPU_BUFFER_MAP_CALLBACK_INFO_INIT;
++    cb.mode=WGPUCallbackMode_AllowProcessEvents; cb.userdata1=slot;
++    cb.callback=[](WGPUMapAsyncStatus status,WGPUStringView,void *data,void*) {
++        auto &s=*static_cast<StreamCopy*>(data);
++        if(status==WGPUMapAsyncStatus_Success) {
++            const void *pixels=wgpuBufferGetConstMappedRange(s.buffer,0,1920u*1080u*4u);
++            if(pixels && g_options.on_video_capture && s.id>g_stream_published) {
++                g_options.on_video_capture(pixels,1920,1080,static_cast<unsigned>(g_surface_format)); g_stream_published=s.id;
++            }
++            wgpuBufferUnmap(s.buffer);
++        }
++        s.busy=false;
++    };
++    wgpuBufferMapAsync(slot->buffer,WGPUMapMode_Read,0,bytes,cb);
++}
++
+ bool present(const DisplaySource &src) {
+     if (!g_surface) return false;
++    if (g_options.on_surface_event) g_options.on_surface_event(0, g_surface_width, g_surface_height);
+     flush_all();
+     const std::uint32_t current = field_base(g_field), previous = field_base(g_field + 1);
+     static const bool weave_off = std::getenv("PS2_NO_DEINTERLACE") != nullptr;
+     const bool blend = src.halved && g_have_previous && g_last_width == src.width && g_last_height == src.height && !weave_off;
+     const std::uint32_t param = push_params({src.fbp, src.fbw, src.psm, src.dbx, src.dby, src.width, src.height, src.halved ? 1u : 0u, current});
+-    g_commands.push_back({kDisplay, (src.width * g_scale + 7) / 8, (src.height * g_scale + 7) / 8, param});
++    g_commands.push_back({kDisplay, (src.width * g_scale_x + 7) / 8, (src.height * g_scale_y + 7) / 8, param});
+     const float sw = static_cast<float>(g_surface_width), sh = static_cast<float>(g_surface_height);
+-    const float vw = std::min(sw, sh * 4.0f / 3.0f), vh = vw * 3.0f / 4.0f;
+-    const std::uint32_t blit[8] = {src.width * g_scale, src.height * g_scale, current, previous, blend ? 1u : 0u, static_cast<std::uint32_t>(vw), static_cast<std::uint32_t>(vh), 0};
++    const float vw = std::min(sw, sh * presentation_aspect()), vh = vw / presentation_aspect();
++    const std::uint32_t blit[8] = {src.width * g_scale_x, src.height * g_scale_y, current, previous, blend ? 1u : 0u, static_cast<std::uint32_t>(vw), static_cast<std::uint32_t>(vh), 0};
+     wgpuQueueWriteBuffer(g_queue, g_blit_params, 0, blit, sizeof blit);
+     ++g_field;
+     g_have_previous = true;
+@@ -1757,15 +1821,18 @@ bool present(const DisplaySource &src) {
+         if (st.texture) wgpuTextureRelease(st.texture);
+         submit();
+         configure_surface();
++        if (g_options.on_surface_event) g_options.on_surface_event(2, g_surface_width, g_surface_height);
+         return true;
+     }
+     WGPUTextureView target = wgpuTextureCreateView(st.texture, nullptr);
+     submit(target);
++    stream_copy(st.texture);
+ #ifndef __EMSCRIPTEN__
+     wgpuSurfacePresent(g_surface);
+ #endif
+     wgpuTextureViewRelease(target);
+     wgpuTextureRelease(st.texture);
++    if (g_options.on_surface_event) g_options.on_surface_event(1, g_surface_width, g_surface_height);
+     return true;
+ }
+ 
+@@ -1812,7 +1879,7 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+     for (Copy &c : g_copies)
+         if (!c.busy) slot = &c;
+     if (slot) {
+-        const std::uint64_t bytes = static_cast<std::uint64_t>(src.width) * src.height * g_scale * g_scale * 4;
++        const std::uint64_t bytes = static_cast<std::uint64_t>(src.width) * src.height * g_scale_x * g_scale_y * 4;
+         if (slot->size < bytes) {
+             if (slot->buffer) wgpuBufferRelease(slot->buffer);
+             slot->size = bytes;
+@@ -1820,7 +1887,7 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+         }
+         flush_all();
+         const std::uint32_t param = push_params({src.fbp, src.fbw, src.psm, src.dbx, src.dby, src.width, src.height, src.halved ? 1u : 0u});
+-        g_commands.push_back({kDisplay, (src.width * g_scale + 7) / 8, (src.height * g_scale + 7) / 8, param});
++        g_commands.push_back({kDisplay, (src.width * g_scale_x + 7) / 8, (src.height * g_scale_y + 7) / 8, param});
+         submit();
+         WGPUCommandEncoder enc = wgpuDeviceCreateCommandEncoder(g_device, nullptr);
+         wgpuCommandEncoderCopyBufferToBuffer(enc, g_scratch, 0, slot->buffer, 0, bytes);
+@@ -1830,8 +1897,8 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+         wgpuCommandEncoderRelease(enc);
+         slot->busy = true;
+         slot->order = ++g_copy_order;
+-        slot->width = src.width * g_scale;
+-        slot->height = src.height * g_scale;
++        slot->width = src.width * g_scale_x;
++        slot->height = src.height * g_scale_y;
+         WGPUBufferMapCallbackInfo cb = WGPU_BUFFER_MAP_CALLBACK_INFO_INIT;
+         cb.mode = WGPUCallbackMode_AllowProcessEvents;
+         cb.callback = [](WGPUMapAsyncStatus status, WGPUStringView, void *copy, void *) {
+@@ -1848,10 +1915,10 @@ bool display_async(const DisplaySource &src, std::vector<std::uint32_t> &rgba, s
+ bool display(const DisplaySource &src, std::vector<std::uint32_t> &rgba, std::uint32_t &width, std::uint32_t &height) {
+     flush_all();
+     const std::uint32_t param = push_params({src.fbp, src.fbw, src.psm, src.dbx, src.dby, src.width, src.height, src.halved ? 1u : 0u});
+-    g_commands.push_back({kDisplay, (src.width * g_scale + 7) / 8, (src.height * g_scale + 7) / 8, param});
++    g_commands.push_back({kDisplay, (src.width * g_scale_x + 7) / 8, (src.height * g_scale_y + 7) / 8, param});
+     submit();
+-    width = src.width * g_scale;
+-    height = src.height * g_scale;
++    width = src.width * g_scale_x;
++    height = src.height * g_scale_y;
+     rgba.resize(static_cast<std::size_t>(width) * height);
+     read_back(g_scratch, rgba.size() * 4, rgba.data());
+     return true;
+diff --git a/runtime/src/gs/gpu/gs.wgsl b/runtime/src/gs/gpu/gs.wgsl
+index 10330e9..7d63851 100644
+--- a/runtime/src/gs/gpu/gs.wgsl
++++ b/runtime/src/gs/gpu/gs.wgsl
+@@ -11,7 +11,8 @@ struct Params {
+ @group(0) @binding(6) var<storage, read> cache: array<u32>;
+ @group(0) @binding(7) var<storage, read_write> decoded: array<u32>;
+ 
+-override SCALE: u32 = 1u;
++override SCALE_X: u32 = 1u;
++override SCALE_Y: u32 = 1u;
+ 
+ const PSMCT32: u32 = 0x00u;
+ const PSMCT24: u32 = 0x01u;
+@@ -217,12 +218,12 @@ fn addr(f: Fmt, x: u32, y: u32) -> Loc {
+ }
+ 
+ fn load_at(l: Loc, k: u32) -> u32 {
+-    return (atomicLoad(&vram[l.word * SCALE * SCALE + k]) >> l.shift) & l.mask;
++    return (atomicLoad(&vram[l.word * SCALE_X * SCALE_Y + k]) >> l.shift) & l.mask;
+ }
+ 
+ fn read_sample(psm: u32, bp: u32, bw: u32, x: u32, y: u32, k: u32) -> u32 {
+     let l = locate(psm, bp, bw, x, y);
+-    return (atomicLoad(&vram[l.word * SCALE * SCALE + k]) >> l.shift) & l.mask;
++    return (atomicLoad(&vram[l.word * SCALE_X * SCALE_Y + k]) >> l.shift) & l.mask;
+ }
+ 
+ fn read_pixel(psm: u32, bp: u32, bw: u32, x: u32, y: u32) -> u32 {
+@@ -230,7 +231,7 @@ fn read_pixel(psm: u32, bp: u32, bw: u32, x: u32, y: u32) -> u32 {
+ }
+ 
+ fn store(l: Loc, k: u32, value: u32) {
+-    let w = l.word * SCALE * SCALE + k;
++    let w = l.word * SCALE_X * SCALE_Y + k;
+     if (l.mask == 0xFFFFFFFFu) {
+         atomicStore(&vram[w], value);
+         return;
+@@ -245,7 +246,7 @@ fn write_sample(psm: u32, bp: u32, bw: u32, x: u32, y: u32, k: u32, value: u32)
+ 
+ fn write_pixel(psm: u32, bp: u32, bw: u32, x: u32, y: u32, value: u32) {
+     let l = locate(psm, bp, bw, x, y);
+-    for (var k = 0u; k < SCALE * SCALE; k = k + 1u) {
++    for (var k = 0u; k < SCALE_X * SCALE_Y; k = k + 1u) {
+         store(l, k, value);
+     }
+ }
+@@ -314,7 +315,7 @@ fn upload(@builtin(global_invocation_id) gid: vec3<u32>) {
+ fn copy_read(@builtin(global_invocation_id) gid: vec3<u32>) {
+     let i = gid.x + gid.y * 64u * 1024u;
+     let w = prm(5u);
+-    let n = SCALE * SCALE;
++    let n = SCALE_X * SCALE_Y;
+     if (i >= w * prm(6u) * n) {
+         return;
+     }
+@@ -329,7 +330,7 @@ fn copy_write(@builtin(global_invocation_id) gid: vec3<u32>) {
+     let i = gid.x + gid.y * 64u * 1024u;
+     let w = prm(5u);
+     let h = prm(6u);
+-    let n = SCALE * SCALE;
++    let n = SCALE_X * SCALE_Y;
+     if (i >= w * h * n) {
+         return;
+     }
+@@ -389,8 +390,8 @@ fn load_clut(@builtin(local_invocation_index) k: u32) {
+ 
+ @compute @workgroup_size(8, 8)
+ fn display(@builtin(global_invocation_id) gid: vec3<u32>) {
+-    let w = prm(5u) * SCALE;
+-    let h = prm(6u) * SCALE;
++    let w = prm(5u) * SCALE_X;
++    let h = prm(6u) * SCALE_Y;
+     if (gid.x >= w || gid.y >= h) {
+         return;
+     }
+@@ -399,7 +400,7 @@ fn display(@builtin(global_invocation_id) gid: vec3<u32>) {
+     if (prm(7u) != 0u) {
+         sy = gid.y / 2u;
+     }
+-    var c = read_sample(psm, prm(0u), prm(1u), prm(3u) + gid.x / SCALE, prm(4u) + sy / SCALE, (sy % SCALE) * SCALE + gid.x % SCALE);
++    var c = read_sample(psm, prm(0u), prm(1u), prm(3u) + gid.x / SCALE_X, prm(4u) + sy / SCALE_Y, (sy % SCALE_Y) * SCALE_X + gid.x % SCALE_X);
+     if (psm == PSMCT16 || psm == PSMCT16S) {
+         c = ((c & 0x1Fu) << 3u) | ((c & 0x3E0u) << 6u) | ((c & 0x7C00u) << 9u);
+     }
+@@ -554,7 +555,7 @@ var<private> snapshot_hi: u32 = 0u;
+ 
+ fn load_texel(l: Loc, k: u32) -> u32 {
+     if (l.word >= snapshot_lo && l.word < snapshot_hi) {
+-        return (scratch[(l.word - snapshot_lo) * SCALE * SCALE + k] >> l.shift) & l.mask;
++        return (scratch[(l.word - snapshot_lo) * SCALE_X * SCALE_Y + k] >> l.shift) & l.mask;
+     }
+     return load_at(l, k);
+ }
+@@ -1007,7 +1008,7 @@ fn shade_at(p: u32, s: Setup, x: i32, y: i32, k: u32, px: f32, py: f32) {
+             }
+             let cx = f32(x);
+             let cy = f32(y);
+-            if (SCALE > 1u && (cx < min(x0, x0 + dx) || cx >= max(x0, x0 + dx) || cy < min(y0, y0 + dy) || cy >= max(y0, y0 + dy))) {
++            if (SCALE_X * SCALE_Y > 1u && (cx < min(x0, x0 + dx) || cx >= max(x0, x0 + dx) || cy < min(y0, y0 + dy) || cy >= max(y0, y0 + dy))) {
+                 return;
+             }
+             var tx = 0.0;
+@@ -1090,7 +1091,7 @@ fn snapshot(@builtin(global_invocation_id) gid: vec3<u32>) {
+     if (i >= prm(1u)) {
+         return;
+     }
+-    scratch[i] = atomicLoad(&vram[prm(0u) * SCALE * SCALE + i]);
++    scratch[i] = atomicLoad(&vram[prm(0u) * SCALE_X * SCALE_Y + i]);
+ }
+ 
+ @compute @workgroup_size(64)
+@@ -1099,7 +1100,7 @@ fn resolve(@builtin(global_invocation_id) gid: vec3<u32>) {
+     if (i >= 1048576u) {
+         return;
+     }
+-    scratch[i] = atomicLoad(&vram[i * SCALE * SCALE]);
++    scratch[i] = atomicLoad(&vram[i * SCALE_X * SCALE_Y]);
+ }
+ 
+ @compute @workgroup_size(16, 16)
+@@ -1112,11 +1113,11 @@ fn raster(@builtin(workgroup_id) wid: vec3<u32>, @builtin(local_invocation_id) l
+     let origin = data[tile];
+     let sx = (origin & 0xFFFFu) * 16u + lid.x;
+     let sy = (origin >> 16u) * 16u + lid.y;
+-    let x = i32(sx / SCALE);
+-    let y = i32(sy / SCALE);
+-    let k = (sy % SCALE) * SCALE + sx % SCALE;
+-    let px = f32(x) + f32(sx % SCALE) / f32(SCALE);
+-    let py = f32(y) + f32(sy % SCALE) / f32(SCALE);
++    let x = i32(sx / SCALE_X);
++    let y = i32(sy / SCALE_Y);
++    let k = (sy % SCALE_Y) * SCALE_X + sx % SCALE_X;
++    let px = f32(x) + f32(sx % SCALE_X) / f32(SCALE_X);
++    let py = f32(y) + f32(sy % SCALE_Y) / f32(SCALE_Y);
+     let first = data[tile + 1u];
+     let count = data[tile + 3u] - first;
+     let lists = prm(4u);
+diff --git a/runtime/src/gs/gs.cpp b/runtime/src/gs/gs.cpp
+index 2991477..8c84886 100644
+--- a/runtime/src/gs/gs.cpp
++++ b/runtime/src/gs/gs.cpp
+@@ -995,6 +995,15 @@ Rendered render_pending(const std::function<void(const DisplayRegs &)> &on_prese
+             break;
+         }
+         case queue::kState: serve_state(payload); break;
++        case queue::kValidationFence: {
++            // Test-only ordered drain; unlike a sentinel present, does not alter
++            // deinterlacing history or produce a duplicate displayed field.
++            std::uintptr_t target;
++            std::memcpy(&target,payload,sizeof target);
++            flush_and_wait();
++            reinterpret_cast<std::atomic<unsigned>*>(target)->store(1);
++            break;
++        }
+         case queue::kDownload: {
+             std::uintptr_t target;
+             std::memcpy(&target, payload, sizeof target);
+diff --git a/runtime/src/gs/queue.hpp b/runtime/src/gs/queue.hpp
+index 1adbb06..508975b 100644
+--- a/runtime/src/gs/queue.hpp
++++ b/runtime/src/gs/queue.hpp
+@@ -7,7 +7,7 @@
+ 
+ namespace ps2::gs::queue {
+ 
+-enum Type : std::uint32_t { kWrap, kGif, kGifReset, kReset, kVertexReset, kVblank, kPresent, kDownload, kVif1, kVif1Write, kVuReset, kState, kVuFence, kDownloadAsync };
++enum Type : std::uint32_t { kWrap, kGif, kGifReset, kReset, kVertexReset, kVblank, kPresent, kDownload, kVif1, kVif1Write, kVuReset, kState, kVuFence, kDownloadAsync, kValidationFence };
+ 
+ enum class Role { Emulation, Vu, Render };
+ 
+diff --git a/runtime/src/hw.cpp b/runtime/src/hw.cpp
+index 6a4d746..fbb0dd4 100644
+--- a/runtime/src/hw.cpp
++++ b/runtime/src/hw.cpp
+@@ -26,6 +26,9 @@ constexpr std::uint32_t kIntcStat = 0x1000F000u, kIntcMask = 0x1000F010u;
+ constexpr std::uint32_t kDmacStat = 0x1000E010u;
+ 
+ std::uint32_t g_intc_stat = 0, g_intc_mask = 0;
++// HLE handler delivery is distinct from the guest-visible hardware latch.
++// Games can poll INTC_STAT after the handler; guest W1C writes clear it.
++std::uint32_t g_intc_delivered = 0;
+ std::uint32_t g_dmac_stat = 0;
+ std::map<std::uint32_t, std::uint64_t> g_regs;
+ std::set<std::uint32_t> g_reported;
+@@ -109,6 +112,7 @@ bool is_timer(std::uint32_t a) { return a >= 0x10000000u && a < 0x10002000u && (
+ 
+ void reset() {
+     g_intc_stat = g_intc_mask = g_dmac_stat = 0;
++    g_intc_delivered = 0;
+     gs::reset();
+     gif::reset();
+     vif::reset();
+@@ -126,14 +130,15 @@ void vblank_start() {
+     schedule(kEventVblankEnd, now() + hblank_cycles() * 22u, [] { intc_raise(3); });
+ }
+ 
+-std::uint32_t intc_pending() { return g_intc_stat & g_intc_mask; }
++std::uint32_t intc_pending() { return g_intc_stat & g_intc_mask & ~g_intc_delivered; }
+ 
+ void intc_raise(unsigned cause) {
+     g_intc_stat |= 1u << cause;
++    g_intc_delivered &= ~(1u << cause);
+     if (g_intc_mask & (1u << cause)) kernel::wake_idle();
+ }
+ 
+-void intc_ack(unsigned cause) { g_intc_stat &= ~(1u << cause); }
++void intc_ack(unsigned cause) { g_intc_delivered |= 1u << cause; }
+ 
+ bool intc_set_mask(unsigned cause, bool enabled) {
+     const std::uint32_t bit = 1u << cause;
+@@ -204,7 +209,7 @@ std::uint32_t read32(std::uint32_t a) {
+ }
+ 
+ void write32(std::uint32_t a, std::uint32_t v) {
+-    if (a == kIntcStat) { g_intc_stat &= ~v; return; }
++    if (a == kIntcStat) { g_intc_stat &= ~v; g_intc_delivered &= ~v; return; }
+     if (a == kIntcMask) { g_intc_mask ^= v; return; }
+     if (a == kDmacStat) {
+         g_dmac_stat &= ~(v & 0xFFFFu);
+@@ -291,6 +296,7 @@ std::function<void()> event_action(int id) {
+ void state(ps2::state::Stream &s) {
+     s.tag("eehw");
+     s.pod(g_intc_stat);
++    s.pod(g_intc_delivered);
+     s.pod(g_intc_mask);
+     s.pod(g_dmac_stat);
+     s.map(g_regs);
+diff --git a/runtime/src/iop/hw.cpp b/runtime/src/iop/hw.cpp
+index 21f2405..941b1dd 100644
+--- a/runtime/src/iop/hw.cpp
++++ b/runtime/src/iop/hw.cpp
+@@ -83,6 +83,7 @@ struct Dma {
+ };
+ Dma g_dma[14];
+ std::uint32_t g_ohci[0x18];
++std::uint8_t g_ilink_phy[16];
+ 
+ int dma_channel(std::uint32_t a, std::uint32_t &reg) {
+     if (a >= 0x1F801080u && a < 0x1F8010F0u) {
+@@ -129,6 +130,7 @@ void reset() {
+     spu2::reset();
+     sio2::reset();
+     std::memset(g_ohci, 0, sizeof g_ohci);
++    std::memset(g_ilink_phy, 0, sizeof g_ilink_phy);
+ }
+ 
+ void raise_interrupt(unsigned line) {
+@@ -208,6 +210,8 @@ void ohci_write(std::uint32_t a, std::uint32_t v) {
+ }
+ 
+ std::uint32_t read(std::uint32_t a, unsigned size) {
++    if (a == 0x1F808400u) return 0xFFC00001u;
++    if (a == 0x1F80847Cu) return 0x10000001u;
+     if (a >= 0x1F900000u && a < 0x1F900800u) return spu2::read(a, size);
+     if (a >= 0x1F801600u && a < 0x1F801660u) return ohci_read(a);
+     if (a >= 0x1F808200u && a < 0x1F808280u) return sio2::read(a);
+@@ -236,6 +240,27 @@ std::uint32_t read(std::uint32_t a, unsigned size) {
+ }
+ 
+ void write(std::uint32_t a, std::uint32_t v, unsigned size) {
++    // i.Link control 2: enabling link power makes the serial clock ready.
++    // SCLKOK is hardware status, not a writable bit; the driver polls it
++    // before continuing initialization, including when no peers are attached.
++    if (a == 0x1F808410u) { g_regs[a] = (v & 2u) | 8u; return; }
++    if (a == 0x1F808408u) { g_regs[a] = v & ~0x00800000u; return; }
++    if (a == 0x1F808420u || a == 0x1F808428u || a == 0x1F808430u) {
++        g_regs[a] &= ~v;
++        return;
++    }
++    if (a == 0x1F808414u) {
++        if (v & 0x40000000u) {
++            g_ilink_phy[(v >> 8) & 15u] = static_cast<std::uint8_t>(v);
++            g_regs[a] = v & ~0x4000FFFFu;
++        } else if (v & 0x80000000u) {
++            const std::uint32_t reg = (v >> 24) & 15u;
++            g_regs[a] = (v & ~0x8000FFFFu) | (reg << 8) | g_ilink_phy[reg];
++            g_regs[0x1F808420u] |= 0x40000000u;
++            if (g_regs[0x1F808424u] & 0x40000000u) raise_interrupt(24);
++        } else g_regs[a] = v;
++        return;
++    }
+     if (a >= 0x1F900000u && a < 0x1F900800u) { spu2::write(a, v, size); return; }
+     if (a >= 0x1F801600u && a < 0x1F801660u) { ohci_write(a, v); return; }
+     if (a >= 0x1F808200u && a < 0x1F808280u) { sio2::write(a, v); return; }
+@@ -283,6 +308,7 @@ void state(ps2::state::Stream &s) {
+     s.map(g_regs);
+     s.pod(g_dma);
+     s.pod(g_ohci);
++    s.pod(g_ilink_phy);
+     s.pod(g_scratchpad);
+ }
+ 
+diff --git a/runtime/src/iop/sif.cpp b/runtime/src/iop/sif.cpp
+index 5c744c4..7bc85d0 100644
+--- a/runtime/src/iop/sif.cpp
++++ b/runtime/src/iop/sif.cpp
+@@ -84,9 +84,10 @@ std::uint64_t g_ee_dma_done = 0;
+ 
+ template <typename T>
+ T ee_read(std::uint32_t a) {
+-    T v;
+-    std::memcpy(&v, g_ram + (a & (kRamSize - 1)), sizeof v);
+-    return v;
++    // DMA lists may reside in EE scratchpad; masking them into RAM loses
++    // the transfer descriptors (GT3's movie streaming uses this path).
++    static_assert(sizeof(T) == sizeof(std::uint32_t));
++    return static_cast<T>(ld32(a));
+ }
+ 
+ void send(const void *packet, std::uint32_t size) {
+diff --git a/runtime/src/kernel.cpp b/runtime/src/kernel.cpp
+index e924f25..5715eae 100644
+--- a/runtime/src/kernel.cpp
++++ b/runtime/src/kernel.cpp
+@@ -126,7 +126,9 @@ Thread *best_ready() {
+ 
+ void switch_to(Cpu &c, Thread *next) {
+     Thread *cur = current();
+-    if (cur == next) return;
++    // With no current thread and no ready successor (ExitDeleteThread),
++    // still enter the idle context instead of continuing deleted guest code.
++    if (cur && cur == next) return;
+     if (cur && (cur->status == kRun || cur->status == kReady || cur->status == kWait || cur->status == kSuspend || cur->status == kWaitSuspend)) {
+         save_context(c, cur->context);
+         if (cur->status == kRun) cur->status = kReady;
+diff --git a/runtime/src/system.cpp b/runtime/src/system.cpp
+index ca8f06c..43101dd 100644
+--- a/runtime/src/system.cpp
++++ b/runtime/src/system.cpp
+@@ -22,6 +22,7 @@
+ #endif
+ 
+ #include <algorithm>
++#include <cmath>
+ #include <atomic>
+ #include <cctype>
+ #include <chrono>
+@@ -56,6 +57,8 @@ std::uint64_t g_frames = 0;
+ std::uint64_t g_iop_synced = 0;
+ bool g_state_request = false;
+ bool g_resumed = false;
++std::atomic<float> g_scene_aspect{0.0f};
++std::uint64_t g_scene_aspect_until = 0;
+ 
+ std::uint64_t next_event_time() {
+     std::uint64_t t = UINT64_MAX;
+@@ -88,6 +91,31 @@ void dump_frame() {
+     std::vector<std::uint32_t> rgba;
+     std::uint32_t w = 0, h = 0;
+     if (!gs::display(rgba, w, h)) return;
++    if (g_options.output_width && g_options.output_height) {
++        const unsigned output_width = g_options.output_width, output_height = g_options.output_height;
++        const unsigned viewport_width = std::min(output_width, unsigned(output_height * presentation_aspect()));
++        const unsigned viewport_height = std::min(output_height, unsigned(viewport_width / presentation_aspect()));
++        const unsigned left = (output_width - viewport_width) / 2, top = (output_height - viewport_height) / 2;
++        std::vector<std::uint32_t> output(std::size_t(output_width) * output_height, 0xff000000u);
++        // Resample the internally rendered image; never change the camera here.
++        for (unsigned y = 0; y < viewport_height; ++y) {
++            const float sy = std::clamp((y + 0.5f) * h / viewport_height - 0.5f, 0.0f, float(h - 1));
++            const unsigned y0 = unsigned(sy), y1 = std::min(y0 + 1, h - 1); const float fy = sy - y0;
++            for (unsigned x = 0; x < viewport_width; ++x) {
++                const float sx = std::clamp((x + 0.5f) * w / viewport_width - 0.5f, 0.0f, float(w - 1));
++                const unsigned x0 = unsigned(sx), x1 = std::min(x0 + 1, w - 1); const float fx = sx - x0;
++                std::uint32_t color = 0xff000000u;
++                for (unsigned shift = 0; shift < 24; shift += 8) {
++                    const float a = float((rgba[y0*w+x0] >> shift) & 255), b = float((rgba[y0*w+x1] >> shift) & 255);
++                    const float c = float((rgba[y1*w+x0] >> shift) & 255), d = float((rgba[y1*w+x1] >> shift) & 255);
++                    color |= unsigned(std::lround((a + (b-a)*fx)*(1-fy) + (c + (d-c)*fx)*fy)) << shift;
++                }
++                output[(y+top)*output_width+x+left] = color;
++            }
++        }
++        std::fprintf(stderr, "[capture] frame %llu: internal %ux%u -> output %ux%u, viewport %ux%u\n", (unsigned long long)g_frames, w, h, output_width, output_height, viewport_width, viewport_height);
++        rgba.swap(output); w = output_width; h = output_height;
++    }
+     char name[512];
+     std::snprintf(name, sizeof name, "%s/frame_%05llu.ppm", g_options.frames_dir.c_str(), static_cast<unsigned long long>(g_frames));
+     std::FILE *f = std::fopen(name, "wb");
+@@ -101,11 +129,21 @@ void dump_frame() {
+ }
+ 
+ void apply_presses() {
+-    if (g_options.presses.empty()) return;
++    if (g_options.presses.empty() && g_options.axes.empty()) return;
+     std::uint16_t mask = 0;
+     for (const Press &p : g_options.presses)
+         if (g_frames >= p.frame && g_frames < p.frame + p.frames) mask |= p.buttons;
+     iop::sio2::set_buttons(0, mask);
++    for (unsigned axis = 0; axis < 4; ++axis) {
++        bool configured = false;
++        std::uint8_t value = 0x80;
++        for (const AxisInput &a : g_options.axes) {
++            if (a.axis != axis) continue;
++            configured = true;
++            if (g_frames >= a.frame && g_frames - a.frame < a.frames) value = a.value;
++        }
++        if (configured) iop::sio2::set_axis(0, static_cast<int>(axis), value);
++    }
+ }
+ 
+ void time_frames() {
+@@ -126,6 +164,11 @@ void time_frames() {
+ 
+ void vblank() {
+     ++g_frames;
++    if (g_scene_aspect.load() > 0.0f && g_frames > g_scene_aspect_until) {
++        g_scene_aspect.store(0.0f);
++        if (g_options.on_scene_end) g_options.on_scene_end();
++        std::fprintf(stderr, "[presentation] scene override expired at frame %llu\n", (unsigned long long)g_frames);
++    }
+     time_frames();
+     apply_presses();
+     if (g_options.on_vblank) g_options.on_vblank();
+@@ -156,6 +199,18 @@ void idle(Cpu &c) {
+ 
+ }
+ 
++float presentation_aspect() {
++    const float scene = g_scene_aspect.load();
++    return scene > 0.0f ? scene : g_options.presentation_aspect;
++}
++
++void scene_aspect(float aspect) {
++    if (g_scene_aspect.load() != aspect)
++        std::fprintf(stderr, "[presentation] scene aspect %.6f at frame %llu\n", aspect, (unsigned long long)g_frames);
++    g_scene_aspect.store(aspect);
++    g_scene_aspect_until = g_frames + 2;
++}
++
+ void save_context(const Cpu &c, ThreadContext &t) {
+     std::memcpy(t.r, c.r, sizeof t.r);
+     t.hi = c.hi;
+diff --git a/scripts/gt3_scene.probes b/scripts/gt3_scene.probes
+new file mode 100644
+index 0000000..76c3aaa
+--- /dev/null
++++ b/scripts/gt3_scene.probes
+@@ -0,0 +1 @@
++17e888
+diff --git a/scripts/gt3_triple.py b/scripts/gt3_triple.py
+new file mode 100644
+index 0000000..cfe1129
+--- /dev/null
++++ b/scripts/gt3_triple.py
+@@ -0,0 +1,50 @@
++#!/usr/bin/env python3
++"""Verified GT3 v1.10 triple-width adaptation, applied BEFORE recompilation.
++Address leads: Silentwarior112, PCSX2-patches/Gran Turismo 3/USA PBPX-95503/8AA991B0.pnach.
++Names below describe verified instructions or candidate data roles, not recovered original symbols.
++Does not modify the ISO or input ELF. Refuses other executables.
++"""
++import argparse, hashlib, json, struct
++from pathlib import Path
++CORE_SHA256 = 'b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763'
++# (address, original word, replacement word, semantic name)
++CHANGES = [
++ (0x17e88c,0x10400007,0,'race_projection_skip_4_3_branch'),
++ (0x17e89c,0x3c013f40,0x3c013e80,'race_projection_horizontal_scale_0_25'),
++ (0x17e9ec,0x3c014348,0x3c014391,'mirror_rectangle_x_290'),
++ (0x17ea04,0x3c014370,0x3c014270,'mirror_rectangle_width_60'),
++ (0x193658,0x10600003,0,'hud_text_skip_4_3_branch'),
++ (0x193660,0x3c013f40,0x3c013e80,'hud_text_horizontal_scale_0_25'),
++ (0x18a950,0x3c013f40,0x3c013e80,'license_text_horizontal_scale_candidate'),
++ (0x22a190,0x3c013f40,0x3c013e80,'license_model_horizontal_scale_candidate'),
++ (0x21ed20,0x45010008,0x10000008,'visibility_branch_1_bypass'),
++ (0x21f9ac,0x45010002,0x10000002,'visibility_branch_2_bypass'),
++ (0x222278,0x4501000c,0x1000000c,'visibility_branch_3_bypass'),
++ (0x224238,0x45010002,0x10000002,'visibility_branch_4_bypass'),
++ (0x34fd04,0x3fb6d98c,0x3eb6d98c,'mirror_projection_scale'),
++ (0x34fd74,0xc2d55556,0xc46e0000,'hud_canvas_left_minus_952'),
++ (0x34fd78,0x443aaaaa,0x44c70000,'hud_canvas_right_1592'),
++ (0x34ffc8,0xc2d4dd70,0xc46e0000,'pause_canvas_left_minus_952'),
++ (0x34ffcc,0x443a9bae,0x44c70000,'pause_canvas_right_1592'),
++]
++def main():
++ p=argparse.ArgumentParser();p.add_argument('source');p.add_argument('output');p.add_argument('--manifest',required=True);a=p.parse_args()
++ source=Path(a.source);out=Path(a.output)
++ if source.resolve()==out.resolve():p.error('output must differ from source')
++ data=bytearray(source.read_bytes())
++ if hashlib.sha256(data).hexdigest()!=CORE_SHA256:p.error('unsupported core ELF SHA-256')
++ ph=struct.unpack_from('<I',data,28)[0];size,count=struct.unpack_from('<HH',data,42)
++ def offset(address):
++  for i in range(count):
++   kind,off,va,_,length,*_=struct.unpack_from('<8I',data,ph+i*size)
++   if kind==1 and va<=address and address+4<=va+length:return off+address-va
++  raise ValueError(f'unmapped {address:x}')
++ manifest=[]
++ for address,expected,value,name in CHANGES:
++  at=offset(address);actual=struct.unpack_from('<I',data,at)[0]
++  if actual!=expected:raise ValueError(f'{name}: expected {expected:08x}, got {actual:08x}')
++  struct.pack_into('<I',data,at,value)
++  manifest.append(dict(address=f'{address:08x}',expected=f'{expected:08x}',value=f'{value:08x}',name=name))
++ out.write_bytes(data);Path(a.manifest).write_text(json.dumps(dict(source_sha256=CORE_SHA256,output_sha256=hashlib.sha256(data).hexdigest(),aspect='16:3',patches=manifest),indent=2)+'\n')
++ print(f'Applied {len(manifest)} verified changes to separate output ELF')
++if __name__=='__main__':main()
+diff --git a/scripts/gt4_core.py b/scripts/gt4_core.py
+index c3ccb39..7814207 100644
+--- a/scripts/gt4_core.py
++++ b/scripts/gt4_core.py
+@@ -67,7 +67,7 @@ def elf(entry, segments):
+ 
+ 
+ def main():
+-    parser = argparse.ArgumentParser(description="Turn Gran Turismo 4's CORE.GT4 into an ELF the recompiler can read.")
++    parser = argparse.ArgumentParser(description="Turn Gran Turismo 3/4's CORE.GT3/CORE.GT4 into an ELF the recompiler can read.")
+     parser.add_argument('core')
+     parser.add_argument('output')
+     args = parser.parse_args()
+diff --git a/scripts/port.sh b/scripts/port.sh
+index 19920eb..2bad66b 100755
+--- a/scripts/port.sh
++++ b/scripts/port.sh
+@@ -86,10 +86,13 @@ echo "== [2/6] executable"
+ elf="$game/disc/$program"
+ if [ -f "$game/core.elf" ]; then
+   elf="$game/core.elf"
+-elif python3 -I "$here/disc.py" list "$iso" | awk '{print $4}' | grep -qx CORE.GT4; then
+-  python3 -I "$here/disc.py" extract "$iso" "$game/disc" CORE.GT4 > /dev/null
+-  python3 -I "$here/gt4_core.py" "$game/disc/CORE.GT4" "$game/core.elf" > /dev/null
+-  elf="$game/core.elf"
++else
++  core=$(python3 -I "$here/disc.py" list "$iso" | awk '$4 == "CORE.GT3" || $4 == "CORE.GT4" { print $4; exit }')
++  if [ -n "$core" ]; then
++    python3 -I "$here/disc.py" extract "$iso" "$game/disc" "$core" > /dev/null
++    python3 -I "$here/gt4_core.py" "$game/disc/$core" "$game/core.elf" > /dev/null
++    elf="$game/core.elf"
++  fi
+ fi
+ echo "${elf#$ROOT/}"
+ modules=()
+diff --git a/tests/anisotropic_test.cpp b/tests/anisotropic_test.cpp
+new file mode 100644
+index 0000000..da6cfcd
+--- /dev/null
++++ b/tests/anisotropic_test.cpp
+@@ -0,0 +1,26 @@
++#include "gs/gpu/gpu.hpp"
++#include <cstdio>
++#include <cstdlib>
++void require(bool ok, const char *what) { if (!ok) { std::fprintf(stderr,"FAIL: %s\n",what); std::exit(1); } }
++int main() {
++    using namespace ps2::gs;
++    setenv("PS2_SCALE","9",1); setenv("PS2_SCALE_Y","3",1);
++    require(gpu::init(gpu::Mode::primary),"GPU init");
++    std::vector<std::uint32_t> vram((kMemorySize/4)*27), clut;
++    for (unsigned k=0;k<27;++k) vram[k]=k*0x010305u;
++    gpu::write_state(vram,(9u<<16)|3u,clut);
++    std::vector<std::uint32_t> rgba; unsigned width=0,height=0;
++    gpu::DisplaySource source{0,1,0,0,0,1,1,false};
++    require(gpu::display(source,rgba,width,height),"display");
++    require(width==9 && height==3 && rgba.size()==27,"independent dimensions");
++    for (unsigned k=0;k<27;++k) require(rgba[k]==(0xff000000u|vram[k]),"independent x/y sample addressing");
++    unsigned scale=0; gpu::read_state(vram,scale,clut);
++    require(scale==((9u<<16)|3u) && vram.size()==(kMemorySize/4)*27,"anisotropic state round-trip");
++    vram.assign((kMemorySize/4)*9,0);
++    for(unsigned k=0;k<9;++k) vram[k]=k*0x010305u;
++    gpu::write_state(vram,3,clut);
++    require(gpu::display(source,rgba,width,height),"old isotropic state conversion");
++    for(unsigned y=0;y<3;++y) for(unsigned x=0;x<9;++x)
++        require(rgba[y*9+x]==(0xff000000u|vram[y*3+x/3]),"sample conversion preserves both axes");
++    std::puts("Anisotropic GPU samples and state conversion PASS");
++}
+diff --git a/tests/gt3_controls_test.cpp b/tests/gt3_controls_test.cpp
+new file mode 100644
+index 0000000..ebd58d4
+--- /dev/null
++++ b/tests/gt3_controls_test.cpp
+@@ -0,0 +1,35 @@
++#include "gt3_controls.hpp"
++#include "ps2/generated.hpp"
++#include "ps2/system.hpp"
++#include <array>
++#include <cstdio>
++#include <cstdlib>
++void register_generated_code();
++int main() {
++    register_generated_code();
++    unsigned checked = 0;
++    for (unsigned curve_kind : {0u, 1u}) {
++        std::array<std::uint8_t, 256> curve{};
++        for (unsigned i = 0; i < 256; ++i) {
++            curve[i] = curve_kind ? std::uint8_t(255-i) : std::uint8_t(i);
++            ps2::st8(0x003416f8u+i, curve[i]);
++        }
++        for (unsigned channel : {0u, 1u, 2u, 3u, 0x100u, 0x200u, 0x300u, 4u, 14u, 15u})
++            for (unsigned sensitivity : {35u, 65u, 90u, 100u})
++                for (unsigned raw = 0; raw < 256; ++raw) {
++                    ps2::Cpu cpu{};
++                    cpu.budget = 1000000;
++                    cpu.r[4].d[0] = channel; cpu.r[5].d[0] = raw; cpu.r[6].d[0] = sensitivity;
++                    cpu.r[31].d[0] = 0x01000000;
++                    cpu.pc = 0x00210f90;
++                    ps2::call(cpu, cpu.pc, 0);
++                    const unsigned expected = gt3::normalize_mapped_input(channel, raw, sensitivity, curve);
++                    if (cpu.r[2].w[0] != expected || cpu.pc != 0x01000000) {
++                        std::fprintf(stderr,"FAIL channel=%x raw=%u sensitivity=%u native=%u readable=%u pc=%x\n",channel,raw,sensitivity,cpu.r[2].w[0],expected,cpu.pc);
++                        return 1;
++                    }
++                    ++checked;
++                }
++    }
++    std::printf("GT3 control normalization differential PASS: %u cases\n", checked);
++}
+diff --git a/tests/gt3_hardware.cpp b/tests/gt3_hardware.cpp
+new file mode 100644
+index 0000000..0ed8926
+--- /dev/null
++++ b/tests/gt3_hardware.cpp
+@@ -0,0 +1,65 @@
++#include "hw.hpp"
++#include "kernel.hpp"
++#include "ps2/system.hpp"
++#include "ps2/generated.hpp"
++#include "iop/hw.hpp"
++#include "iop/iop.hpp"
++#include "iop/sif.hpp"
++#include "ps2/memory.hpp"
++#include <cstdio>
++#include <cstdlib>
++
++void require(bool ok, const char *message) {
++    if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
++}
++int main() {
++    using namespace ps2;
++    hw::reset();
++    hw::intc_set_mask(2, true);
++    hw::intc_raise(2);
++    require(hw::intc_pending() == 4, "vblank interrupt pending");
++    hw::intc_ack(2);
++    require(hw::intc_pending() == 0, "delivered interrupt is not repeatedly dispatched");
++    require((hw::read32(0x1000F000) & 4) != 0, "hardware status remains visible to polling after HLE delivery");
++    hw::write32(0x1000F000, 4);
++    require((hw::read32(0x1000F000) & 4) == 0, "guest clears interrupt status by writing one");
++    hw::intc_raise(2);
++    require(hw::intc_pending() == 4, "next vblank is deliverable");
++    iop::hw::reset();
++    iop::hw::write(0x1F808410, 2, 4);
++    require((iop::hw::read(0x1F808410, 4) & 8) != 0, "i.Link serial clock ready");
++    iop::hw::write(0x1F808414, 0x400004A5, 4);
++    require((iop::hw::read(0x1F808414, 4) & 0x40000000) == 0, "PHY write completes");
++    iop::hw::write(0x1F808424, 0x40000000, 4);
++    iop::hw::set_interrupt_mask(24, true);
++    iop::hw::write(0x1F808414, 0x84000000, 4);
++    require((iop::hw::read(0x1F808414, 4) & 0x8000FFFF) == 0x04A5, "PHY read returns register and completes");
++    require(iop::hw::next_pending_interrupt() == 24, "PHY read delivers enabled i.Link interrupt");
++    iop::hw::write(0x1F808420, 0x40000000, 4);
++    require(iop::hw::read(0x1F808420, 4) == 0, "i.Link status is write-one-to-clear");
++    // Deliberately conflicting descriptors at RAM and scratchpad addresses.
++    // Reading scratchpad as a RAM alias would copy the wrong payload.
++    st32(0x70001000, 0x2000);
++    st32(0x70001004, 0x180000);
++    st32(0x70001008, 16);
++    st32(0x7000100C, 0);
++    st32(0x1000, 0x2100);
++    st32(0x1004, 0x180000);
++    st32(0x1008, 16);
++    st32(0x100C, 0);
++    for (unsigned i = 0; i < 16; ++i) {
++        st8(0x2000 + i, static_cast<unsigned char>(0xA0 + i));
++        st8(0x2100 + i, 0x55);
++    }
++    sif::set_dma(0x70001000, 1);
++    for (unsigned i = 0; i < 16; ++i)
++        require(iop::read8(0x180000 + i) == 0xA0 + i, "SIF descriptor is read from EE scratchpad, not a RAM alias");
++    kernel::reset();
++    kernel::start_main_thread(0x100000, 0, 0, 0);
++    g_cpu.pc = 0x100004;
++    g_cpu.r[3].w[0] = 0x24; // ExitDeleteThread: remove the only runnable thread.
++    kernel::handle_syscall(g_cpu, 0x100000);
++    require(kernel::current_thread() == 0, "last thread was deleted");
++    require((g_cpu.pc & ~kUnwind) == kIdle, "deleting the last runnable thread enters idle, not deleted guest code");
++    std::puts("GT3 hardware regressions PASS");
++}
+diff --git a/tests/run_gt3_hardware.sh b/tests/run_gt3_hardware.sh
+new file mode 100755
+index 0000000..8b566e5
+--- /dev/null
++++ b/tests/run_gt3_hardware.sh
+@@ -0,0 +1,9 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/native-gt3-usa-v110}"
++"${CXX:-clang++}" -std=c++20 -I"$root/runtime/include" -I"$root/runtime/src" \
++  "$root/tests/gt3_hardware.cpp" "$build/libps2runtime.a" \
++  "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm \
++  -o "$build/gt3_hardware_test"
++"$build/gt3_hardware_test"
+diff --git a/tests/run_resolution_tests.sh b/tests/run_resolution_tests.sh
+new file mode 100755
+index 0000000..fdebcdc
+--- /dev/null
++++ b/tests/run_resolution_tests.sh
+@@ -0,0 +1,11 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/resolution-triple}"
++common=(-std=c++20 -O2 -I"$root/host" -I"$root/runtime/include" -I"$root/runtime/src")
++link=("$build/libps2runtime.a" "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm)
++"${CXX:-clang++}" "${common[@]}" "$root/tests/gt3_controls_test.cpp" "$build/libps2game.a" "${link[@]}" -o "$build/gt3_controls_test"
++"$build/gt3_controls_test"
++"${CXX:-clang++}" "${common[@]}" "$root/tests/anisotropic_test.cpp" "${link[@]}" -o "$build/anisotropic_test"
++"$build/anisotropic_test"
++"$root/tests/run_gt3_hardware.sh" "$build"
+diff --git a/host/benchmark.hpp b/host/benchmark.hpp
+new file mode 100644
+index 0000000..cfe9db3
+--- /dev/null
++++ b/host/benchmark.hpp
+@@ -0,0 +1,83 @@
++#pragma once
++// Isolated, unpaced headless comparison of the existing native queue paths.
++// No display readback in the timed interval; identical full-detail raster work.
++#include "ps2/system.hpp"
++#include "../runtime/src/gs/gs.hpp"
++#include <atomic>
++#include <chrono>
++#include <cstdio>
++#include <cstdlib>
++#include <functional>
++#include <thread>
++#include <vector>
++
++namespace experiment {
++inline unsigned warmup = 300, measured = 600;
++inline const char *capture = nullptr;
++inline int run(const std::function<int()> &emulate, unsigned workers) {
++    unsigned completed = 0;
++    std::chrono::steady_clock::time_point start;
++    const auto boundary = [&] {
++        ++completed;
++        if (completed == warmup || completed == warmup + measured) {
++            // Always called on the GPU owner, never on a parallel EE thread.
++            ps2::gs::flush_and_wait();
++            const auto now = std::chrono::steady_clock::now();
++            if (completed == warmup) start = now;
++            else std::fprintf(stderr, "[benchmark] workers=%u frames=%u warmup=%u ms/frame=%.4f\n",
++                workers, measured, warmup,
++                std::chrono::duration<double, std::milli>(now - start).count() / measured);
++        }
++    };
++    ps2::init_graphics();
++    int result = 0;
++    if (!workers) {
++        ps2::g_options.on_vblank = boundary;
++        result = emulate();
++    } else {
++        ps2::start_render_thread();
++        if (workers == 2) {
++            ps2::start_vu_thread();
++            std::thread(ps2::run_vu_thread).detach();
++        }
++        std::atomic<unsigned> posted{0};
++        ps2::g_options.on_vblank = [&] { ps2::post_present(); posted.fetch_add(1); };
++        std::atomic<bool> done{false};
++        std::thread ee([&] {
++            result = emulate();
++            // Ordered through VU then render: drain every final graphics packet.
++            // An empty render ring alone is not evidence that the VU ring is empty.
++            ps2::post_present();
++            posted.fetch_add(1);
++            done.store(true);
++            ps2::wake_render_thread();
++        });
++        for (;;) {
++            const auto rendered = ps2::render_pending(false, {}, boundary, 8.0);
++            if (rendered == ps2::Rendered::idle) {
++                if (done.load() && completed == posted.load()) break;
++                ps2::wait_render_work(4);
++            }
++        }
++        ee.join();
++    }
++    ps2::gs::flush_and_wait();
++    if (capture) {
++        std::vector<std::uint32_t> pixels;
++        std::uint32_t w = 0, h = 0;
++        if (!ps2::display_frame(pixels, w, h)) result = 1;
++        else if (auto *f = std::fopen(capture, "wb")) {
++            std::fprintf(f, "P6\n%u %u\n255\n", w, h);
++            for (auto p : pixels) {
++                const unsigned char rgb[3] = {static_cast<unsigned char>(p), static_cast<unsigned char>(p >> 8), static_cast<unsigned char>(p >> 16)};
++                std::fwrite(rgb, 1, 3, f);
++            }
++            if (std::fclose(f)) result = 1;
++        } else result = 1;
++    }
++    std::fprintf(stderr, "[benchmark] completed=%u drain_present=%u result=%d\n", completed - (workers ? 1 : 0), workers ? 1 : 0, result);
++    std::fflush(nullptr);
++    if (workers) std::_Exit(result); // Existing detached VU worker has no shutdown protocol.
++    return result;
++}
++}
+diff --git a/host/lan_input.cpp b/host/lan_input.cpp
+new file mode 100644
+index 0000000..839cfb8
+--- /dev/null
++++ b/host/lan_input.cpp
+@@ -0,0 +1,57 @@
++#include "lan_input.hpp"
++#include "ps2/system.hpp"
++#include <atomic>
++#include <cstdlib>
++#include <cstdio>
++#include <cstring>
++#include <new>
++#include <fcntl.h>
++#include <sys/mman.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <unistd.h>
++#include <sys/prctl.h>
++#include <csignal>
++namespace lan {
++namespace {
++int input=-1;
++std::atomic<unsigned long long> state{0x808080800000ull};
++unsigned char *video=nullptr;
++std::atomic<unsigned long long> *sequence=nullptr;
++}
++bool init() {
++ const char *path=std::getenv("PS2_LAN_VIDEO"); if(!path) return true;
++ prctl(PR_SET_PDEATHSIG,SIGTERM);
++ if(getppid()==1) return false;
++ constexpr unsigned bytes=4096+1920u*1080u*4u;
++ int fd=open(path,O_RDWR|O_CREAT,0600);
++ if(fd<0 || ftruncate(fd,bytes)) return false;
++ video=static_cast<unsigned char*>(mmap(nullptr,bytes,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0)); close(fd);
++ if(video==MAP_FAILED) return false;
++ sequence=new(video) std::atomic<unsigned long long>(0);
++ unsigned dimensions[2]={1920,1080}; std::memcpy(video+8,dimensions,sizeof dimensions);
++ ps2::g_options.on_video_capture=[](const void *pixels,unsigned w,unsigned h,unsigned format) {
++  if(w!=1920 || h!=1080) return;
++  sequence->fetch_add(1,std::memory_order_acq_rel);
++  std::memcpy(video+16,&format,sizeof format);
++  std::memcpy(video+4096,pixels,1920u*1080u*4u);
++  sequence->fetch_add(1,std::memory_order_release);
++ };
++ input=socket(AF_INET,SOCK_DGRAM|SOCK_NONBLOCK|SOCK_CLOEXEC,0);
++ sockaddr_in addr{}; addr.sin_family=AF_INET; addr.sin_addr.s_addr=htonl(INADDR_LOOPBACK); addr.sin_port=htons(19876);
++ if(input<0 || bind(input,reinterpret_cast<sockaddr*>(&addr),sizeof addr)) return false;
++ std::fprintf(stderr,"[lan] center swapchain capture 1920x1080; input localhost:19876\n"); return true;
++}
++void poll() {
++ if(input<0) return;
++ unsigned long long value;
++ while(recv(input,&value,sizeof value,MSG_TRUNC)==sizeof value) state.store(value & 0x0000ffffffffffffull);
++}
++void apply() {
++ if(input<0) return;
++ const auto s=state.load();
++ ps2::set_pad_pressure(8,255); ps2::set_pad_pressure(9,255);
++ ps2::set_pad_buttons(s & 0xffff);
++ for(unsigned i=0;i<4;++i) ps2::set_pad_axis(i,(s>>(16+8*i))&255);
++}
++}
+diff --git a/host/lan_input.hpp b/host/lan_input.hpp
+new file mode 100644
+index 0000000..e18745f
+--- /dev/null
++++ b/host/lan_input.hpp
+@@ -0,0 +1,6 @@
++#pragma once
++namespace lan {
++bool init();
++void poll();
++void apply();
++}
+diff --git a/host/presentation_probe.cpp b/host/presentation_probe.cpp
+new file mode 100644
+index 0000000..e51e464
+--- /dev/null
++++ b/host/presentation_probe.cpp
+@@ -0,0 +1,101 @@
++#include "presentation_probe.hpp"
++#include "ps2/system.hpp"
++#include "presentation-time-client-protocol.h"
++#include <SDL_syswm.h>
++#include <wayland-client.h>
++#include <poll.h>
++#include <atomic>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#include <deque>
++#include <time.h>
++
++namespace probe {
++namespace {
++std::uint64_t ns() { timespec t; clock_gettime(CLOCK_MONOTONIC, &t); return std::uint64_t(t.tv_sec)*1000000000+t.tv_nsec; }
++struct Frame { unsigned id, w, h, queued; std::uint64_t begin, end=0, displayed=0, sequence=0, audio=0; unsigned refresh=0, flags=0, status=0; };
++std::deque<Frame> frames;
++wl_display *display=nullptr;
++wl_surface *surface=nullptr;
++wl_event_queue *queue=nullptr;
++wl_registry *registry=nullptr;
++wp_presentation *presentation=nullptr;
++SDL_AudioDeviceID audio_device=0;
++unsigned clock_id=~0u;
++std::atomic<std::uint64_t> audio_frames{0}, zero_pushes{0}, drops{0}, failures{0}, pace_calls{0}, empty_pace{0}, pace_ns{0};
++std::uint64_t start_ns=0;
++void global(void *, wl_registry *r, unsigned name, const char *iface, unsigned version) {
++ if (!std::strcmp(iface, "wp_presentation")) presentation=static_cast<wp_presentation*>(wl_registry_bind(r,name,&wp_presentation_interface,1));
++}
++void removed(void *, wl_registry *, unsigned) {}
++const wl_registry_listener registry_listener={global,removed};
++void clock(void *, wp_presentation *, unsigned id) { clock_id=id; }
++const wp_presentation_listener presentation_listener={clock};
++void sync_output(void *, struct wp_presentation_feedback *, wl_output *) {}
++void presented(void *data, struct wp_presentation_feedback *f, unsigned hi,unsigned lo,unsigned nsec,unsigned refresh,unsigned seqhi,unsigned seqlo,unsigned flags) {
++ auto &r=*static_cast<Frame*>(data); r.displayed=((std::uint64_t(hi)<<32)|lo)*1000000000+nsec; r.refresh=refresh; r.sequence=(std::uint64_t(seqhi)<<32)|seqlo; r.flags=flags; r.status=1; wp_presentation_feedback_destroy(f);
++}
++void discarded(void *data, struct wp_presentation_feedback *f) { static_cast<Frame*>(data)->status=2; wp_presentation_feedback_destroy(f); }
++const wp_presentation_feedback_listener feedback_listener={sync_output,presented,discarded};
++void event(unsigned stage,unsigned w,unsigned h) {
++ if (stage==0) {
++  pump();
++  frames.push_back({unsigned(frames.size()+1),w,h,audio_device?SDL_GetQueuedAudioSize(audio_device):0,ns()});
++  auto &r=frames.back(); r.audio=audio_frames.load();
++  if(presentation) { auto *f=wp_presentation_feedback(presentation,surface); wl_proxy_set_queue(reinterpret_cast<wl_proxy*>(f),queue); wp_presentation_feedback_add_listener(f,&feedback_listener,&r); }
++ } else if (!frames.empty()) { frames.back().end=ns(); if(stage==2) frames.back().status=3; pump(); }
++}
++}
++void pump() {
++ if(!display || !queue) return;
++ wl_display_dispatch_queue_pending(display,queue);
++ if(wl_display_prepare_read_queue(display,queue)==0) {
++  wl_display_flush(display);
++  pollfd p{wl_display_get_fd(display),POLLIN,0};
++  if(poll(&p,1,0)>0 && (p.revents&POLLIN)) wl_display_read_events(display); else wl_display_cancel_read(display);
++  wl_display_dispatch_queue_pending(display,queue);
++ }
++}
++void init(SDL_Window *window, SDL_AudioDeviceID device) {
++ if(!std::getenv("PS2_PRESENT_CSV")) return;
++ audio_device=device; start_ns=ns();
++ SDL_SysWMinfo info; SDL_VERSION(&info.version);
++ if(SDL_GetWindowWMInfo(window,&info) && info.subsystem==SDL_SYSWM_WAYLAND) {
++  display=info.info.wl.display; surface=info.info.wl.surface; queue=wl_display_create_queue(display);
++  registry=wl_display_get_registry(display); wl_proxy_set_queue(reinterpret_cast<wl_proxy*>(registry),queue);
++  wl_registry_add_listener(registry,&registry_listener,nullptr); wl_display_roundtrip_queue(display,queue);
++  if(presentation) { wp_presentation_add_listener(presentation,&presentation_listener,nullptr); wl_display_roundtrip_queue(display,queue); }
++ }
++ std::fprintf(stderr,"[probe] wp_presentation=%d clock_id=%u audio_backend=%s\n",presentation!=nullptr,clock_id,SDL_GetCurrentAudioDriver());
++ ps2::g_options.on_surface_event=event;
++}
++void audio_push(unsigned n,unsigned before,bool dropped,bool failed) {
++ if(!std::getenv("PS2_PRESENT_CSV")) return;
++ const auto prior=audio_frames.fetch_add(n);
++ if(prior>240000 && before==0) ++zero_pushes;
++ if(dropped) drops.fetch_add(n);
++ if(failed) ++failures;
++}
++void pace_sample(unsigned before,unsigned after,double ms) {
++ if(!std::getenv("PS2_PRESENT_CSV")) return;
++ ++pace_calls; if(audio_frames.load()>240000 && (!before || !after)) ++empty_pace;
++ pace_ns.fetch_add(std::uint64_t(ms*1000000));
++}
++void finish() {
++ const char *path=std::getenv("PS2_PRESENT_CSV"); if(!path) return;
++ const auto deadline=ns()+500000000;
++ while(ns()<deadline) { pump(); bool pending=false; for(auto &r:frames) if(!r.status) pending=true; if(!pending) break; SDL_Delay(1); }
++ if(auto *f=std::fopen(path,"w")) {
++  std::fprintf(f,"id,begin_ns,end_ns,displayed_ns,refresh_ns,sequence,flags,status,width,height,audio_queued_bytes,audio_produced_frames\n");
++  for(auto &r:frames) std::fprintf(f,"%u,%llu,%llu,%llu,%u,%llu,%u,%u,%u,%u,%u,%llu\n",r.id,(unsigned long long)r.begin,(unsigned long long)r.end,(unsigned long long)r.displayed,r.refresh,(unsigned long long)r.sequence,r.flags,r.status,r.w,r.h,r.queued,(unsigned long long)r.audio);
++  std::fclose(f);
++ }
++ std::fprintf(stderr,"[probe-audio] produced_frames=%llu zero_pushes_after_5s=%llu empty_pace_after_5s=%llu dropped_frames=%llu queue_failures=%llu pace_calls=%llu pace_wait_ms=%.3f wall_ms=%.3f\n",(unsigned long long)audio_frames.load(),(unsigned long long)zero_pushes.load(),(unsigned long long)empty_pace.load(),(unsigned long long)drops.load(),(unsigned long long)failures.load(),(unsigned long long)pace_calls.load(),pace_ns.load()/1e6,(ns()-start_ns)/1e6);
++ std::fprintf(stderr,"[probe-gpu] busy_ms_estimate=%.3f presents_requested=%zu\n",ps2::gpu_busy_ms(),frames.size());
++ ps2::g_options.on_surface_event={};
++ if(presentation) wp_presentation_destroy(presentation);
++ if(registry) wl_registry_destroy(registry);
++ if(queue) wl_event_queue_destroy(queue);
++}
++}
+diff --git a/host/presentation_probe.hpp b/host/presentation_probe.hpp
+new file mode 100644
+index 0000000..80a4f57
+--- /dev/null
++++ b/host/presentation_probe.hpp
+@@ -0,0 +1,9 @@
++#pragma once
++#include <SDL.h>
++namespace probe {
++void init(SDL_Window *, SDL_AudioDeviceID);
++void pump();
++void audio_push(unsigned frames, unsigned before_bytes, bool dropped, bool failed);
++void pace_sample(unsigned before_bytes, unsigned after_bytes, double ms);
++void finish();
++}
+diff --git a/tests/queue_stress.cpp b/tests/queue_stress.cpp
+new file mode 100644
+index 0000000..0db7e9d
+--- /dev/null
++++ b/tests/queue_stress.cpp
+@@ -0,0 +1,38 @@
++#include "../runtime/src/gs/queue.hpp"
++#include <array>
++#include <chrono>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#include <thread>
++
++int main() {
++    using namespace ps2::gs::queue;
++    for (unsigned phase = 0; phase < 4; ++phase) {
++        Ring ring;
++        ring.start(256u << phase);
++        constexpr unsigned count = 250000;
++        std::thread producer([&] {
++            for (unsigned i = 0; i < count; ++i) {
++                std::array<unsigned, 12> values;
++                values.fill(i ^ 0xdeadbeef);
++                ring.post(kGif, i, ~i, values.data(), (1 + i % 12) * 4);
++                if (!(i % 997)) std::this_thread::sleep_for(std::chrono::microseconds(10));
++            }
++        });
++        for (unsigned i = 0; i < count; ++i) {
++            Header h;
++            const std::uint8_t *payload;
++            while (!ring.peek(h, payload)) ring.wait_for_work(1);
++            if (h.type != kGif || h.arg0 != i || h.arg1 != ~i || h.bytes != (1 + i % 12) * 4) std::abort();
++            for (unsigned k = 0; k < h.bytes / 4; ++k) {
++                unsigned v; std::memcpy(&v, payload + 4 * k, 4);
++                if (v != (i ^ 0xdeadbeef)) std::abort();
++            }
++            if (!(i % 991)) std::this_thread::sleep_for(std::chrono::microseconds(10));
++            ring.pop(h);
++        }
++        producer.join();
++    }
++    std::puts("Queue ordering, wraparound, pressure and wakeups PASS: 1000000 records");
++}

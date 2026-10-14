@@ -71,8 +71,19 @@ if(PS2_NATIVE_SSE41)
     set_source_files_properties(runtime/src/gs/gpu/gpu.cpp PROPERTIES COMPILE_OPTIONS "-msse4.1")
 endif()
 
+# Reviewed recovery source checkpoint. This library is NOT linked into ps2run
+# or generated game bodies: current main retains the original runtime path.
+if(NOT EMSCRIPTEN)
+    add_library(gt3_recovered STATIC host/gt3_clean_steering.cpp host/gt3_synthetic_wheel.cpp)
+    target_include_directories(gt3_recovered PUBLIC host)
+    target_link_libraries(gt3_recovered PUBLIC ps2runtime)
+endif()
+
 include(CTest)
 if(BUILD_TESTING AND NOT EMSCRIPTEN)
+    add_executable(gt3_recovered_source_test tests/gt3_recovered_source_test.cpp)
+    target_link_libraries(gt3_recovered_source_test PRIVATE gt3_recovered)
+    add_test(NAME gt3_recovered_source COMMAND gt3_recovered_source_test)
     foreach(test IN ITEMS gt3_hardware sif_scratchpad)
         add_executable(${test}_test tests/${test}.cpp)
         target_include_directories(${test}_test PRIVATE runtime/src)

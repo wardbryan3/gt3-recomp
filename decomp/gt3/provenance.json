@@ -1,0 +1,380 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "id": "artifact:docs/gt3-controls-evidence.json",
+      "path": "docs/gt3-controls-evidence.json",
+      "sha256": "646c3334d16e7205fcce5f825f843979b5430af9c4d5e13409daf55cf5d47784",
+      "kind": "static-rea",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:docs/gt3-steering-evidence.json",
+      "path": "docs/gt3-steering-evidence.json",
+      "sha256": "4bd6d78e537af2e16db0e71832384ab5a9b3c7d7c3fc8328f2f7b000dd85a36c",
+      "kind": "static-rea",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:docs/gt3-wheel-evidence.json",
+      "path": "docs/gt3-wheel-evidence.json",
+      "sha256": "b3d88fbadc7f6b2ff584a0b0960132d7aba64af8f7d7eea8bb43d65554f9e202",
+      "kind": "static-rea",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:docs/gt3-clean-steering-evidence.json",
+      "path": "docs/gt3-clean-steering-evidence.json",
+      "sha256": "6027fe9f96c40af843addd2b66bb8c2a94716baac7b934f3946754997b78b047",
+      "kind": "generated-fixture",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:evidence/rea/project-init.json",
+      "path": "evidence/rea/project-init.json",
+      "sha256": "2d95544f4ec69e0ca4753d4f99ccfdaa176c0d4c7f3205def91f1632c47c3b77",
+      "kind": "static-rea",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:build/clean-steering/live-final/summary.json",
+      "path": "build/clean-steering/live-final/summary.json",
+      "sha256": "f64da9434eeedad92db411254decfc7a47afcf8ae534ea77b1eb6437278a692b",
+      "kind": "live",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:build/synthetic-wheel/live-final/summary.json",
+      "path": "build/synthetic-wheel/live-final/summary.json",
+      "sha256": "5e20aa6d8f6ff79860dd7c218357d9771a975e1bcc2a3679e437915a29d28413",
+      "kind": "live",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:build/project-init/regressions.log",
+      "path": "build/project-init/regressions.log",
+      "sha256": "0f4db4487d072d0b64ebbfaba8fe03fb5441417963cdd92995b527c48567242d",
+      "kind": "generated-fixture",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:build/project-init/live/summary.json",
+      "path": "build/project-init/live/summary.json",
+      "sha256": "2b99b9f0757674f45b540cdca45efa0d7a32b4ec4ee165ff97208a7b20e15516",
+      "kind": "live",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:build/project-init/pedal-fixture.jsonl",
+      "path": "build/project-init/pedal-fixture.jsonl",
+      "sha256": "1441213bc3345881ba026a0ebdf9a883330e096c8dea9547d36086a16f236eea",
+      "kind": "generated-fixture",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    },
+    {
+      "id": "artifact:build/project-init/pedal-fixture.log",
+      "path": "build/project-init/pedal-fixture.log",
+      "sha256": "10e36f318dd5532ede13553f860600411997a00c2e833afe108ccf68f2461c62",
+      "kind": "generated-fixture",
+      "limitations": "Profile-specific; see retained record limitations. Fixtures are not hardware/live proof.",
+      "visibility": "private",
+      "verification": "recorded; use verify-private to check retained originals"
+    }
+  ],
+  "evidence_ids": [
+    {
+      "id": "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_0a3f3fdcfae0293ea0d8e4932f8b3c20fec890bb9f98651da62a680c3a46cd73",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_0b2712db9f9ee3fd122ecf411368244ff6dd2136beee5f986a361cbdb2d3e909",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_0c1f4be70fd4e5794a059276b8aa8d6fd1ff32f9ff8cd823afc9ba8e2c306c4c",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_165b3c82d776f439e6f9eb8ec234f9c3643f2da7bd56c21118350a38d1144a2f",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_18f35a85dab843d2b210edba3c1c42d28141b6ab4b1c499db0a4ae62f4d01a7d",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_1b5c67db2a4e37c594bdf40c3c06ffdb58c962dd707a011383cc0cc497f7d407",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_1b6c14638b4821f607d91c46386620cfa9549707afda12753967f234d328e11d",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_21aec165142c345e5ed50e32ed71684a4df7927b07aba218fff37ced3d59d496",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_2411c4e720643d02a91edf6b4d2e80e536d3fc3b3f397319bf46566b97f865c4",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_258503eb44a72bbfba935881d62a546fddbd2f7400ba1d97c66d3b557b0d5ae7",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_2a7c09cd38691a7bdb7f519be60961071b7cdf74be01e4201fa8a2d833b640c0",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_379041ecd32a588fe6cfc746aca7a510bc96282ca502d87065aca4691b73b5c8",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_3a3552772c621fa1a7a5ef53b281aa72606cbb03ad551c8c60fe5380ff33f873",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_3acb92c65732f7f382ce1053dc870b0fbcbbc72044c867d7076b3e811ace55dd",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_4255a44477d79bb26d836a40202151a69e68c20648fc72ff8d86565a51d314f0",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_447087f8b178bbabac7aaaed57ce286176c87d2c2344c7a7d41aa1305900ae32",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_464ad4dc56725a0bbce11f13295d37e02a91f7a1dd622e71a3404b712bfa85b9",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_4ef76d60bb0dc49cb12cf462792b364808d21cba69e7e50d832f5cfcff2ff604",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_53089c1d62ca912edc058a9dfd480ac45f1c9cace7c17f83535bcf20fedf4474",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_550e9fb8055c8c093b8a12f24ba01735cbf821773423fb145cc3232c2a00c217",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_5a094b93274631014be37b93149a8e2affcbb5ad8e97d065a0e6a79478dab47c",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_67389fdd72969c49440306f79a8c71a31fd08d161d23fc51c862ac51beea078f",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_7134af55597a9dbcff3d70484fd13d09e7cbd99a0b3445b480a8cf57a1401994",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_73399956aa65cd8b44f5b967461daa408d96d3eb350584c299a7da744f90b6ff",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_7a7e7689b85f8d238c6ec03dbe3f9bb8a0607a45acfe3c71a571e0a66e77145c",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_81f831b387d62a8070ea895f174039c83189c21074354e8e11654dd6d393ea1e",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_93315930b3c1ce37727da406afb6ca5fce5416ff1d0d9a9a9ec1df1ce7f30031",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_af08025aa4ce66661994f2de52d44157081e710b4b472f22b6fcb553da020c6c",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_af3dd19042062aa9b513801fcc06cea1a5bd623e0da069a56aef983d37a92302",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_affec8e5645b9c17f0e62dfcec73ae27cf6b2f0071326558a5277a29374822fe",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_b6ab11b03e8cb2096578c1eb74a3c596422398b054c371f442f77ec9c77b78b8",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_cac888fa7ead83b0f4981c8cec23fa7a44884e163e36ef920f2b6b252b791c35",
+      "artifact": "artifact:docs/gt3-wheel-evidence.json"
+    },
+    {
+      "id": "ev_d3721c632319b7933906eb15dd9817d1aacd3bf8e96511d2c7a3af523ba1941a",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_d672dcef0a0107c16a676c2fe1fcaac4e383b59bb2c88b8571028780131648a8",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_da6c18e33fd6fda47c8f784dd0bd67d8c60711b01d5521ad2254a0cbb68f3ef3",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_ddfbe374f8896acd31e66f958a765e27afde3edc8568e55ec7e1111f5d59269f",
+      "artifact": "artifact:docs/gt3-controls-evidence.json"
+    },
+    {
+      "id": "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_e8be3964615da7038c7d64ef1fa1846399a9836a5a07a04bff5b973adbd51aa2",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_e9a9679bdbb3b9a5852265471de6bd5dcf087f264adda19144cf18d43e142806",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    },
+    {
+      "id": "ev_f38920dea6e5dd0c8ed64f5922ccbdf694ffd890252d22ddd43933e777c64179",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de",
+      "artifact": "artifact:docs/gt3-steering-evidence.json"
+    },
+    {
+      "id": "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811",
+      "artifact": "artifact:evidence/rea/project-init.json"
+    }
+  ],
+  "notes": [
+    "Immutable hashes of retained evidence. Do not update a hash to hide a mismatch.",
+    "Original ELF identity must match before extending knowledge. REA session closed.",
+    "New project-init REA records are static only. No physical wheel/runtime capture from REA."
+  ],
+  "snapshot_context": {
+    "source_base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+    "validation_scope": "preserved-private-experiment",
+    "current_main_runtime_integration": "not-installed; compile-checked source snapshot only"
+  }
+}

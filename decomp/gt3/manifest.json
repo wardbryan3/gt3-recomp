@@ -1,0 +1,5043 @@
+{
+  "schema_version": 1,
+  "profile": "gt3-usa-v110",
+  "original_elf_sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
+  "lifecycle_order": [
+    "unknown",
+    "identified",
+    "traced",
+    "recovered",
+    "differential-passing",
+    "opt-in-integrated",
+    "live-validated",
+    "frozen"
+  ],
+  "notes": [
+    "State tracks a bounded implementation, not coverage of the game.",
+    "identified may have reconnaissance observations, not a complete traced contract.",
+    "frozen retains separate differential/runtime/live statuses.",
+    "No pedal, transmission, output or telemetry replacement installed tonight."
+  ],
+  "functions": [
+    {
+      "id": "0x001d8fb8",
+      "address": "0x001d8fb8",
+      "name": "unclassified_001d8fb8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001d92e0",
+      "address": "0x001d92e0",
+      "name": "evaluate_signed_response",
+      "component": "controls",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001db9e0",
+      "address": "0x001db9e0",
+      "name": "unclassified_001db9e0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001d8dd0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001dfd90",
+      "address": "0x001dfd90",
+      "name": "compute_output_magnitudes_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e0068",
+      "address": "0x001e0068",
+      "name": "unclassified_001e0068",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001d92e0",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e0618",
+      "address": "0x001e0618",
+      "name": "emit_vehicle_output_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x002107d8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e0c38",
+      "address": "0x001e0c38",
+      "name": "limit_engine_power_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e1768",
+      "address": "0x001e1768",
+      "name": "condition_engine_torque_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e0c38"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e17f0",
+      "address": "0x001e17f0",
+      "name": "evaluate_engine_torque_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e0ed8",
+        "0x001e1768"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e2d08",
+      "address": "0x001e2d08",
+      "name": "unclassified_001e2d08",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e2cc8",
+        "0x001e2cf8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e3068",
+      "address": "0x001e3068",
+      "name": "transition_gear_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001db9b8",
+        "0x001e2d08",
+        "0x001f2f90"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e3360",
+      "address": "0x001e3360",
+      "name": "evaluate_shift_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001db9b8",
+        "0x001e32d8",
+        "0x001e3338"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e35d8",
+      "address": "0x001e35d8",
+      "name": "unclassified_001e35d8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001eac90",
+        "0x001f2b98",
+        "0x001f7900",
+        "0x001f7ae0",
+        "0x001f8a00"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e3708",
+      "address": "0x001e3708",
+      "name": "unclassified_001e3708",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001db9b8",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e3a68",
+      "address": "0x001e3a68",
+      "name": "update_transmission_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e3068",
+        "0x001e3360"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e3b18",
+      "address": "0x001e3b18",
+      "name": "unclassified_001e3b18",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0",
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e2cf8",
+        "0x001e3338",
+        "0x001e3708",
+        "0x001e3a68",
+        "0x001e3ad0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e4180",
+      "address": "0x001e4180",
+      "name": "update_control_coupling_candidate",
+      "component": "controls",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_b6ab11b03e8cb2096578c1eb74a3c596422398b054c371f442f77ec9c77b78b8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e4290",
+      "address": "0x001e4290",
+      "name": "unclassified_001e4290",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e4320",
+      "address": "0x001e4320",
+      "name": "unclassified_001e4320",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "clean:filter_stick",
+      "address": "0x001e4368",
+      "name": "filter_stick",
+      "component": "clean-steering",
+      "lifecycle": "frozen",
+      "evidence": [
+        "artifact:docs/gt3-steering-evidence.json",
+        "artifact:docs/gt3-clean-steering-evidence.json"
+      ],
+      "confidence": "exact bounded generated differential + rendered native race validation",
+      "generated_oracle": [
+        "build/synthetic-wheel/generated",
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_clean_steering.cpp",
+      "recovered_header": "host/gt3_clean_steering.hpp",
+      "boundary": [
+        "0x001e4368",
+        "0x001e4467"
+      ],
+      "gate_address": "0x001e4368",
+      "resume_address": null,
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_clean_steering_test.cpp",
+          "tests/run_gt3_clean_steering.sh"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "opt-in-integrated",
+        "gate": "PS2_GT3_CLEAN_STEERING=ON AND --gt3-clean-steering",
+        "default": "generated"
+      },
+      "live": {
+        "status": "validated-bounded",
+        "evidence": [
+          "artifact:build/clean-steering/live-final/summary.json",
+          "artifact:build/project-init/live/summary.json"
+        ]
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Only original GT3 USA v1.10 profile; guards fallback to generated.",
+        "One race snapshot, no physical-PS2 or arbitrary-car/mode/hardware guarantee."
+      ],
+      "next_action": "Freeze; rerun unchanged differential/live suites before any future modification."
+    },
+    {
+      "id": "0x001e4470",
+      "address": "0x001e4470",
+      "name": "unclassified_001e4470",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "clean:process_steering",
+      "address": "0x001e4478",
+      "name": "process_steering",
+      "component": "clean-steering",
+      "lifecycle": "frozen",
+      "evidence": [
+        "artifact:docs/gt3-steering-evidence.json",
+        "artifact:docs/gt3-clean-steering-evidence.json"
+      ],
+      "confidence": "exact bounded generated differential + rendered native race validation",
+      "generated_oracle": [
+        "build/synthetic-wheel/generated",
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_clean_steering.cpp",
+      "recovered_header": "host/gt3_clean_steering.hpp",
+      "boundary": [
+        "0x001e45a8",
+        "0x001e48fb"
+      ],
+      "gate_address": "0x001e45a8",
+      "resume_address": "0x001e48fc",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_clean_steering_test.cpp",
+          "tests/run_gt3_clean_steering.sh"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "opt-in-integrated",
+        "gate": "PS2_GT3_CLEAN_STEERING=ON AND --gt3-clean-steering",
+        "default": "generated"
+      },
+      "live": {
+        "status": "validated-bounded",
+        "evidence": [
+          "artifact:build/clean-steering/live-final/summary.json",
+          "artifact:build/project-init/live/summary.json"
+        ]
+      },
+      "dependencies": [
+        "0x001d8fb8",
+        "0x001d92e0",
+        "0x001e4180",
+        "0x001e4320",
+        "0x001e4368",
+        "0x001e4470",
+        "0x001f2f68"
+      ],
+      "uncertainties": [
+        "Only original GT3 USA v1.10 profile; guards fallback to generated.",
+        "One race snapshot, no physical-PS2 or arbitrary-car/mode/hardware guarantee.",
+        "Original 001E4478 prefix and pedal/control tail remain generated."
+      ],
+      "next_action": "Freeze; rerun unchanged differential/live suites before any future modification."
+    },
+    {
+      "id": "0x001e4cb0",
+      "address": "0x001e4cb0",
+      "name": "apply_manual_command",
+      "component": "controls",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "original-only-fixture",
+        "tests": [
+          "tests/gt3_pedal_discovery.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/pedal-fixture.jsonl",
+          "artifact:build/project-init/pedal-fixture.log"
+        ]
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e4478",
+        "0x001eac60"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e4cf0",
+      "address": "0x001e4cf0",
+      "name": "unclassified_001e4cf0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f79f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e4d38",
+      "address": "0x001e4d38",
+      "name": "update_manual_driver",
+      "component": "controls",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_258503eb44a72bbfba935881d62a546fddbd2f7400ba1d97c66d3b557b0d5ae7"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e35d8",
+        "0x001e4290",
+        "0x001e4cb0",
+        "0x001e4cf0",
+        "0x001f6588",
+        "0x001f6648",
+        "0x00210740"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e4ff8",
+      "address": "0x001e4ff8",
+      "name": "unclassified_001e4ff8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001db9b8",
+        "0x001e4e80",
+        "0x001e4f10"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e5458",
+      "address": "0x001e5458",
+      "name": "unclassified_001e5458",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e4e80"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e5690",
+      "address": "0x001e5690",
+      "name": "unclassified_001e5690",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e4ff8",
+        "0x001e5458",
+        "0x001e5540",
+        "0x001e5600"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e57f8",
+      "address": "0x001e57f8",
+      "name": "unclassified_001e57f8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e6488",
+      "address": "0x001e6488",
+      "name": "unclassified_001e6488",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e6928",
+      "address": "0x001e6928",
+      "name": "unclassified_001e6928",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e6a38",
+      "address": "0x001e6a38",
+      "name": "unclassified_001e6a38",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00245d5c"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e6d00",
+      "address": "0x001e6d00",
+      "name": "convert_engine_speed_to_display_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_93315930b3c1ce37727da406afb6ca5fce5416ff1d0d9a9a9ec1df1ce7f30031"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e6ec8",
+      "address": "0x001e6ec8",
+      "name": "prepare_wheel_brake_requests",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "original-only-fixture",
+        "tests": [
+          "tests/gt3_pedal_discovery.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/pedal-fixture.jsonl",
+          "artifact:build/project-init/pedal-fixture.log"
+        ]
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e6d48"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e7328",
+      "address": "0x001e7328",
+      "name": "consume_wheel_motion",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e7068",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e73c0",
+      "address": "0x001e73c0",
+      "name": "unclassified_001e73c0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001d9098",
+        "0x001db9b8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e7450",
+      "address": "0x001e7450",
+      "name": "unclassified_001e7450",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e7500",
+      "address": "0x001e7500",
+      "name": "update_engine_and_driveline_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "original-only-fixture",
+        "tests": [
+          "tests/gt3_pedal_discovery.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/pedal-fixture.jsonl",
+          "artifact:build/project-init/pedal-fixture.log"
+        ]
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e17f0",
+        "0x001e6ca8",
+        "0x001e6d00"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e77e0",
+      "address": "0x001e77e0",
+      "name": "unclassified_001e77e0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_74e74e6769a0fe2bb6fb5df2bdc51f7e881b7bea114215dbc676928cc2219142"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e4e78",
+        "0x001e5690"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e7848",
+      "address": "0x001e7848",
+      "name": "unclassified_001e7848",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e7c08",
+      "address": "0x001e7c08",
+      "name": "unclassified_001e7c08",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001d8c80",
+        "0x001d8fb8",
+        "0x001db9b8",
+        "0x001e7a68"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e7d90",
+      "address": "0x001e7d90",
+      "name": "update_vehicle_motion_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001db9b8",
+        "0x001e7ad8",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e8008",
+      "address": "0x001e8008",
+      "name": "update_vehicle_body_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e8190",
+      "address": "0x001e8190",
+      "name": "unclassified_001e8190",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001db9b8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e8340",
+      "address": "0x001e8340",
+      "name": "unclassified_001e8340",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001d9fe0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e8598",
+      "address": "0x001e8598",
+      "name": "unclassified_001e8598",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e5768",
+        "0x001e57f8",
+        "0x001e5b98",
+        "0x001e6488",
+        "0x001e6ec8",
+        "0x001e73c0",
+        "0x001e7450",
+        "0x001e7500",
+        "0x001e77e0",
+        "0x001e7848",
+        "0x001e7c08",
+        "0x001e7d90",
+        "0x001e8008",
+        "0x001e84d8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e8910",
+      "address": "0x001e8910",
+      "name": "unclassified_001e8910",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_da6c18e33fd6fda47c8f784dd0bd67d8c60711b01d5521ad2254a0cbb68f3ef3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001e8978",
+      "address": "0x001e8978",
+      "name": "unclassified_001e8978",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_68b9d2a98b2acf90c85fbda52eca856fa3fef3be8efc4e07c2ca6d336024b9e0"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001e8910",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001eac60",
+      "address": "0x001eac60",
+      "name": "broadcast_brake_request",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001eadb8",
+      "address": "0x001eadb8",
+      "name": "unclassified_001eadb8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001eb218",
+      "address": "0x001eb218",
+      "name": "vehicle_post_update_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_93315930b3c1ce37727da406afb6ca5fce5416ff1d0d9a9a9ec1df1ce7f30031"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001d8a80",
+        "0x001debb0",
+        "0x001df148",
+        "0x001df150",
+        "0x001df2b0",
+        "0x001dfc60",
+        "0x001e0068",
+        "0x001e06d8",
+        "0x001e0768",
+        "0x001e8b68",
+        "0x001e91a8",
+        "0x001e9348",
+        "0x001e96f0",
+        "0x001e9998",
+        "0x001e9d48",
+        "0x001e9de8",
+        "0x001e9e18",
+        "0x001ea4d8",
+        "0x001ea9b8",
+        "0x001eafc0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001ed000",
+      "address": "0x001ed000",
+      "name": "get_race_car_slot",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001ed458",
+      "address": "0x001ed458",
+      "name": "unclassified_001ed458",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001ed028",
+        "0x001f2b68"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001ef060",
+      "address": "0x001ef060",
+      "name": "unclassified_001ef060",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001de018",
+        "0x001edb40",
+        "0x001ee978",
+        "0x001f2b68",
+        "0x001f2b98",
+        "0x001fb838"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f2b18",
+      "address": "0x001f2b18",
+      "name": "race_countdown_candidate",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_69a64c8e6574974230c8150c0895ed31bef447959e67ee7e16b7a5ebf1086d9a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001796c0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f2f68",
+      "address": "0x001f2f68",
+      "name": "unclassified_001f2f68",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_af3dd19042062aa9b513801fcc06cea1a5bd623e0da069a56aef983d37a92302",
+        "ev_b6ab11b03e8cb2096578c1eb74a3c596422398b054c371f442f77ec9c77b78b8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f39d8",
+      "address": "0x001f39d8",
+      "name": "update_vehicle_driver_dispatch",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_3a3552772c621fa1a7a5ef53b281aa72606cbb03ad551c8c60fe5380ff33f873",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001dfd90",
+        "0x001e0618",
+        "0x001e3b18",
+        "0x001e4d38",
+        "0x001e6928",
+        "0x001e6a38",
+        "0x001e7328",
+        "0x001e8190",
+        "0x001e8340",
+        "0x001e8598",
+        "0x001e8978",
+        "0x001ea428",
+        "0x001eadb8",
+        "0x001eb218",
+        "0x001ec098",
+        "0x001ed000",
+        "0x001ed458",
+        "0x001ef060",
+        "0x001f2b18",
+        "0x001f2b68",
+        "0x001f3950",
+        "0x001f59b0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f4330",
+      "address": "0x001f4330",
+      "name": "unclassified_001f4330",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f4660",
+      "address": "0x001f4660",
+      "name": "unclassified_001f4660",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f4330",
+        "0x001f4518",
+        "0x001f4570",
+        "0x001f5648",
+        "0x001f5678",
+        "0x001f56a8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f4998",
+      "address": "0x001f4998",
+      "name": "unclassified_001f4998",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_028d7b45b1a9cff15e5c8966b14b0feea66295226a7b6fff16f2cb24b4859de6"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f4518",
+        "0x001f4830",
+        "0x001f4c00",
+        "0x001f56d8",
+        "0x001f5720",
+        "0x001f5768",
+        "0x0026ca38"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f79a0",
+      "address": "0x001f79a0",
+      "name": "unclassified_001f79a0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f79f0",
+      "address": "0x001f79f0",
+      "name": "unclassified_001f79f0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001eac90"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x001f7ae0",
+      "address": "0x001f7ae0",
+      "name": "unclassified_001f7ae0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_281156a382d3460d07565d6452aa349487b30cd071b25d06fcaf3cf658c88038"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0018fa10",
+        "0x001d8c80",
+        "0x001db9b8",
+        "0x001f2f90",
+        "0x001f6d70",
+        "0x001f7088",
+        "0x001f7590",
+        "0x001f7658",
+        "0x001f77b8",
+        "0x001f7810",
+        "0x001f7948",
+        "0x001f79a0",
+        "0x001fb870",
+        "0x001fb878",
+        "0x001fb880",
+        "0x00269fc8",
+        "0x0026a1a0",
+        "0x0026a5f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0020ffe8",
+      "address": "0x0020ffe8",
+      "name": "unclassified_0020ffe8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0020ee70"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210060",
+      "address": "0x00210060",
+      "name": "unclassified_00210060",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x002555a8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x002102e0",
+      "address": "0x002102e0",
+      "name": "unclassified_002102e0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0026c690",
+        "0x0027afa0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x002104e8",
+      "address": "0x002104e8",
+      "name": "unclassified_002104e8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f4ed0",
+        "0x0022da98"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210578",
+      "address": "0x00210578",
+      "name": "unclassified_00210578",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f4ed0",
+        "0x0022da98"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210608",
+      "address": "0x00210608",
+      "name": "unclassified_00210608",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f4f20",
+        "0x0022db48"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210740",
+      "address": "0x00210740",
+      "name": "unclassified_00210740",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea",
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x001f4330",
+        "0x001f4660",
+        "0x001f4998",
+        "0x00211430",
+        "0x002115f8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x002107d8",
+      "address": "0x002107d8",
+      "name": "dispatch_control_output_candidate",
+      "component": "controls",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00218660",
+        "0x0022e040"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210a78",
+      "address": "0x00210a78",
+      "name": "unclassified_00210a78",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00218660"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210aa0",
+      "address": "0x00210aa0",
+      "name": "unclassified_00210aa0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_f51e5073dcbb5ab0cd53b80503a40108bb733607b9970fe44d14e1cc20674dd3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x002108f0",
+        "0x002109c0",
+        "0x0022dce8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210d68",
+      "address": "0x00210d68",
+      "name": "unclassified_00210d68",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210da8",
+      "address": "0x00210da8",
+      "name": "unclassified_00210da8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00210ef8",
+      "address": "0x00210ef8",
+      "name": "unclassified_00210ef8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44",
+        "ev_85de94bb76e4b62497c487d7aa5790ae4a60476f58df62d7f6d3c518db1550ea",
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "clean:normalize_mapped_channel",
+      "address": "0x00210f90",
+      "name": "normalize_mapped_channel",
+      "component": "clean-steering",
+      "lifecycle": "frozen",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json",
+        "artifact:docs/gt3-clean-steering-evidence.json"
+      ],
+      "confidence": "exact bounded generated differential + rendered native race validation",
+      "generated_oracle": [
+        "build/synthetic-wheel/generated",
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_clean_steering.cpp",
+      "recovered_header": "host/gt3_clean_steering.hpp",
+      "boundary": [
+        "0x00210f90",
+        "0x0021104f"
+      ],
+      "gate_address": "0x00210f90",
+      "resume_address": null,
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_clean_steering_test.cpp",
+          "tests/run_gt3_clean_steering.sh"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "opt-in-integrated",
+        "gate": "PS2_GT3_CLEAN_STEERING=ON AND --gt3-clean-steering",
+        "default": "generated"
+      },
+      "live": {
+        "status": "validated-bounded",
+        "evidence": [
+          "artifact:build/clean-steering/live-final/summary.json",
+          "artifact:build/project-init/live/summary.json"
+        ]
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Only original GT3 USA v1.10 profile; guards fallback to generated.",
+        "One race snapshot, no physical-PS2 or arbitrary-car/mode/hardware guarantee."
+      ],
+      "next_action": "Freeze; rerun unchanged differential/live suites before any future modification."
+    },
+    {
+      "id": "helper:normalize_mapped_input",
+      "address": "0x00210f90",
+      "name": "normalize_mapped_input",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "helper:fill_mapped_actions_primary",
+      "address": "0x00211050",
+      "name": "fill_mapped_actions_primary",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "helper:fill_mapped_actions_secondary",
+      "address": "0x002111c0",
+      "name": "fill_mapped_actions_secondary",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "0x00211398",
+      "address": "0x00211398",
+      "name": "unclassified_00211398",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8c3e03fbea44f8fbe453131cb558f8b3f64ccef1d449d2d0c18bcac42922560e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00211330"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x002115d8",
+      "address": "0x002115d8",
+      "name": "unclassified_002115d8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "helper:wheel_pedal_input",
+      "address": "0x002115d8",
+      "name": "wheel_pedal_input",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-wheel-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "clean:build_wheel_command",
+      "address": "0x002115f8",
+      "name": "build_wheel_command",
+      "component": "clean-steering",
+      "lifecycle": "frozen",
+      "evidence": [
+        "artifact:docs/gt3-wheel-evidence.json",
+        "artifact:docs/gt3-clean-steering-evidence.json"
+      ],
+      "confidence": "exact bounded generated differential + rendered native race validation",
+      "generated_oracle": [
+        "build/synthetic-wheel/generated",
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_clean_steering.cpp",
+      "recovered_header": "host/gt3_clean_steering.hpp",
+      "boundary": [
+        "0x002115f8",
+        "0x0021174f"
+      ],
+      "gate_address": "0x002115f8",
+      "resume_address": null,
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_clean_steering_test.cpp",
+          "tests/run_gt3_clean_steering.sh"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "opt-in-integrated",
+        "gate": "PS2_GT3_CLEAN_STEERING=ON AND --gt3-clean-steering",
+        "default": "generated"
+      },
+      "live": {
+        "status": "validated-bounded",
+        "evidence": [
+          "artifact:build/clean-steering/live-final/summary.json",
+          "artifact:build/project-init/live/summary.json"
+        ]
+      },
+      "dependencies": [
+        "0x00210ef8",
+        "0x002115d8"
+      ],
+      "uncertainties": [
+        "Only original GT3 USA v1.10 profile; guards fallback to generated.",
+        "One race snapshot, no physical-PS2 or arbitrary-car/mode/hardware guarantee."
+      ],
+      "next_action": "Freeze; rerun unchanged differential/live suites before any future modification."
+    },
+    {
+      "id": "helper:wheel_steering_command",
+      "address": "0x002115f8",
+      "name": "wheel_steering_command",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-wheel-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "helper:mapped_channel_primary",
+      "address": "0x002178c8",
+      "name": "mapped_channel_primary",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "helper:mapped_channel_secondary",
+      "address": "0x00217938",
+      "name": "mapped_channel_secondary",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "helper:binding_index",
+      "address": "0x00217998",
+      "name": "binding_index",
+      "component": "standalone-controls",
+      "lifecycle": "differential-passing",
+      "evidence": [
+        "artifact:docs/gt3-controls-evidence.json"
+      ],
+      "confidence": "bounded standalone helper; not an independent guest replacement",
+      "generated_oracle": [
+        "generated/gt3-usa-v110"
+      ],
+      "recovered_source": "host/gt3_controls.hpp",
+      "differential": {
+        "status": "passing",
+        "tests": [
+          "tests/gt3_controls_test.cpp",
+          "tests/gt3_steering_trace_test.cpp"
+        ],
+        "evidence": [
+          "artifact:build/project-init/regressions.log"
+        ]
+      },
+      "runtime": {
+        "status": "not-installed",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated-as-standalone",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "Domain/throwing-zero contract differ from clean bridge; see existing docs."
+      ],
+      "next_action": "Preserve as standalone oracle-tested helpers."
+    },
+    {
+      "id": "0x0022d3c0",
+      "address": "0x0022d3c0",
+      "name": "unclassified_0022d3c0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x002184a8",
+        "0x002184c8",
+        "0x00218518",
+        "0x00218660",
+        "0x0026c118",
+        "0x0026c380",
+        "0x0026c3a8",
+        "0x0026fb00",
+        "0x0026ff58",
+        "0x0026ffa0",
+        "0x0026ffb8",
+        "0x0026ffc0",
+        "0x00270010",
+        "0x002700a8",
+        "0x002700c8",
+        "0x00270258",
+        "0x00270398",
+        "0x0027db38"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022da98",
+      "address": "0x0022da98",
+      "name": "unclassified_0022da98",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022dba8",
+      "address": "0x0022dba8",
+      "name": "unclassified_0022dba8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022dc10",
+      "address": "0x0022dc10",
+      "name": "unclassified_0022dc10",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022dce8",
+      "address": "0x0022dce8",
+      "name": "unclassified_0022dce8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ff43076379d08432d01f20eb070f711483bb130d1e0d9e11086ec8273693d5de"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022de40",
+      "address": "0x0022de40",
+      "name": "unclassified_0022de40",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022ded8",
+      "address": "0x0022ded8",
+      "name": "unclassified_0022ded8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_316f6b1b113558103f94f3537ef210b894b769a2e6d1fa70b733f9f0d8113e0a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022df40",
+      "address": "0x0022df40",
+      "name": "unclassified_0022df40",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022dfa8",
+      "address": "0x0022dfa8",
+      "name": "unclassified_0022dfa8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_2411c4e720643d02a91edf6b4d2e80e536d3fc3b3f397319bf46566b97f865c4",
+        "ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022e040",
+      "address": "0x0022e040",
+      "name": "unclassified_0022e040",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022e470",
+      "address": "0x0022e470",
+      "name": "unclassified_0022e470",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd",
+        "ev_af3dd19042062aa9b513801fcc06cea1a5bd623e0da069a56aef983d37a92302"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022fb60",
+        "0x002307f0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022e4e0",
+      "address": "0x0022e4e0",
+      "name": "unclassified_0022e4e0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022cc50",
+        "0x0022cc58",
+        "0x0022d0f0",
+        "0x0022d810",
+        "0x00230258"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022e598",
+      "address": "0x0022e598",
+      "name": "unclassified_0022e598",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022d810",
+        "0x0022ffe8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022e648",
+      "address": "0x0022e648",
+      "name": "unclassified_0022e648",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022d830"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022e7a0",
+      "address": "0x0022e7a0",
+      "name": "unclassified_0022e7a0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022dba8",
+        "0x0022e470",
+        "0x0022f810",
+        "0x0022fb60",
+        "0x002307f0",
+        "0x00269b30"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022edb0",
+      "address": "0x0022edb0",
+      "name": "unclassified_0022edb0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022f210",
+        "0x0022fb00"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f268",
+      "address": "0x0022f268",
+      "name": "unclassified_0022f268",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0027c408"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f2a8",
+      "address": "0x0022f2a8",
+      "name": "unclassified_0022f2a8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00269b00",
+        "0x0027db38"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f328",
+      "address": "0x0022f328",
+      "name": "unclassified_0022f328",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022f2a8",
+        "0x00269b00",
+        "0x00269c10",
+        "0x00272140",
+        "0x002721c0",
+        "0x002722d8",
+        "0x00272360",
+        "0x002725a0",
+        "0x002726d8",
+        "0x00272790",
+        "0x00272848",
+        "0x00272a88",
+        "0x00272ae8",
+        "0x0027d8fc",
+        "0x0027db38"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f810",
+      "address": "0x0022f810",
+      "name": "unclassified_0022f810",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022f2a8",
+        "0x00269b30",
+        "0x00269c30",
+        "0x00271b90",
+        "0x00271df0",
+        "0x00272da0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f938",
+      "address": "0x0022f938",
+      "name": "unclassified_0022f938",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00272140"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f9b0",
+      "address": "0x0022f9b0",
+      "name": "unclassified_0022f9b0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00269c10"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022f9e8",
+      "address": "0x0022f9e8",
+      "name": "unclassified_0022f9e8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8bf8689be242952693a2af4f43653e88b9503d2ca73e7906e26361abc1eafdbd"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022fac0",
+      "address": "0x0022fac0",
+      "name": "unclassified_0022fac0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022fb00",
+      "address": "0x0022fb00",
+      "name": "unclassified_0022fb00",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_6327bdb002de9de96c202cffbb54a2456b37721a6b7c4f4d61591abe9990daed"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022f210"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022fb78",
+      "address": "0x0022fb78",
+      "name": "unclassified_0022fb78",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022f9e8",
+        "0x0022fbb0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022fbb0",
+      "address": "0x0022fbb0",
+      "name": "unclassified_0022fbb0",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022fa58",
+        "0x0022fac0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022fc30",
+      "address": "0x0022fc30",
+      "name": "unclassified_0022fc30",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_38d04db7d6b5135860dbb44a8d3e576f180b3e7f0b260fcbf82db00b24cd498a"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022fac0"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0022ffe8",
+      "address": "0x0022ffe8",
+      "name": "unclassified_0022ffe8",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc",
+        "ev_f38920dea6e5dd0c8ed64f5922ccbdf694ffd890252d22ddd43933e777c64179"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022da98",
+        "0x0022db48",
+        "0x0022dc10",
+        "0x0022dfa8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230388",
+      "address": "0x00230388",
+      "name": "unclassified_00230388",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00217aa0",
+        "0x00217ac0",
+        "0x00217ae0",
+        "0x00217b00",
+        "0x00217b20",
+        "0x00217b40",
+        "0x00217b60",
+        "0x00217b80"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230830",
+      "address": "0x00230830",
+      "name": "store_device_output_candidate",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230878",
+      "address": "0x00230878",
+      "name": "unclassified_00230878",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_ed109d25a990ea10dec38122a191195ab39aaa3fa7db1828308b1dec22338763"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230938",
+      "address": "0x00230938",
+      "name": "dispatch_device_output_candidate",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_165b3c82d776f439e6f9eb8ec234f9c3643f2da7bd56c21118350a38d1144a2f"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00266830",
+        "0x00266998"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230a90",
+      "address": "0x00230a90",
+      "name": "unclassified_00230a90",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_165b3c82d776f439e6f9eb8ec234f9c3643f2da7bd56c21118350a38d1144a2f"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00218660",
+        "0x0022da98",
+        "0x0022db48",
+        "0x00230388",
+        "0x00230830",
+        "0x00230858",
+        "0x00230938",
+        "0x00265ea0",
+        "0x002660e0",
+        "0x00266830",
+        "0x00266998"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230d10",
+      "address": "0x00230d10",
+      "name": "adapt_wheel_state",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
+        "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00230538",
+        "0x00230580",
+        "0x00230628",
+        "0x00230698",
+        "0x00230778"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00230fb0",
+      "address": "0x00230fb0",
+      "name": "unclassified_00230fb0",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00231038",
+      "address": "0x00231038",
+      "name": "unclassified_00231038",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00231120",
+      "address": "0x00231120",
+      "name": "initialize_wheel_object_candidate",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_e6e1f4108a626daaa3d88d47aebb049c8d8d78004d6c4b118e56795a7f1302ea"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x0022f268",
+        "0x0027c3e8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00265fc8",
+      "address": "0x00265fc8",
+      "name": "unclassified_00265fc8",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_8362907ce1bf0ec57b1c2b7100f631cb8232c654c181a2dd8431a8b3d0ae164b"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00267008"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00266830",
+      "address": "0x00266830",
+      "name": "submit_device_packet_candidate",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_4ef76d60bb0dc49cb12cf462792b364808d21cba69e7e50d832f5cfcff2ff604"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00265fc8"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00266998",
+      "address": "0x00266998",
+      "name": "assemble_device_packet_candidate",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_4ef76d60bb0dc49cb12cf462792b364808d21cba69e7e50d832f5cfcff2ff604"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0026a1a0",
+      "address": "0x0026a1a0",
+      "name": "unclassified_0026a1a0",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_4255a44477d79bb26d836a40202151a69e68c20648fc72ff8d86565a51d314f0"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x0026a5f0",
+      "address": "0x0026a5f0",
+      "name": "unclassified_0026a5f0",
+      "component": "device-output",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_4255a44477d79bb26d836a40202151a69e68c20648fc72ff8d86565a51d314f0"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    },
+    {
+      "id": "0x00272140",
+      "address": "0x00272140",
+      "name": "unclassified_00272140",
+      "component": "vehicle-discovery",
+      "lifecycle": "identified",
+      "evidence": [
+        "ev_d551f4b44bec60a26c21766e254c21a2772d2639cb403afbfd3594d9bac277f8"
+      ],
+      "confidence": "static partial; generated oracle retained",
+      "generated_oracle": [
+        "generated/gt3-usa-v110",
+        "build/synthetic-wheel/generated"
+      ],
+      "recovered_source": null,
+      "differential": {
+        "status": "not-run",
+        "tests": []
+      },
+      "runtime": {
+        "status": "generated-only",
+        "gate": null
+      },
+      "live": {
+        "status": "not-validated",
+        "evidence": []
+      },
+      "dependencies": [
+        "0x00272090",
+        "0x0027d990"
+      ],
+      "uncertainties": [
+        "No whole-function recovery or replacement authorized.",
+        "Ghidra EE calling convention/signature and function containment require assembly verification."
+      ],
+      "next_action": "Discovery only; prioritize by docs/site/docs/queue.md."
+    }
+  ],
+  "snapshot_context": {
+    "source_base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+    "validation_scope": "preserved-private-experiment",
+    "current_main_runtime_integration": "not-installed; compile-checked source snapshot only"
+  }
+}

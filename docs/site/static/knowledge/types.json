@@ -1,0 +1,530 @@
+{
+  "schema_version": 1,
+  "profile": "gt3-usa-v110",
+  "endianness": "little",
+  "guest_pointer_bits": 32,
+  "float_representation": "EE bit-pattern u32; ps2::fp arithmetic",
+  "layouts": [
+    {
+      "name": "BindingRecord",
+      "cpp": "gt3::BindingRecord",
+      "size": "0x6",
+      "source": "host/gt3_controls.hpp",
+      "coverage": "six-byte record storage; first halfword meaning unknown",
+      "fields": [
+        {
+          "name": "unknown",
+          "offset": "0x0",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-controls-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "unknown"
+        },
+        {
+          "name": "primary_channel",
+          "offset": "0x2",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-controls-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "primary_channel"
+        },
+        {
+          "name": "secondary_channel",
+          "offset": "0x4",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-controls-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "secondary_channel"
+        }
+      ]
+    },
+    {
+      "name": "Command",
+      "cpp": "gt3::clean::Command",
+      "size": "0x10",
+      "source": "host/gt3_clean_steering.hpp",
+      "coverage": "full storage; unknown03 semantic unknown",
+      "fields": [
+        {
+          "name": "analog_flags",
+          "offset": "0x0",
+          "type": "u8",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "analog_flags"
+        },
+        {
+          "name": "steering_mode",
+          "offset": "0x1",
+          "type": "u8",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "steering_mode"
+        },
+        {
+          "name": "shift",
+          "offset": "0x2",
+          "type": "i8",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "shift"
+        },
+        {
+          "name": "unknown03",
+          "offset": "0x3",
+          "type": "u8",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "unknown03"
+        },
+        {
+          "name": "steering",
+          "offset": "0x4",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "steering"
+        },
+        {
+          "name": "opposing_pressure",
+          "offset": "0x6",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "opposing_pressure"
+        },
+        {
+          "name": "accelerator",
+          "offset": "0x8",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "accelerator"
+        },
+        {
+          "name": "brake",
+          "offset": "0xa",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "brake"
+        },
+        {
+          "name": "auxiliary",
+          "offset": "0xc",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "auxiliary"
+        },
+        {
+          "name": "handbrake",
+          "offset": "0xe",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "handbrake"
+        }
+      ]
+    },
+    {
+      "name": "InputPartial",
+      "cpp": "gt3::clean::InputPartial",
+      "size": "0xc4",
+      "source": "host/gt3_clean_steering.hpp",
+      "coverage": "partial only; unknown padding NOT zero-filled by a bridge",
+      "fields": [
+        {
+          "name": "type_bits",
+          "offset": "0x14",
+          "type": "u32",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "type_bits"
+        },
+        {
+          "name": "digital_mask",
+          "offset": "0x2c",
+          "type": "u32",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "digital_mask"
+        },
+        {
+          "name": "channels",
+          "offset": "0x38",
+          "type": "u32[32]",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "channels"
+        },
+        {
+          "name": "vtable",
+          "offset": "0xc0",
+          "type": "u32",
+          "evidence": [
+            "artifact:docs/gt3-wheel-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "vtable"
+        }
+      ]
+    },
+    {
+      "name": "CarPartial",
+      "cpp": "gt3::clean::CarPartial",
+      "size": "0x16a8",
+      "source": "host/gt3_clean_steering.hpp",
+      "coverage": "partial steering view; not the full car; opaque padding must not be bulk-written",
+      "fields": [
+        {
+          "name": "mechanical_limit",
+          "offset": "0x68",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "mechanical_limit"
+        },
+        {
+          "name": "dt",
+          "offset": "0xec0",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "dt"
+        },
+        {
+          "name": "control_kind136d",
+          "offset": "0x136d",
+          "type": "i8",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "control_kind136d"
+        },
+        {
+          "name": "unknown136e",
+          "offset": "0x136e",
+          "type": "i8",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "Unknown hook gate"
+        },
+        {
+          "name": "wheel_policy",
+          "offset": "0x136f",
+          "type": "i8",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "wheel_policy"
+        },
+        {
+          "name": "steering",
+          "offset": "0x13a0",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "steering"
+        },
+        {
+          "name": "unknown13a4",
+          "offset": "0x13a4",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "Unknown broader purpose; assignment to 1.0 evidenced"
+        },
+        {
+          "name": "steering_rate",
+          "offset": "0x13a8",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "steering_rate"
+        },
+        {
+          "name": "envelope_ratio",
+          "offset": "0x1420",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "envelope_ratio"
+        },
+        {
+          "name": "negative_limit",
+          "offset": "0x142c",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "negative_limit"
+        },
+        {
+          "name": "positive_limit",
+          "offset": "0x1430",
+          "type": "EeFloat:u32",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "positive_limit"
+        },
+        {
+          "name": "wheel_command",
+          "offset": "0x16a4",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "wheel_command"
+        },
+        {
+          "name": "previous_wheel_command",
+          "offset": "0x16a6",
+          "type": "i16",
+          "evidence": [
+            "artifact:docs/gt3-steering-evidence.json"
+          ],
+          "confidence": "high",
+          "meaning": "previous_wheel_command"
+        }
+      ]
+    }
+  ],
+  "observations": {
+    "owner": "car-like guest object; NOT a C++ layout",
+    "fields": [
+      {
+        "name": "control_state1304",
+        "offset": "0x1304",
+        "type": "u8[4]",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Observed four-byte control-state window passed to 001E4478; not a whole-class layout"
+      },
+      {
+        "name": "control_policy13e5",
+        "offset": "0x13e5",
+        "type": "u8",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Numeric accelerator/auxiliary arbitration and coupling policy; UI meaning unknown"
+      },
+      {
+        "name": "suppression14b8",
+        "offset": "0x14b8",
+        "type": "u8",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Suppresses several manual control/driver paths"
+      },
+      {
+        "name": "suppression14ba",
+        "offset": "0x14ba",
+        "type": "i16",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Suppresses auxiliary/shift/coupling; zero versus nonzero checked"
+      },
+      {
+        "name": "wheel_brake_request_first",
+        "offset": "0x1074",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Four broadcast entries at stride 0xA4; physical torque units not certified"
+      },
+      {
+        "name": "scaled_brake_request_first",
+        "offset": "0x1274",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Four scaled entries at stride 0x24, with rear handbrake contribution"
+      },
+      {
+        "name": "processed_accelerator",
+        "offset": "0x13ac",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Original command processing result; not final torque"
+      },
+      {
+        "name": "processed_brake",
+        "offset": "0x13b0",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Original processed brake request"
+      },
+      {
+        "name": "processed_handbrake_candidate",
+        "offset": "0x13b4",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Adds rear axle brake request; interacts with coupling"
+      },
+      {
+        "name": "clutch_coupling_candidate",
+        "offset": "0x139c",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Branch-controlled coupling, not proven physical clutch axis"
+      },
+      {
+        "name": "gear_index_candidate",
+        "offset": "0x13ba",
+        "type": "u8",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Used to index gear ratios"
+      },
+      {
+        "name": "driveline_state_candidate",
+        "offset": "0x13bb",
+        "type": "u8",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "0/free engine vs coupled states; not gear itself"
+      },
+      {
+        "name": "effective_accelerator",
+        "offset": "0x1428",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "high",
+        "meaning": "Manual wrapper copies +13ac; other producer policies remain"
+      },
+      {
+        "name": "engine_angular_rate_candidate",
+        "offset": "0x13cc",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Integrated then converted to display RPM"
+      },
+      {
+        "name": "engine_display_speed_candidate",
+        "offset": "0x1414",
+        "type": "i16",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "RPM conversion; limiting semantics need full trace"
+      },
+      {
+        "name": "signed_output_encoding_candidate",
+        "offset": "0x16d6",
+        "type": "u8",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Encoded bounded [-1,+1] output, not physical torque"
+      },
+      {
+        "name": "motion_speed_candidate",
+        "offset": "0x140c",
+        "type": "EeFloat:u32",
+        "evidence": [
+          "artifact:evidence/rea/project-init.json"
+        ],
+        "confidence": "medium",
+        "meaning": "Steering curve input; speed units/frame not certified"
+      }
+    ]
+  },
+  "notes": [
+    "Offset assertions generated only for installed typed fields.",
+    "Observation offsets inside padding do not authorize new writes or object reinterpretation.",
+    "Names with candidate/unknown retain uncertainty. No whole-car/device/race structure invented."
+  ],
+  "snapshot_context": {
+    "source_base": "b6482fb4b3e89657917b664f829f20307e1899c1",
+    "validation_scope": "preserved-private-experiment",
+    "current_main_runtime_integration": "not-installed; compile-checked source snapshot only"
+  }
+}

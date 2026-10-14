@@ -9,6 +9,29 @@ emulator or a claim to have recovered the original game source.
 **Bring your own legally obtained GT3 disc image. No game executable, assets,
 generated game translations, or game-containing builds are distributed.**
 
+## Selective-decompilation checkpoint
+
+The project now has one source-of-truth workflow: root `justfile`, `AGENTS.md`,
+[HANDOFF.md](HANDOFF.md), `decomp/gt3` inventories and the curated Docusaurus site.
+
+```bash
+just check                 # source/schema/types/publication; no game needed
+just test                  # source-only regressions; NOT a live-game oracle
+just setup && just docs-build
+just status
+just lookup 0x001e4478
+```
+
+Readable mapping, clean steering and independent synthetic-wheel source are
+preserved with original-dependent fixture source. **The recovered library is
+compile checked, not linked into ps2run or installed into generated bodies.**
+Historical exact/live results are explicitly contextualized; new runtime
+installation still needs revalidation. No pedal/FFB/AI API is implemented here.
+
+[Legacy source ledger](experiments/legacy/README.md) preserves unique old source
+variants as restoration patches, not copied active runtime repositories. Raw
+exports and game artifacts remain private; public docs build without them.
+
 ## What comes from upstream
 
 The EE static recompiler, VU translation infrastructure, emulated PS2 runtime,

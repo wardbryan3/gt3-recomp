@@ -1,0 +1,276 @@
+diff --git a/runtime/src/hw.cpp b/runtime/src/hw.cpp
+index 6a4d746..fbb0dd4 100644
+--- a/runtime/src/hw.cpp
++++ b/runtime/src/hw.cpp
+@@ -26,6 +26,9 @@ constexpr std::uint32_t kIntcStat = 0x1000F000u, kIntcMask = 0x1000F010u;
+ constexpr std::uint32_t kDmacStat = 0x1000E010u;
+ 
+ std::uint32_t g_intc_stat = 0, g_intc_mask = 0;
++// HLE handler delivery is distinct from the guest-visible hardware latch.
++// Games can poll INTC_STAT after the handler; guest W1C writes clear it.
++std::uint32_t g_intc_delivered = 0;
+ std::uint32_t g_dmac_stat = 0;
+ std::map<std::uint32_t, std::uint64_t> g_regs;
+ std::set<std::uint32_t> g_reported;
+@@ -109,6 +112,7 @@ bool is_timer(std::uint32_t a) { return a >= 0x10000000u && a < 0x10002000u && (
+ 
+ void reset() {
+     g_intc_stat = g_intc_mask = g_dmac_stat = 0;
++    g_intc_delivered = 0;
+     gs::reset();
+     gif::reset();
+     vif::reset();
+@@ -126,14 +130,15 @@ void vblank_start() {
+     schedule(kEventVblankEnd, now() + hblank_cycles() * 22u, [] { intc_raise(3); });
+ }
+ 
+-std::uint32_t intc_pending() { return g_intc_stat & g_intc_mask; }
++std::uint32_t intc_pending() { return g_intc_stat & g_intc_mask & ~g_intc_delivered; }
+ 
+ void intc_raise(unsigned cause) {
+     g_intc_stat |= 1u << cause;
++    g_intc_delivered &= ~(1u << cause);
+     if (g_intc_mask & (1u << cause)) kernel::wake_idle();
+ }
+ 
+-void intc_ack(unsigned cause) { g_intc_stat &= ~(1u << cause); }
++void intc_ack(unsigned cause) { g_intc_delivered |= 1u << cause; }
+ 
+ bool intc_set_mask(unsigned cause, bool enabled) {
+     const std::uint32_t bit = 1u << cause;
+@@ -204,7 +209,7 @@ std::uint32_t read32(std::uint32_t a) {
+ }
+ 
+ void write32(std::uint32_t a, std::uint32_t v) {
+-    if (a == kIntcStat) { g_intc_stat &= ~v; return; }
++    if (a == kIntcStat) { g_intc_stat &= ~v; g_intc_delivered &= ~v; return; }
+     if (a == kIntcMask) { g_intc_mask ^= v; return; }
+     if (a == kDmacStat) {
+         g_dmac_stat &= ~(v & 0xFFFFu);
+@@ -291,6 +296,7 @@ std::function<void()> event_action(int id) {
+ void state(ps2::state::Stream &s) {
+     s.tag("eehw");
+     s.pod(g_intc_stat);
++    s.pod(g_intc_delivered);
+     s.pod(g_intc_mask);
+     s.pod(g_dmac_stat);
+     s.map(g_regs);
+diff --git a/runtime/src/iop/hw.cpp b/runtime/src/iop/hw.cpp
+index 21f2405..941b1dd 100644
+--- a/runtime/src/iop/hw.cpp
++++ b/runtime/src/iop/hw.cpp
+@@ -83,6 +83,7 @@ struct Dma {
+ };
+ Dma g_dma[14];
+ std::uint32_t g_ohci[0x18];
++std::uint8_t g_ilink_phy[16];
+ 
+ int dma_channel(std::uint32_t a, std::uint32_t &reg) {
+     if (a >= 0x1F801080u && a < 0x1F8010F0u) {
+@@ -129,6 +130,7 @@ void reset() {
+     spu2::reset();
+     sio2::reset();
+     std::memset(g_ohci, 0, sizeof g_ohci);
++    std::memset(g_ilink_phy, 0, sizeof g_ilink_phy);
+ }
+ 
+ void raise_interrupt(unsigned line) {
+@@ -208,6 +210,8 @@ void ohci_write(std::uint32_t a, std::uint32_t v) {
+ }
+ 
+ std::uint32_t read(std::uint32_t a, unsigned size) {
++    if (a == 0x1F808400u) return 0xFFC00001u;
++    if (a == 0x1F80847Cu) return 0x10000001u;
+     if (a >= 0x1F900000u && a < 0x1F900800u) return spu2::read(a, size);
+     if (a >= 0x1F801600u && a < 0x1F801660u) return ohci_read(a);
+     if (a >= 0x1F808200u && a < 0x1F808280u) return sio2::read(a);
+@@ -236,6 +240,27 @@ std::uint32_t read(std::uint32_t a, unsigned size) {
+ }
+ 
+ void write(std::uint32_t a, std::uint32_t v, unsigned size) {
++    // i.Link control 2: enabling link power makes the serial clock ready.
++    // SCLKOK is hardware status, not a writable bit; the driver polls it
++    // before continuing initialization, including when no peers are attached.
++    if (a == 0x1F808410u) { g_regs[a] = (v & 2u) | 8u; return; }
++    if (a == 0x1F808408u) { g_regs[a] = v & ~0x00800000u; return; }
++    if (a == 0x1F808420u || a == 0x1F808428u || a == 0x1F808430u) {
++        g_regs[a] &= ~v;
++        return;
++    }
++    if (a == 0x1F808414u) {
++        if (v & 0x40000000u) {
++            g_ilink_phy[(v >> 8) & 15u] = static_cast<std::uint8_t>(v);
++            g_regs[a] = v & ~0x4000FFFFu;
++        } else if (v & 0x80000000u) {
++            const std::uint32_t reg = (v >> 24) & 15u;
++            g_regs[a] = (v & ~0x8000FFFFu) | (reg << 8) | g_ilink_phy[reg];
++            g_regs[0x1F808420u] |= 0x40000000u;
++            if (g_regs[0x1F808424u] & 0x40000000u) raise_interrupt(24);
++        } else g_regs[a] = v;
++        return;
++    }
+     if (a >= 0x1F900000u && a < 0x1F900800u) { spu2::write(a, v, size); return; }
+     if (a >= 0x1F801600u && a < 0x1F801660u) { ohci_write(a, v); return; }
+     if (a >= 0x1F808200u && a < 0x1F808280u) { sio2::write(a, v); return; }
+@@ -283,6 +308,7 @@ void state(ps2::state::Stream &s) {
+     s.map(g_regs);
+     s.pod(g_dma);
+     s.pod(g_ohci);
++    s.pod(g_ilink_phy);
+     s.pod(g_scratchpad);
+ }
+ 
+diff --git a/runtime/src/iop/sif.cpp b/runtime/src/iop/sif.cpp
+index 5c744c4..7bc85d0 100644
+--- a/runtime/src/iop/sif.cpp
++++ b/runtime/src/iop/sif.cpp
+@@ -84,9 +84,10 @@ std::uint64_t g_ee_dma_done = 0;
+ 
+ template <typename T>
+ T ee_read(std::uint32_t a) {
+-    T v;
+-    std::memcpy(&v, g_ram + (a & (kRamSize - 1)), sizeof v);
+-    return v;
++    // DMA lists may reside in EE scratchpad; masking them into RAM loses
++    // the transfer descriptors (GT3's movie streaming uses this path).
++    static_assert(sizeof(T) == sizeof(std::uint32_t));
++    return static_cast<T>(ld32(a));
+ }
+ 
+ void send(const void *packet, std::uint32_t size) {
+diff --git a/runtime/src/kernel.cpp b/runtime/src/kernel.cpp
+index e924f25..5715eae 100644
+--- a/runtime/src/kernel.cpp
++++ b/runtime/src/kernel.cpp
+@@ -126,7 +126,9 @@ Thread *best_ready() {
+ 
+ void switch_to(Cpu &c, Thread *next) {
+     Thread *cur = current();
+-    if (cur == next) return;
++    // With no current thread and no ready successor (ExitDeleteThread),
++    // still enter the idle context instead of continuing deleted guest code.
++    if (cur && cur == next) return;
+     if (cur && (cur->status == kRun || cur->status == kReady || cur->status == kWait || cur->status == kSuspend || cur->status == kWaitSuspend)) {
+         save_context(c, cur->context);
+         if (cur->status == kRun) cur->status = kReady;
+diff --git a/scripts/gt4_core.py b/scripts/gt4_core.py
+index c3ccb39..7814207 100644
+--- a/scripts/gt4_core.py
++++ b/scripts/gt4_core.py
+@@ -67,7 +67,7 @@ def elf(entry, segments):
+ 
+ 
+ def main():
+-    parser = argparse.ArgumentParser(description="Turn Gran Turismo 4's CORE.GT4 into an ELF the recompiler can read.")
++    parser = argparse.ArgumentParser(description="Turn Gran Turismo 3/4's CORE.GT3/CORE.GT4 into an ELF the recompiler can read.")
+     parser.add_argument('core')
+     parser.add_argument('output')
+     args = parser.parse_args()
+diff --git a/scripts/port.sh b/scripts/port.sh
+index 19920eb..2bad66b 100755
+--- a/scripts/port.sh
++++ b/scripts/port.sh
+@@ -86,10 +86,13 @@ echo "== [2/6] executable"
+ elf="$game/disc/$program"
+ if [ -f "$game/core.elf" ]; then
+   elf="$game/core.elf"
+-elif python3 -I "$here/disc.py" list "$iso" | awk '{print $4}' | grep -qx CORE.GT4; then
+-  python3 -I "$here/disc.py" extract "$iso" "$game/disc" CORE.GT4 > /dev/null
+-  python3 -I "$here/gt4_core.py" "$game/disc/CORE.GT4" "$game/core.elf" > /dev/null
+-  elf="$game/core.elf"
++else
++  core=$(python3 -I "$here/disc.py" list "$iso" | awk '$4 == "CORE.GT3" || $4 == "CORE.GT4" { print $4; exit }')
++  if [ -n "$core" ]; then
++    python3 -I "$here/disc.py" extract "$iso" "$game/disc" "$core" > /dev/null
++    python3 -I "$here/gt4_core.py" "$game/disc/$core" "$game/core.elf" > /dev/null
++    elf="$game/core.elf"
++  fi
+ fi
+ echo "${elf#$ROOT/}"
+ modules=()
+diff --git a/tests/gt3_hardware.cpp b/tests/gt3_hardware.cpp
+new file mode 100644
+index 0000000..0ed8926
+--- /dev/null
++++ b/tests/gt3_hardware.cpp
+@@ -0,0 +1,65 @@
++#include "hw.hpp"
++#include "kernel.hpp"
++#include "ps2/system.hpp"
++#include "ps2/generated.hpp"
++#include "iop/hw.hpp"
++#include "iop/iop.hpp"
++#include "iop/sif.hpp"
++#include "ps2/memory.hpp"
++#include <cstdio>
++#include <cstdlib>
++
++void require(bool ok, const char *message) {
++    if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
++}
++int main() {
++    using namespace ps2;
++    hw::reset();
++    hw::intc_set_mask(2, true);
++    hw::intc_raise(2);
++    require(hw::intc_pending() == 4, "vblank interrupt pending");
++    hw::intc_ack(2);
++    require(hw::intc_pending() == 0, "delivered interrupt is not repeatedly dispatched");
++    require((hw::read32(0x1000F000) & 4) != 0, "hardware status remains visible to polling after HLE delivery");
++    hw::write32(0x1000F000, 4);
++    require((hw::read32(0x1000F000) & 4) == 0, "guest clears interrupt status by writing one");
++    hw::intc_raise(2);
++    require(hw::intc_pending() == 4, "next vblank is deliverable");
++    iop::hw::reset();
++    iop::hw::write(0x1F808410, 2, 4);
++    require((iop::hw::read(0x1F808410, 4) & 8) != 0, "i.Link serial clock ready");
++    iop::hw::write(0x1F808414, 0x400004A5, 4);
++    require((iop::hw::read(0x1F808414, 4) & 0x40000000) == 0, "PHY write completes");
++    iop::hw::write(0x1F808424, 0x40000000, 4);
++    iop::hw::set_interrupt_mask(24, true);
++    iop::hw::write(0x1F808414, 0x84000000, 4);
++    require((iop::hw::read(0x1F808414, 4) & 0x8000FFFF) == 0x04A5, "PHY read returns register and completes");
++    require(iop::hw::next_pending_interrupt() == 24, "PHY read delivers enabled i.Link interrupt");
++    iop::hw::write(0x1F808420, 0x40000000, 4);
++    require(iop::hw::read(0x1F808420, 4) == 0, "i.Link status is write-one-to-clear");
++    // Deliberately conflicting descriptors at RAM and scratchpad addresses.
++    // Reading scratchpad as a RAM alias would copy the wrong payload.
++    st32(0x70001000, 0x2000);
++    st32(0x70001004, 0x180000);
++    st32(0x70001008, 16);
++    st32(0x7000100C, 0);
++    st32(0x1000, 0x2100);
++    st32(0x1004, 0x180000);
++    st32(0x1008, 16);
++    st32(0x100C, 0);
++    for (unsigned i = 0; i < 16; ++i) {
++        st8(0x2000 + i, static_cast<unsigned char>(0xA0 + i));
++        st8(0x2100 + i, 0x55);
++    }
++    sif::set_dma(0x70001000, 1);
++    for (unsigned i = 0; i < 16; ++i)
++        require(iop::read8(0x180000 + i) == 0xA0 + i, "SIF descriptor is read from EE scratchpad, not a RAM alias");
++    kernel::reset();
++    kernel::start_main_thread(0x100000, 0, 0, 0);
++    g_cpu.pc = 0x100004;
++    g_cpu.r[3].w[0] = 0x24; // ExitDeleteThread: remove the only runnable thread.
++    kernel::handle_syscall(g_cpu, 0x100000);
++    require(kernel::current_thread() == 0, "last thread was deleted");
++    require((g_cpu.pc & ~kUnwind) == kIdle, "deleting the last runnable thread enters idle, not deleted guest code");
++    std::puts("GT3 hardware regressions PASS");
++}
+diff --git a/tests/run_gt3_hardware.sh b/tests/run_gt3_hardware.sh
+new file mode 100755
+index 0000000..8b566e5
+--- /dev/null
++++ b/tests/run_gt3_hardware.sh
+@@ -0,0 +1,9 @@
++#!/usr/bin/env bash
++set -euo pipefail
++root="$(cd "$(dirname "$0")/.." && pwd)"
++build="${1:-$root/build/native-gt3-usa-v110}"
++"${CXX:-clang++}" -std=c++20 -I"$root/runtime/include" -I"$root/runtime/src" \
++  "$root/tests/gt3_hardware.cpp" "$build/libps2runtime.a" \
++  "$root/third_party/wgpu-native/lib/libwgpu_native.a" -ldl -lpthread -lm \
++  -o "$build/gt3_hardware_test"
++"$build/gt3_hardware_test"
