@@ -17,11 +17,12 @@ This is **selected evidence inventory, not whole-game recovery coverage**. Ident
 - **differential-passing**: 8
 - **opt-in-integrated**: 0
 - **live-validated**: 0
-- **frozen**: 5
+- **frozen**: 6
 
 | Original entry | Semantic name | State | Diff | Runtime | Live |
 |---|---|---|---|---|---|
 | `0x001e4478` | `process_accelerator_brake` | frozen | passing | opt-in-integrated | validated-bounded |
+| `0x001e4478` | `process_handbrake` | frozen | passing | opt-in-integrated | validated-bounded |
 | `0x001d8fb8` | `unclassified_001d8fb8` | identified | not-run | generated-only | not-validated |
 | `0x001d92e0` | `evaluate_signed_response` | identified | not-run | generated-only | not-validated |
 | `0x001db9e0` | `unclassified_001db9e0` | identified | not-run | generated-only | not-validated |

@@ -47,6 +47,15 @@ boundary. It preserves Frozen semantics and original downstream simulation, has 
 canonical installation, and does not claim physical pedals or calibration. See its
 separate bounded proof and `just verify-virtual-pedals EXPLICIT_REPOSITORY_ROOT`.
 
+[Handbrake Recovery v1](docs/site/docs/handbrake-v1.md) adds a separately pinned,
+default-OFF, validation-only handbrake processor. The command signed halfword,
+analog floor, digital history/ramp and original rear-brake/coupling/shift-interface
+effects are verified without replacing downstream vehicle processing. Its exact
+fixture coverage and bounded native-v3 live coverage are distinguished explicitly.
+Canonical ps2run and earlier Frozen systems remain unchanged. Additive tasks use
+`just --justfile handbrake.just check` and `verify-handbrake EXPLICIT_REPOSITORY_ROOT`;
+the earlier proof-pinned root justfile is preserved byte-for-byte.
+
 [Legacy source ledger](experiments/legacy/README.md) preserves unique old source
 variants as restoration patches, not copied active runtime repositories. Raw
 exports and game artifacts remain private; public docs build without them.

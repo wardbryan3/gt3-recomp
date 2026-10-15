@@ -1,0 +1,431 @@
+{
+  "schema_version": 1,
+  "id": "clean-handbrake-v1",
+  "lifecycle": "frozen",
+  "source_commit": "7f5bf2f5028ae398ef78d6c24d5fadf7661ee377",
+  "context": "Current source overlay; isolated validation host; retained freshly generated parent build and original executable oracle, no canonical installation.",
+  "original_elf_sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
+  "parent_function": "0x001e4478",
+  "boundary": [
+    "0x001e4bb8",
+    "0x001e4c5f"
+  ],
+  "resume": "0x001e4c60",
+  "runtime": {
+    "scope": "validation-only",
+    "build_default": false,
+    "runtime_default": false,
+    "canonical_installation": false,
+    "fallback": "generated"
+  },
+  "coverage": {
+    "join_cases": 2228224,
+    "transitions": 20000,
+    "wrapper_cases": 4752,
+    "live_runs": 23,
+    "live_substitutions": 1800,
+    "live_fallbacks": 0,
+    "live_inputs": [
+      "analog-zero",
+      "analog-full"
+    ],
+    "digital_live_proven": false,
+    "cpu": "Complete CPU at join; defined serialized CPU/budget at live probes",
+    "ram": "Batched 32MiB mutation-surface check for exhaustive join domain; 4752 full-CPU+32MiB downstream fixture comparisons; full guest dumps in live pairs/repeats",
+    "budget": [
+      14,
+      21
+    ],
+    "tolerance": "Existing 2e-6 unchanged; exact equality used for join/wrapper/live parity"
+  },
+  "fields": [
+    {
+      "structure": "gt3::handbrake::CommandPartial",
+      "field": "flags",
+      "offset": "0x0",
+      "storage": "u8",
+      "meaning": "0x10 analog handbrake selector",
+      "original_sites": [
+        "0x001e4bb8",
+        "0x001e4bbc"
+      ]
+    },
+    {
+      "structure": "gt3::handbrake::CommandPartial",
+      "field": "handbrake",
+      "offset": "0xe",
+      "storage": "i16",
+      "meaning": "signed digital nonzero or analog Q12",
+      "original_sites": [
+        "0x001e4bc4",
+        "0x00210f40",
+        "0x00211154",
+        "0x002112c4"
+      ]
+    },
+    {
+      "structure": "gt3::handbrake::CarPartial",
+      "field": "processed_handbrake",
+      "offset": "0x13b4",
+      "storage": "EE-float-bits:u32",
+      "meaning": "processed handbrake / digital history",
+      "original_sites": [
+        "0x001e4bd0",
+        "0x001e4bf0",
+        "0x001e4c40",
+        "0x001e4c5c",
+        "0x001e6f48"
+      ]
+    }
+  ],
+  "gates": {
+    "static": "passing",
+    "exact_join": "passing",
+    "stateful_transitions": "passing",
+    "original_downstream": "passing",
+    "native_v3": "passing",
+    "default_off": "passing",
+    "public_regressions": "passing",
+    "native_regressions": "passing",
+    "strict_evidence": "passing"
+  },
+  "sources": {
+    "host/gt3_clean_handbrake.cpp": "91fbae21f7bb5a63b9fad4abd3a53c88488fa8ba6690df196850c909e01d9863",
+    "host/gt3_clean_handbrake.hpp": "8f1473fa12ba0ebb4f1fb6502a6dcab93c9d24b740c9d96b919ab409953ef962",
+    "tests/gt3_handbrake_oracle.cpp": "e0a918d91cd8a8d21a251b2c0cdc3f9599cbee716f17c56ad1051ec42db9b451",
+    "tests/gt3_handbrake_wrapper.cpp": "60f7269acaf51688eb2c3bc3e54fa3b481cbaad6a2e35f60a783385fdd633faa",
+    "tests/gt3_handbrake_host.inc": "7a80530ca7c572051abe62a1a210f034e4d05e8226fd4108cd44cf1e2d6629b6",
+    "tests/gt3_handbrake_source_test.cpp": "f3b3f3e6739648b0fd8c6b73d23763e47e96a51bd98b4707518ac7ef4e711ee4",
+    "tests/gt3_handbrake_test.py": "3a62c5e69107d3428cc436d6e8737575a23d7d1c913683c62d09a4ef7decfad2",
+    "scripts/build_gt3_handbrake.sh": "d55040fbbac60e8e7797539dc4046c27c7bac3f4d06ce69b435b3cbcc1cd9a89",
+    "scripts/validate_gt3_handbrake.py": "db6e35db2065ed040e6da96e3ca67906187b655e7086ca34be3b522e870b8fde",
+    "scripts/project/handbrake.py": "471475c1a3c90146996689cbf7d1fe8e15a5af7c38623eff60439b0fef462e56",
+    "CMakeLists.txt": "47d1e8ffd5d140d80d136c3eadd3fbe6fc0b19eec3f7e0778211abdab6d9456b",
+    "justfile": "5ea76a6186eabf33f41eba46ce668f297ee730d54b4699a604c90426d6a438d6",
+    "handbrake.just": "b42e0fe8363996c3119f552a567c2a3eedd7da9c70ea9da97cc83e70df6119b8"
+  },
+  "protected": {
+    "decomp/gt3/current-validation.json": "b4054d4f37ffe58c67fc64b740838233eadc87571f085e8e4f5207f82f1114c9",
+    "decomp/gt3/pedal-admission-49af40.json": "ae48453aa711e9212daa56c4339c1518e8600fd28d1432a8d0f4fc06ab4b1add",
+    "decomp/gt3/pedal-closure.json": "ba0c3e0c06425f3b596aee1754bbb176d3eb6873a77ccecf61dda2885d480298",
+    "decomp/gt3/pedal-profiles.json": "2913ee8157f91ca9c9c656cbaa5f2118ebb9fc99dbc172a84dbbca5a6b59c5a0",
+    "decomp/gt3/pedal-validation.json": "961998e7311d0759358fb4123131f6da1f5d624be7a18b4061e10cac328242d4",
+    "decomp/gt3/virtual-pedals.json": "73ddf12a914fec57a78fae413f628fff397c99e1c9eb314bef579b05576cb80e",
+    "host/gt3_clean_pedals.cpp": "97e9662ea94e5328deb1d3117b187968553a493ebe1d42616db85ae49def623e",
+    "host/gt3_clean_pedals.hpp": "c3827d736f956ae6ab032f68c9690f74d240d472d7896e785c426aed74e26d3a",
+    "host/gt3_clean_steering.cpp": "e95d72e500dd22e2db42cb6a79715b9907591a6ee9f4515182b15dcc63022ae2",
+    "host/gt3_clean_steering.hpp": "8f9e1c0ce6397936127a463017c11eff3ec3d2eb69f28f429b7b364cb85bebee",
+    "host/gt3_synthetic_wheel.cpp": "3b783b05727893d097b970eb589aa6df30d1ff9b365c22bdfbc7fb23a9d3b4ab",
+    "host/gt3_synthetic_wheel.hpp": "bf6339c5d001993ba44daf9d0265a9c2452bbf568e7d8ae00191f1c8a767cf82",
+    "host/gt3_virtual_pedals.cpp": "ba2d20c867a70c9706bbc67777b2da93b6ff4e43e618af596c32028bb4974dbd",
+    "host/gt3_virtual_pedals.hpp": "f1b845bb9b8b4c7e8955cd7ece6d8955fcde31f8d16f83fe393a2954c3d73ed1",
+    "host/main.cpp": "0640771cfbc67e4ab6e54aa0b16e3a0a7236f0997b63e2e0dc66ed36a78eaf1c",
+    "recomp/analysis.cpp": "572b258a459a4a7f3ec012abf2e07def24983375df16e9ad5aa9a4dd5db1ae6b",
+    "recomp/analysis.hpp": "41e3d0bb729a4fa7fcb111967c2ea3d2c4d42c7acd6017e2e135e197e5541cc0",
+    "recomp/codegen.cpp": "d3228cf07979fae54873a467c1b4a9c5a7b30c70c59520dcffde2ec481c0161a",
+    "recomp/codegen.hpp": "a247e75a0f874d70b1288c7f9ede154d2db373d47f6a618e6d7bb1df666ee1e5",
+    "recomp/elf.cpp": "055f935399b93117726134b664b84e955e24196752748f2881a861d3e797d12a",
+    "recomp/elf.hpp": "c23b4619fc8bf529f83dfe19e0a0c0f07d7e4baa82edd87558e0cd17075e19ef",
+    "recomp/main.cpp": "c16f31dc0d924cafe372e708230d4ea463a46f974bc9b111bf3536a0ae2ed3dd",
+    "recomp/r5900.cpp": "498297b1f1aefef40f745b5b5602a62068e1a6ff6ad6dc2e7c80b5d3ec830e43",
+    "recomp/r5900.hpp": "24eed5f309fc99746a3769db20a4befa236007cefa27e29f5e5a5fb706be14f2",
+    "recomp/snr2.cpp": "b0369c6589fcb413f2ad07054cbadf8d35551b1f913aa9ac8f6784fce92b14b4",
+    "recomp/snr2.hpp": "8288ed7fef2f0dc1bccd5d78da58be772a16adece0e227c8f8d286ce89b7c7aa",
+    "recomp/vujit_dump.cpp": "d4a9c6c0020170852a733a2d935145ca7cf317afc47dd028b0fafaf71aae41bd",
+    "recomp/vurecomp.cpp": "6a8ee7dfc9920e47a7752093fce37461819cbdc5f2b7e2b0a724d4386bf8c318",
+    "runtime/include/ps2/cpu.hpp": "396bc1878b47e0d059ac4fb86c1f809e17d75eeee6599dbf5369ccfc6b66fe63",
+    "runtime/include/ps2/disc.hpp": "754eaa0f380cf2045de024f5100a994f426a1ba00fb54311297cf2937afd15cc",
+    "runtime/include/ps2/fpu.hpp": "1b54aeb17340ced79fee19aa22f7243963f2d7ae9b49fc94aca17f5eb5e78b9b",
+    "runtime/include/ps2/generated.hpp": "c0c1068fb7e2635377ad2c7d6787563a256b8819e7c95d3f6d8e624b4f063c6e",
+    "runtime/include/ps2/memory.hpp": "1269b389869140dce7cc76c8a8fffb36db212c9b73430af42e13c46721c982f5",
+    "runtime/include/ps2/mmi.hpp": "ae674004e849062334d2450786c81f59c45aa9b84faec6aff69b9127a12c67c9",
+    "runtime/include/ps2/state.hpp": "fa24eedd970739774f78a79a9370dd2a90af56a5f2ad638aacbc7afdb9a836fe",
+    "runtime/include/ps2/system.hpp": "64bd5132af24aa623f76b273e71880564557d3f6cf8f6258e08bf8677caab4a6",
+    "runtime/include/ps2/vu.hpp": "6dcb6c6fddbff38422cb5b4c7f73d2293bdd66f50f3af2f09ca8deb3ee2a3e4f",
+    "runtime/include/ps2/vu_ops.hpp": "7db7d32929021f28bfd2d4f95edf9184a6695ef421b45bc2f215b9f8355be7a9",
+    "runtime/src/cop.cpp": "23bd0ebf1dca77f1467ba96288cbf3b54b4dd5f6e6f80f9d8443f8394217cfed",
+    "runtime/src/disc.cpp": "d422a5705281f404fdaaff6824fd131961d2820167f045d7a46388548d4af310",
+    "runtime/src/dispatch.cpp": "47fd34d966cb393a64107c1b0c29d3b4d3720b5929982572dd3572404a473a3e",
+    "runtime/src/dmac.cpp": "00d96010a712cda1949d86e3d2bab9006598b468c893541c1ca930d1222bd5aa",
+    "runtime/src/dmac.hpp": "7b2dd82c952a3fe4bd5dfbf59672764c644390b52f383e8fb4e8b608b4b1ffb8",
+    "runtime/src/gs/gif.cpp": "c02295f622cb55851f55f098d35fe421e5036a395fb5e550642f00ca682da149",
+    "runtime/src/gs/gif.hpp": "f16a9402bebcee3d013821d25778f0ad0b23861e0ceee6ed94f8c95810ee87c6",
+    "runtime/src/gs/gpu/blit.wgsl": "0666f87135c6732b4d58793da8f57682d4f1677e76b018fe2e3f912067884a60",
+    "runtime/src/gs/gpu/gpu.cpp": "33a3bc6ef5f0b09d2ff5f178632d79a6fd858f2afe9e5a68f8bb46c3ba48e279",
+    "runtime/src/gs/gpu/gpu.hpp": "b838d08d7bfb5cd97a0c90d3e66b6df4093b5720f12a4203d30f490b8dd962af",
+    "runtime/src/gs/gpu/gs.wgsl": "6d397d00907cdc3a23861293fb7f209bdf5bad8a8bf3000517308e2563db5975",
+    "runtime/src/gs/gs.cpp": "445b518d8338728f0deca0e8d69c25ba99c7d25628c849cbd8dd4abcf6ad2cbd",
+    "runtime/src/gs/gs.hpp": "c77f74f7aa5baa88586cee29533f35b42c9cef4074ee7c88fd7d065d291581e2",
+    "runtime/src/gs/queue.cpp": "2128d0d164b3a33fe7370feb8d12e7ee569c59ac0e3c38ae8b6de9d034dc3f98",
+    "runtime/src/gs/queue.hpp": "76a433fbc6166837fd00525097129ec70f9fc4565d2b4e6ae6e3dc9352a27e64",
+    "runtime/src/gs/raster.cpp": "1bdac14a69b786dc7a28510bb6baef177b344244bb8ae02afd25e4e49dee0d83",
+    "runtime/src/gs/raster.hpp": "9a9af4ef30c6d65c2bb80f79497bd4f1be77cf214dec7d1d7b1ff382346644fe",
+    "runtime/src/hw.cpp": "00c4b9dab4497bc8b30f647db9b0914231a4e95daa20f88b6c515a73f708cfbf",
+    "runtime/src/hw.hpp": "59e418f5fc78d5ce5c7e459c68fe30e9e130bc87a971a8d79367ec9e37df6a83",
+    "runtime/src/iop/cdvd.cpp": "ba098a7912a4ad162de3606418dcd72e00a59c1dd4a1c53f1408eece6b5add7a",
+    "runtime/src/iop/cdvdfsv.cpp": "a711bbc8047162c8aad79185007d91c3ee4f8229fd6ad8b169ece2fc30c7fb8a",
+    "runtime/src/iop/cpu.cpp": "931cc9b5bc44b098ba6ba0efb0af7fe18ed96c8edd6fc88e801e9265c9681119",
+    "runtime/src/iop/hw.cpp": "3c903c7ee6773b61adccc2eaa29e46700e5efac1bc08c3c2b009d1cc2c33958a",
+    "runtime/src/iop/hw.hpp": "1b0f64d25fc23b03a7a235542671b5ba73a1643a1c7128a481bd4846abcb2c42",
+    "runtime/src/iop/io.cpp": "dd7a9bfd876805236774f4e9fc2a28d8ae233fe7eb30bcd4579017799354d0d7",
+    "runtime/src/iop/io.hpp": "4cb1e70b469d900100eb3621fcd21e4b7c1afd2aab9d988be7e3f6cab2882796",
+    "runtime/src/iop/iop.hpp": "bd8c3cf8ae524790649e499e5ffa80d01abbee6553729b796d0f32e165e88540",
+    "runtime/src/iop/kernel.cpp": "1fbb5fc82a054a3796f0a48ea2cfd16e40dc6c1f109ccc261381b728d62eea99",
+    "runtime/src/iop/kernel.hpp": "56b8f959c6228cf811fd2905689380c4201b8adad2370cc8b7acc9b838a96f03",
+    "runtime/src/iop/libs.cpp": "ec3274346614235e325827e7fa8d2dfb708c0c5f691308ee7b5bfaca560a66aa",
+    "runtime/src/iop/sif.cpp": "8cbf77c8647900a85ab7517b91b9ddf9749bb87096fd5baa5d1e10dd3981cb20",
+    "runtime/src/iop/sif.hpp": "fcfc25709e1681c0ac871832ac999220f367447ad937086e93feae070ea5c677",
+    "runtime/src/iop/sio2.cpp": "e0743745dcbfa2d57f3e2e4345622b406aa851f7cbaecd11e213edcdbb348b89",
+    "runtime/src/iop/sio2.hpp": "4c5a18781e000cdeab832052811c57fce1a61f09581a9ac8a4d41ed11e4b657a",
+    "runtime/src/iop/spu2.cpp": "bf63fa2a3942cc67d1044ea6e139a2e49fdcb52c142a5a8016e5340d53bb451a",
+    "runtime/src/iop/spu2.hpp": "5099e00f94b7194e3097b7261852315ac5ce4ee68235b9931409f88d2bb87fc3",
+    "runtime/src/ipu/NOTICE": "095eae38f375e5706f52e87e7ad3f6b367cede5e8a2d4f981450374006e16c9b",
+    "runtime/src/ipu/ipu.cpp": "32af318db87002e60c8c2ff14fd2dae90e00b7770c993dc027fa4622ab717746",
+    "runtime/src/ipu/ipu.hpp": "e76d41986b77d2ff4f199818a111b50dca3467090c4ab68386902de17004d1ca",
+    "runtime/src/ipu/tables.hpp": "dc4c2547d4a6c65a231c12b31cd100959849dc8070ae6315102ba790dffde5c4",
+    "runtime/src/kernel.cpp": "09d47d2fd0659d2789dda20183734a3d8a8d69eacde0aa6e8467bcc1fdc511e3",
+    "runtime/src/kernel.hpp": "57eff0043963275ab05a78330cc7366e4d7d1f1020ab32fcdce0a719629f9a3a",
+    "runtime/src/memory.cpp": "10ede8044d4fa1e3feaac436706a8084dde20d8ebb28eccc8bd06fd819ab13b5",
+    "runtime/src/system.cpp": "204c7a9fbb6d34530db6df25d9b6934dbef5bdffd21e1bc0f73b360c7d372ef9",
+    "runtime/src/vif.cpp": "5019c71033eec79969f4c5678c58493763b651b5cbada656798d0a91321640b4",
+    "runtime/src/vif.hpp": "819e4fd8ee81a8d6b9816548b1c1ae7e3de89dda94540439f2cec5e7385acc0f",
+    "runtime/src/vu_jit.cpp": "89d5ffc9cd9fa276fd33abf0ead709d0cbdd31fd48d48acf2cbaabee35c96be4",
+    "runtime/src/vu_jit.hpp": "519749602c42853ef46288175e2490b29a3c42fafbe8f7b51b87bc0d4e4d6188",
+    "runtime/src/vu_jit_web.cpp": "91a010fedb8c916a4e37b11999bd29cd3d8f8ec030f099b76bfcfb463d15fed9",
+    "runtime/src/vu_jit_web.hpp": "d3792d43fb00ca316dee4cf4371e6749c77da8359c717d001c09ee5f00373240",
+    "runtime/src/vu_micro.cpp": "652b8d2e8d6853eaba6184d8239c47f867f09ecea0db0ed2cfa86417f4ef0482",
+    "runtime/src/vu_micro.hpp": "7ec4b3b935103da8d029ef8bd9ba01ae854d04530495b5cc16eb30aa0e22909b",
+    "justfile": "5ea76a6186eabf33f41eba46ce668f297ee730d54b4699a604c90426d6a438d6",
+    "decomp/gt3/provenance.json": "a4492e5e0abb6476fd7bf4d1f9cb7877f0be13d81137a1653f76232f6e78182a"
+  },
+  "artifacts": [
+    {
+      "path": "local/handbrake-v1/static-final.json",
+      "sha256": "7e9c247a6e19115689224144c22e188308c7de58b0d25dde20aab4c7260afd0a",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/final-oracle.log",
+      "sha256": "c156a16fd2e4d131d6c5370f01874a8f4623f6c84bd0764ebb5718de3ba72310",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/final-wrapper.log",
+      "sha256": "c5e2c397816bd21568144dc00ffcd4ab56e2b777df91a6e02f2f4bcae0118dc9",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/accepted-live/summary.json",
+      "sha256": "fcb3d7df9dd3cb4eb09e94149095a3b3b86a76f3ebcceb4a6c61493449433948",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/default-off-rejection.log",
+      "sha256": "4a43a3e3c25cf60be4003391ca76a9d68440374e154196e1d421c5321e888d89",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/review.png",
+      "sha256": "f87c25d795b2d2970e860216a66840df5b21932a600235a84813e077b425c895",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/depth-review.json",
+      "sha256": "b724e8a913a0207df3c2d7301ae13864261a1303a1cdc92871fd43187e9ac815",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/budget-review.json",
+      "sha256": "e839ecd717ea4e74b67c0481ad26395ad6473bb8dba655fac8bde1f0f789654a",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/final-build-files.json",
+      "sha256": "9dc76478845fa587eefbf952efcbab98f28d4f3cd4027bf88f0b0ddda67db8ce",
+      "kind": "file-manifest"
+    },
+    {
+      "path": "local/handbrake-v1/default-off-build-files.json",
+      "sha256": "4ae5dc95cdd918ca4e963bf6dde1e6749515e8f17b44a5f1f035cb545ab7dbdf",
+      "kind": "file-manifest"
+    },
+    {
+      "path": "local/handbrake-v1/accepted-live-files.json",
+      "sha256": "dfd05eea2dd195e99246fc0c570e3fca1af948299b1e70e863e72fab44dedbb2",
+      "kind": "file-manifest"
+    },
+    {
+      "path": "local/game-input/gt3-usa-v1.10.iso",
+      "sha256": "0946bb943a766d0afe057fbff5aa96132b16a797f3e3edc985a3b6d2f3afee0e",
+      "kind": "file"
+    },
+    {
+      "path": "local/legacy/resolution-repo/games/gt3-usa-v110/core.elf",
+      "sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/regressions-files.json",
+      "sha256": "2021adaa548f5814b472b7a1f4b61e1d57c25ac4794f79dc0a182856b7d10c3b",
+      "kind": "file-manifest"
+    },
+    {
+      "path": "local/handbrake-v1/failed-attempt-files.json",
+      "sha256": "fe1e93e7eecf83112335ddb53343f53137fc45907ebd8790365fcfb7b7e9f8f7",
+      "kind": "file-manifest"
+    },
+    {
+      "path": "local/handbrake-v1/checkpoint-files.json",
+      "sha256": "d19849e60e3d5593f9e1e20f2da379bba3b318e8e0f46da8b4becaa51f0e02d5",
+      "kind": "file-manifest"
+    },
+    {
+      "path": "local/handbrake-v1/frozen-evaluation.json",
+      "sha256": "d5837359186548b923d22f1c87745641687d34e3f28f6cd57f50081189601526",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/strict-attempt-1.log",
+      "sha256": "a97f7ce2a658478106bace44aea32d0a5378c204e1fdceeeeffa107b000a4631",
+      "kind": "file"
+    },
+    {
+      "path": "local/handbrake-v1/final-gate-files.json",
+      "sha256": "86cb63158a4bc7e8c699c9fa88c597c41386b84bbb56ea07becf1e6c95e881f3",
+      "kind": "file-manifest"
+    }
+  ],
+  "static_evidence_ids": [
+    "ev_156184bc16c60673a173cfca8fc9c11c5a865afab6b37179229c6296114383e3",
+    "ev_166a926f9d7a887b9e8f04bedd2065258dc5612bd0988322610e5170ee24c1b6",
+    "ev_1925ec6fd4c74a9abe68cc4e5a01477365e6a707e17dba51778ca0eb2f4b4f69",
+    "ev_25947dc8eda994f210503575fcec1834d8479a308da9d539e9f334c33d424962",
+    "ev_384942154cf66f1780788a7e0d51cd3ab8f90fc4b6c1965cda94be32cc4806f4",
+    "ev_4b3d97df69a8c3c3457ef613ebbd59a3fe6894802d292710b7871dc7895d1df4",
+    "ev_6cb7780884bbf4a89a415cd72052d18f06d78cda2b17ef060b7e001c0a2e7bd8",
+    "ev_74505ae54cf72e6246e6f5b543056fd6c46272957416b3ca4c556ca0645b15ee",
+    "ev_7e172b9e1e77e8544ca25baf8d44696ea9bd5c5c3e819dff1e527bd9084cd194",
+    "ev_843178f095daa914ee77e9ee005a0a46fc477eab944ebd02f9c3ee427c015287",
+    "ev_98ac00c1b4c45c625d61a6c1ee0fbf1f61d77fd6e6fd89cbff7e5a7b12b0f296",
+    "ev_bb5fb5ef8531fc36f779c5f6497b94025d39db99e2ccffde7eb0a04e2f11bd33",
+    "ev_c745477fc76cba368ae7038a223ac28c946cc60a7f1c24aa6ce0fa8b111cb16b",
+    "ev_cf1a93c629c1379c4be3f512305637261540fcb46f54a53aa2f71c834c205de3",
+    "ev_d490bf3cd7350707b7a6a42bd37187b75536e2f4cc8d47ac458a10049e15034f",
+    "ev_dc4f2daa3fbae0ffa43c58b6724b7ebb7969f4deed13354c17c455c243af2fd3",
+    "ev_e9034a898be86deef73a17ddaa306f42f1213bd7c98de42871d7901240366899",
+    "ev_f79b26fb68a89b2230165ea2df04c3e22c580fe01142cb8ba6182d0e24ea9c19"
+  ],
+  "static_records": [
+    {
+      "id": "ev_156184bc16c60673a173cfca8fc9c11c5a865afab6b37179229c6296114383e3",
+      "operation": "read_function_instructions",
+      "selector": "0x00211430"
+    },
+    {
+      "id": "ev_166a926f9d7a887b9e8f04bedd2065258dc5612bd0988322610e5170ee24c1b6",
+      "operation": "read_function_instructions",
+      "selector": "0x001f4998"
+    },
+    {
+      "id": "ev_1925ec6fd4c74a9abe68cc4e5a01477365e6a707e17dba51778ca0eb2f4b4f69",
+      "operation": "read_function_instructions",
+      "selector": "0x001e4cf0"
+    },
+    {
+      "id": "ev_25947dc8eda994f210503575fcec1834d8479a308da9d539e9f334c33d424962",
+      "operation": "read_function_instructions",
+      "selector": "0x001e35d8"
+    },
+    {
+      "id": "ev_384942154cf66f1780788a7e0d51cd3ab8f90fc4b6c1965cda94be32cc4806f4",
+      "operation": "analyze_function",
+      "selector": "0x001e4478"
+    },
+    {
+      "id": "ev_4b3d97df69a8c3c3457ef613ebbd59a3fe6894802d292710b7871dc7895d1df4",
+      "operation": "read_function_instructions",
+      "selector": "0x00211050"
+    },
+    {
+      "id": "ev_6cb7780884bbf4a89a415cd72052d18f06d78cda2b17ef060b7e001c0a2e7bd8",
+      "operation": "read_function_instructions",
+      "selector": "0x001e4d38"
+    },
+    {
+      "id": "ev_74505ae54cf72e6246e6f5b543056fd6c46272957416b3ca4c556ca0645b15ee",
+      "operation": "read_function_instructions",
+      "selector": "0x001e3a68"
+    },
+    {
+      "id": "ev_7e172b9e1e77e8544ca25baf8d44696ea9bd5c5c3e819dff1e527bd9084cd194",
+      "operation": "analyze_function",
+      "selector": "0x001e6ec8"
+    },
+    {
+      "id": "ev_843178f095daa914ee77e9ee005a0a46fc477eab944ebd02f9c3ee427c015287",
+      "operation": "read_function_instructions",
+      "selector": "0x00210ef8"
+    },
+    {
+      "id": "ev_98ac00c1b4c45c625d61a6c1ee0fbf1f61d77fd6e6fd89cbff7e5a7b12b0f296",
+      "operation": "read_function_instructions",
+      "selector": "0x001e5d54"
+    },
+    {
+      "id": "ev_bb5fb5ef8531fc36f779c5f6497b94025d39db99e2ccffde7eb0a04e2f11bd33",
+      "operation": "read_function_instructions",
+      "selector": "0x001e4180"
+    },
+    {
+      "id": "ev_c745477fc76cba368ae7038a223ac28c946cc60a7f1c24aa6ce0fa8b111cb16b",
+      "operation": "read_function_instructions",
+      "selector": "0x002111c0"
+    },
+    {
+      "id": "ev_cf1a93c629c1379c4be3f512305637261540fcb46f54a53aa2f71c834c205de3",
+      "operation": "read_function_instructions",
+      "selector": "0x001f4660"
+    },
+    {
+      "id": "ev_d490bf3cd7350707b7a6a42bd37187b75536e2f4cc8d47ac458a10049e15034f",
+      "operation": "read_function_instructions",
+      "selector": "0x001f4330"
+    },
+    {
+      "id": "ev_dc4f2daa3fbae0ffa43c58b6724b7ebb7969f4deed13354c17c455c243af2fd3",
+      "operation": "read_function_instructions",
+      "selector": "0x002115f8"
+    },
+    {
+      "id": "ev_e9034a898be86deef73a17ddaa306f42f1213bd7c98de42871d7901240366899",
+      "operation": "read_function_instructions",
+      "selector": "0x00210740"
+    },
+    {
+      "id": "ev_f79b26fb68a89b2230165ea2df04c3e22c580fe01142cb8ba6182d0e24ea9c19",
+      "operation": "read_function_instructions",
+      "selector": "0x001eb360"
+    }
+  ],
+  "failures": [
+    "build-attempt-1 and build-attempt-2: missing explicit 001E6FC8 label assumption",
+    "live-attempt-1 and live-attempt-2: exact parity but six budget-guard fallbacks; not clean proof; depth hypothesis disproved and retained",
+    "review montage Python attempt: Pillow unavailable; ImageMagick used instead",
+    "Initial docs-generation rejected root justfile/provenance changes pinned by virtual-pedal proof; both restored byte-for-byte; separate additive handbrake.just used, immutable checks unchanged.",
+    "Metadata negative test rejected temporary not-yet-Frozen record ordering; moved new record after existing Frozen record without changing any test or assertion."
+  ],
+  "unknowns": [
+    "Live scope: one native-v3 Arcade Super Speedway fixture, six scenarios, 300 updates each; no digital/intermediate-pressure live, Time Trial, all-car/all-mode, long-session, browser or physical proof.",
+    "Digital release when its original backward-branch preemption might run is intentionally left generated; no runtime scheduling change.",
+    "Coupling candidate remains neutral, not proven clutch; shift-interface enable operand is observed, not a complete transmission recovery.",
+    "001E5B98 configuration-dependent handbrake reads are static-only here, not called shift logic or recovered wheel/physics semantics.",
+    "Replay command codec, notification policies and alternate/AI processing remain generated; original handbrake resets/forced state are documented, not replaced.",
+    "Public source and technical provenance are not a legal-rights or clean-room certification."
+  ],
+  "stop": true,
+  "frozen_evaluation": {
+    "status": "passing",
+    "stop": true,
+    "artifact": "local/handbrake-v1/frozen-evaluation.json"
+  }
+}

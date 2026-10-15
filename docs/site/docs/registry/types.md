@@ -6,6 +6,23 @@ title: "Partial type knowledge"
 
 Authoritative inventory: `decomp/gt3/types.json`. Offset assertions are generated into `build/foundation/type-assertions.cpp` and compiled with `just check`. All guest pointers are 32-bit little-endian; EE floats retain bit patterns. **Do not treat opaque padding as recovered fields or bulk-write it.**
 
+## HandbrakeCommandPartial
+
+Size `0x10`. partial handbrake view; historical lead below, newly verified field provenance in handbrake.json; opaque bytes are not writable fields. Source: `host/gt3_clean_handbrake.hpp`.
+
+| Offset | Field | Representation | Meaning |
+|---|---|---|---|
+| `0x0` | `flags` | `u8` | Bit 0x10 selects analog handbrake |
+| `0xe` | `handbrake` | `i16` | Signed halfword; digital nonzero or analog Q12, not generically clamped |
+
+## HandbrakeCarPartial
+
+Size `0x13b8`. one recovered output/history word only; new verification and field authority in handbrake.json; no broader car type. Source: `host/gt3_clean_handbrake.hpp`.
+
+| Offset | Field | Representation | Meaning |
+|---|---|---|---|
+| `0x13b4` | `processed_handbrake` | `EeFloat:u32` | Processed handbrake; prior value is digital ramp history; analog replaces it |
+
 ## PedalCommandPartial
 
 Size `0x10`. bounded read-only accelerator/brake/auxiliary command view; no neighboring recovery. Source: `host/gt3_clean_pedals.hpp`.

@@ -6,6 +6,27 @@
   "float_representation": "EE bit-pattern u32; ps2::fp arithmetic",
   "layouts": [
     {
+      "name": "HandbrakeCommandPartial",
+      "cpp": "gt3::handbrake::CommandPartial",
+      "size": "0x10",
+      "source": "host/gt3_clean_handbrake.hpp",
+      "coverage": "partial handbrake view; historical lead below, newly verified field provenance in handbrake.json; opaque bytes are not writable fields",
+      "fields": [
+        {"name": "flags", "offset": "0x0", "type": "u8", "meaning": "Bit 0x10 selects analog handbrake", "confidence": "verified-bounded", "evidence": ["artifact:docs/gt3-steering-evidence.json"]},
+        {"name": "handbrake", "offset": "0xe", "type": "i16", "meaning": "Signed halfword; digital nonzero or analog Q12, not generically clamped", "confidence": "verified-bounded", "evidence": ["artifact:docs/gt3-steering-evidence.json"]}
+      ]
+    },
+    {
+      "name": "HandbrakeCarPartial",
+      "cpp": "gt3::handbrake::CarPartial",
+      "size": "0x13b8",
+      "source": "host/gt3_clean_handbrake.hpp",
+      "coverage": "one recovered output/history word only; new verification and field authority in handbrake.json; no broader car type",
+      "fields": [
+        {"name": "processed_handbrake", "offset": "0x13b4", "type": "EeFloat:u32", "meaning": "Processed handbrake; prior value is digital ramp history; analog replaces it", "confidence": "verified-bounded", "evidence": ["artifact:docs/gt3-steering-evidence.json"]}
+      ]
+    },
+    {
       "name": "PedalCommandPartial",
       "cpp": "gt3::pedals::CommandPartial",
       "size": "0x10",

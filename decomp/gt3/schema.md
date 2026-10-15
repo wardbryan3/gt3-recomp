@@ -159,6 +159,35 @@ Missing/changed proof fails, never silently skips. Historical failures/incomplet
 runs remain retained; no earlier authority/hash is rewritten. Generated views and
 knowledge mirror publish facts only, not raw game artifacts.
 
+## handbrake.json
+
+Separate `clean-handbrake-v1` authority for interior001E4BB8–001E4C5F,
+resume001E4C60, parent001E4478. The manifest's `handbrake_authority` link overrides
+its default historical context. `sources` pins the new implementation/tests/tools;
+`protected` pins unchanged Frozen/runtime/recompiler bytes. Explicit `fields`
+records and the new `types.json` partial views identify only command flags/+14 and
+car+13B4. Historical field evidence stays historical; the18 new original records
+and new exact/live proof are pinned separately, not inserted into the immutable
+historical private-root artifact list.
+
+Frozen requires all named gates passing, exact join/cost/stateful proof, original
+wrapper/consumer full-RAM comparisons, bounded native-v3 actual substitutions,
+mutation-free fallbacks, default-OFF build/runtime gates and source/provenance
+checks. Canonical installation remains false. Digital/intermediate fixture proof
+must not become digital/intermediate **live** proof; original scheduling fallback
+is explicit. Failed builds, disproved hypotheses and fallback-only attempts remain
+private and separately retained.
+
+The root `justfile` and `provenance.json` are themselves hash-pinned by earlier
+virtual-pedal proof; neither was rehashed, exempted or modified. Additive workflow:
+`just --justfile handbrake.just check`, `docs-build` and
+`verify-handbrake EXPLICIT_REPOSITORY_ROOT`. Root `just test` additionally runs the
+new source/authority regressions through CTest. The separate verifier checks every
+private artifact/tree member, actual source/build/ELF/ISO/v3 identity, exact live
+CPU/dump/capture/steering/repeat equivalence and original shift-interface decision,
+then invokes unchanged inherited strict suites. Missing/changed evidence fails.
+No raw analysis, game material or new input adapter is published.
+
 ## Generated views
 
 `just docs-generate` regenerates status/symbol/type pages and mirrors five baseline Markdown narratives into the site, touching no original evidence. `just lookup QUERY` returns full maintained records. `just evidence ADDRESS` prints retained canonical batch pseudocode with citation, not fresh decompiler output. `just check` checks these authorities and compiles asserted layouts.

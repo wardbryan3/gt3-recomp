@@ -20,7 +20,7 @@ history, license and notices remain intact.
   synthetic-wheel source, plus original-dependent fixture source, are preserved.
 - `gt3_recovered` is a compile-checked source library with source-only consistency
   tests. It is **not linked into ps2run or installed into generated bodies** on main.
-- Registry:133 selected records /129 canonical functions; historical lifecycle,
+- Registry:134 selected records /129 canonical functions; historical lifecycle,
   differential and live statuses describe the preserved old runtime, explicitly
   labeled in `snapshot_context`. Four old steering seams remain bounded/frozen.
 - Curated Docusaurus site, compiled offset assertions, metadata lookup and strict
@@ -49,7 +49,52 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Synthetic / Virtual Pedal Controller v1 — bounded, stop
+## Latest: Handbrake Recovery v1 — Frozen bounded validation-only, stop
+
+Separately authorized clean recovery substitutes only001E4BB8–001E4C5F,
+resume001E4C60, inside001E4478. New partial views identify command flags/+14
+(signed digital nonzero or analog Q12) and car+13B4 only. Digital ramps use the
+prior processed value as history; analog zero bypasses the shared floor, nonzero
+uses the original signed/extrapolating EE arithmetic with no generic clamp or
+mode4 response evaluator. Original command builders/notification, shift handling,
+`update_control_coupling_candidate`, rear brakes and downstream vehicle processing
+remain generated. No coupling-to-clutch rename or adjacent recovery.
+
+Proof:2,228,224 exact generated-entry CPU/output/cost cases (all65,536 halfwords ×
+digital/analog ×16 histories plus randomized calibration/state),20,000 stateful
+transitions,16 mutation-free rejections;4,752 whole original wrapper/coupling/
+brake/engine full-CPU+32MiB comparisons and38,016 rear-only formula assertions.
+Native-v3:23 runs, six generated/clean/repeat triplets plus five default controls;
+1,800 actual clean substitutions,zero fallback; exact CPU/state/budget, original
+shift-interface entry/decision/return, brake/engine, full dumps,captures,steering
+and repetition. Native input reached **analog zero/full only**; intermediate and
+digital behavior are exact fixtures, not live/physical reachability claims.
+
+Digital release when its original backward-branch preemption might run remains
+mutation-free generated fallback. Signed-negative-budget analog paths are admitted
+and independently tested. Two initial live attempts matched exactly but had six
+protective fallbacks and are **not accepted clean proof**; disproved depth
+hypothesis and all attempts remain under ignored `local/handbrake-v1/`.
+
+The exact bounded implementation is **Frozen**, with source pins and every named
+gate passing; this is not canonical installation or universal coverage.
+Full available native regressions and unchanged inherited strict suites pass.
+Authority:`decomp/gt3/handbrake.json`; report:`docs/site/docs/handbrake-v1.md`.
+The root `justfile` and `provenance.json` are themselves pinned by immutable
+virtual-pedal proof and remain byte-identical; no hash exemption/rehash was made.
+Use `just --justfile handbrake.just check`, `docs-build`, and
+`verify-handbrake "$PWD"` for additive source/docs/strict proof. Root `just test`
+also runs new source/authority tests. Canonical ps2run stays generated-only;
+build/runtime defaults OFF. No raw files or local configuration may be staged.
+
+**Stop at bounded handbrake recovery.** No digital/intermediate-pressure live,
+all-mode/car/long-session/browser or physical proof is claimed. No synthetic or
+physical handbrake input, transmission recovery, clutch rename, wheel-brake/physics
+expansion, FFB, canonical integration or next subsystem. Source/build context is
+the evaluated overlay over the pinned commit, not a new full game recompile or
+publication commit. No commit/push was requested.
+
+## Prior: Synthetic / Virtual Pedal Controller v1 — bounded, stop
 
 Separately authorized virtual input now feeds deterministic normalized throttle /
 brake through the original command-builder return001E4D5C, original notification,
