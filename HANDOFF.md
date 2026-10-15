@@ -49,7 +49,44 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Transmission map v1 — read-only findings, stop
+## Latest: Moving-forward Reverse / neutral-like mapping — read-only, stop
+
+Continuation at source `6c82588` is documented in
+[Reverse / neutral-like mapping v1](docs/site/docs/transmission-reverse-v1.md).
+Original auxiliary/Reverse input reproduces a genuine free-engine interval while
+still moving forward, but selection of index0 is immediate. A preceding state2
+transition still transmits drive contribution; do not call the entire delay neutral.
+Higher-gear ALTEZZA MT reaches state0 for16 updates with Reverse held; releasing
+Reverse during that interval extends coasting. Original shift-up can then select
+forward1 while state0 and zero engine-drive contribution persist. This is reachable
+neutral-like behavior, not a separately identified neutral ratio or input API.
+
++139C stays coupling candidate: original4180 idle/state writer,6D48 state1 zero
+consumer, state0 engagement veto,5B98 drive bypass and7500 free-engine branch are
+causally distinguished. Coupling0 can coexist with nonzero state2 drive; coupling1
+can coexist with state0/forward-selected zero drive. Do not rename it clutch.
++1310/+1314 are freshly sampled engine/selected-ratio rates, not persistent gears;
++1414 remains a halfword. All transmission/downstream behavior remains original.
+
+Private `local/reverse-shift-v1/` retains14 new REA records, original probe-only
+build, nine observer/original/repeat trios:27 native-v3 runs,11500 observed /34500
+total updates,33 owner-qualified accepted/committed selections. Trio snapshots,
+complete EE/IOP/SPU dumps,captures and repeat traces match exactly. Two pinned
+ALTEZZA MT/AT states only; the non-delivered SLK auxiliary-input attempt is excluded.
+The initially wrong IEEE target reducer and all exploratory attempts are retained;
+final exact checks use unchanged EE semantics. No original calibration, behavior,
+tolerance, Frozen authority, runtime or canonical host changes.
+
+Explicit verifier: `python3 local/reverse-shift-v1/verify.py`;2026 pinned private
+members. Missing/changed read faults reject without altering originals. Root and
+additive checks/tests/docs, original Map v1 and inherited Frozen strict verification
+pass. Original Map v1 and Frozen evidence remain immutable. The dedicated Neutral search is bounded to
+inspected command/selectors/policy initialization/defined strings and tested
+original gestures; unvisited devices, policies/configuration routes and universal
+reachability remain unresolved. No implementation, H-pattern/virtual transmission,
+direct state writes, clutch axis or adjacent work is authorized. Stop here.
+
+## Prior: Transmission map v1 — read-only findings, stop
 
 New bounded investigation at source `ff31b22` is documented in
 [transmission map v1](docs/site/docs/transmission-map-v1.md). No transmission

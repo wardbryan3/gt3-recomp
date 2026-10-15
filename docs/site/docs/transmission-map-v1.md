@@ -16,6 +16,11 @@ a mechanism but are not recovered original names. **Unresolved** means the
 investigation does not establish the proposed interpretation. Static tracing,
 original-only native observations and physical hardware proof are different claims.
 
+A subsequent read-only [moving-forward Reverse / neutral-like investigation](transmission-reverse-v1.md)
+reproduces free-engine behavior through original input, including a forward-selected
+coast, and distinguishes the state-dependent role of coupling from a dedicated
+Neutral ratio/API. This report retains its original evidence and coverage below.
+
 ## Main conclusions
 
 - **Established:** command signed byte `+2` is relative shift intent, copied to

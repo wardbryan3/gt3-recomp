@@ -9,6 +9,9 @@ now traces the actual selector/commit path with fresh original-only AT/MT observ
 It corrects the transmission-candidate lead below, distinguishes ratio index from
 transition state, and retains neutral naming for `+0x139C`. The older leads and
 priority list on this page are preserved as history, not current authorization.
+The later [moving-forward Reverse investigation](transmission-reverse-v1.md)
+reproduces original neutral-like free-engine behavior without identifying a new
+neutral ratio or renaming the coupling candidate.
 
 This is a dependency map, not recovery. Retained static batch evidence is in `evidence/rea/project-init.json`; use `just evidence ADDRESS`. All routines stay generated.
 
