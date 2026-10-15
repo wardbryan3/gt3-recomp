@@ -49,7 +49,42 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Virtual Handbrake v1 — validated bounded input, stop
+## Latest: Transmission map v1 — read-only findings, stop
+
+New bounded investigation at source `ff31b22` is documented in
+[transmission map v1](docs/site/docs/transmission-map-v1.md). No transmission
+recovery, virtual controller, clutch rename, neighboring-system or canonical
+runtime changes. Historical transmission reconnaissance is linked with an explicit
+correction: `001E3360/001E3068` are not the gear-selector chain.
+
+Established chain: command signed byte+2 -> car+1305 -> `001E77E0` / `001E5690`
+-> AT `001E4FF8` or MT `001E5458` -> accepted index or -1 no-change -> `001E4E78`
+-> car+13BA. Car+13BB is engine/driveline state, not a second gear. New selected
+ratio can precede synchronization; saved/target engine samples are +1310/+1314.
+Index0 is native reverse, not neutral. Separately selectable neutral and physical
+clutch-input semantics remain unresolved. +139C stays coupling candidate: five
+named writers and two transition consumers traced; ordinary MT shifts retained
+post-command coupling1 while original state/throttle transitions still occurred.
+
+Private evidence: ignored `local/transmission-map-v1/`, 17 fresh REA records,
+probe-only original overlays, 12 accepted native-v3 runs (four observer/original/
+repeat trios), 2700 observed updates /8100 including controls/repeats. ALTEZZA MT
+1–6–1 cycling, AT autonomous1–2–3–2–1, MT reverse1–0–1 and MT throttle-only/no-shift.
+All trio snapshots/full dumps/captures and repeat traces match exactly. Owner-
+qualified returns establish16 accepted selections. Two pinned native states of
+one car only; no all-car/mode/reset/physical proof. Private montage reviewed.
+
+Initial observers' unqualified other-car helper results and expired stack command
+samples were rejected; exploratory runs and pre-execution setup/argument failures
+are retained. Accepted results qualify full-width owner identities and field
+lifetimes. Explicit private verification: `python3 local/transmission-map-v1/verify.py`.
+The local manifest pins170 members; no private artifact is published. Root and
+additive check/test/docs-build plus inherited Frozen strict verification passed;
+missing/changed evidence fault-injection rejects without changing retained files.
+Stop at the mapping checkpoint; queue entries are not integration or controller
+authorization.
+
+## Virtual Handbrake v1 — validated bounded input, stop
 
 Separately authorized virtual input supplies finite normalized binary64[0,1] at
 original command-builder return001E4D5C, before original notification/manual
