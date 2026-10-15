@@ -1,5 +1,16 @@
 # Current handoff
 
+## Latest: separate bounded virtual pedal input
+
+[Synthetic / Virtual Pedal Controller v1](virtual-pedals.md) feeds constant or
+frame-scheduled normalized throttle/brake into the original command/pedal path,
+without processed car writes or changes to Frozen pedal/closure/steering/wheel.
+The temporary five command bytes are restored before frame unwind. Both gates
+default OFF; canonical ps2run is unchanged. All oracle/live/unchanged regression
+and strict evidence gates pass. This is not physical calibration or DriverInput.
+Authority: `decomp/gt3/virtual-pedals.json`; strict proof:
+`just verify-virtual-pedals EXPLICIT_REPOSITORY_ROOT`. **Stop without adjacent work.**
+
 ## Latest: observed-context Pedal v1 closure — re-frozen, stop
 
 [Current closure](pedal-closure.md), authority `decomp/gt3/pedal-closure.json`, closes

@@ -41,6 +41,12 @@ substitutions with zero fallback. This bounded validation-only checkpoint is
 re-frozen; no universal reachability, physical-device or canonical integration
 claim, and no adjacent work follows automatically.
 
+A separate [Synthetic / Virtual Pedal Controller v1](docs/site/docs/virtual-pedals.md)
+provides opt-in, frame-scheduled normalized throttle/brake at the original command
+boundary. It preserves Frozen semantics and original downstream simulation, has no
+canonical installation, and does not claim physical pedals or calibration. See its
+separate bounded proof and `just verify-virtual-pedals EXPLICIT_REPOSITORY_ROOT`.
+
 [Legacy source ledger](experiments/legacy/README.md) preserves unique old source
 variants as restoration patches, not copied active runtime repositories. Raw
 exports and game artifacts remain private; public docs build without them.

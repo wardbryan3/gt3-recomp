@@ -23,7 +23,16 @@ flowchart TD
   K --> L[Checkpoint 2 implementation - separately authorized]
 ```
 
-## Latest: observed-context discovery/admission closed
+## Latest: virtual throttle/brake input proven — stop
+
+The separately authorized [virtual pedal experiment](virtual-pedals.md) proves
+constant/scheduled normalized commands through the unchanged GT3 pedal and original
+vehicle path, with original-vs-adapter/Frozen oracle, native-v3 live and unchanged
+regressions. It does not reopen Frozen Pedal v1 or authorize physical calibration,
+DriverInput, canonical integration, clutch/handbrake/transmission/coupling/FFB,
+hardware or AI/reset/step work. **Stop at this bounded experiment.**
+
+## Prior: observed-context discovery/admission closed
 
 The separately authorized [closure](pedal-closure.md) proves the unchanged body at
 all4,199 actual survey entries and4,199 guarded substitutions, zero fallback, across

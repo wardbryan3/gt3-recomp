@@ -139,6 +139,26 @@ Missing evidence, fallback-as-proof or source drift fails closed. Generated
 The finite observed-context closure is not universal coverage, physical-device or
 canonical integration proof, and does not authorize another recovery.
 
+## virtual-pedals.json
+
+Separate `synthetic-virtual-pedals-v1` experimental authority, not a recovered
+function or Frozen lifecycle change. Source checks and private verification live
+in `scripts/project/virtual_pedals.py`; the Frozen project checker is unchanged.
+It pins new source/tool hashes, unchanged protected Frozen/runtime/recompiler
+hashes, exact virtual Q12 protocol, command-only boundary/restore fields, original
+static records and complete private build/oracle/live/regression manifests.
+
+Status `validated-bounded` requires every named gate passing. Build/runtime defaults
+must remain false, canonical installation and processed-car writes false, and
+physical calibration false. Public checks/reducer negatives require no game input.
+The explicit `just verify-virtual-pedals EXPLICIT_REPOSITORY_ROOT` verifies every
+private artifact/member, native-v3 input and executable identities, full CPU/RAM/
+capture/steering/repetition parity, independent frame schedules, command restoration
+and original downstream observations, then invokes unchanged inherited verifiers.
+Missing/changed proof fails, never silently skips. Historical failures/incomplete
+runs remain retained; no earlier authority/hash is rewritten. Generated views and
+knowledge mirror publish facts only, not raw game artifacts.
+
 ## Generated views
 
 `just docs-generate` regenerates status/symbol/type pages and mirrors five baseline Markdown narratives into the site, touching no original evidence. `just lookup QUERY` returns full maintained records. `just evidence ADDRESS` prints retained canonical batch pseudocode with citation, not fresh decompiler output. `just check` checks these authorities and compiles asserted layouts.

@@ -16,6 +16,7 @@ build:
 # Hardware, SIF, synthetic patch, metadata and recovered-source consistency.
 test: build
     ctest --test-dir build/source --output-on-failure
+    python3 -m unittest discover -s tests -p gt3_virtual_pedals_test.py
     python3 tests/gt3_patch_test.py
     python3 -m unittest discover -s tests -p gt3_baseline_validation_test.py
     python3 -m unittest discover -s tests -p gt3_pedal_profiles_test.py
@@ -27,6 +28,8 @@ test: build
 # Public schema/source/type checks, NOT a claim to verify private artifacts.
 check:
     python3 scripts/project/project.py check
+    python3 scripts/project/virtual_pedals.py check
+    python3 -m unittest discover -s tests -p gt3_virtual_pedals_test.py
     scripts/project/check-types.sh
     python3 -m unittest discover -s tests -p gt3_pedal_profiles_test.py
     python3 -m unittest discover -s tests -p gt3_pedal_admission_test.py
@@ -67,6 +70,7 @@ verify-pedal-admission root:
 
 docs-generate:
     python3 scripts/project/project.py docs
+    python3 scripts/project/virtual_pedals.py docs
 
 docs-build: docs-generate
     npm --prefix docs/site run diagrams
@@ -75,6 +79,10 @@ docs-build: docs-generate
 # Explicit private closure proof, including inherited immutable stopped evidence.
 verify-pedal-closure root:
     python3 scripts/verify_gt3_pedal_closure.py '{{root}}'
+
+# Explicit virtual-input experiment proof; inherits unchanged Frozen authorities.
+verify-virtual-pedals root:
+    python3 scripts/project/virtual_pedals.py verify '{{root}}'
 
 # Binds all interfaces; use trusted networks only. Existing private server unchanged.
 docs-dev: docs-generate

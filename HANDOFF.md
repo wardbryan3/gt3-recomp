@@ -49,7 +49,49 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Pedal v1 observed-context closure — re-frozen, stop
+## Latest: Synthetic / Virtual Pedal Controller v1 — bounded, stop
+
+Separately authorized virtual input now feeds deterministic normalized throttle /
+brake through the original command-builder return001E4D5C, original notification,
+unchanged pedal processing and original downstream brake/engine routines. No
+processed car state is written by the adapter. Temporary flags2/4 and Q12 halfwords
+atcommand+8/+10 are restored before owner unwind001E4E68; all other command bytes
+are preserved and checked. Both build/runtime gates default OFF; canonical host,
+runtime/recompiler and Frozen pedal/closure/steering/wheel source are unchanged.
+
+Protocol: finite [0,1] binary64 unsigned decimal; Q=nearest(value*4096), positive
+half ties up. Atomic throttle:brake pairs can be constant or strictly increasing
+uint64 guest-frame schedules. Invalid/range/overflow/duplicate/order inputs fail,
+not clamp/sort. This is a virtual Q12 protocol, **not physical calibration**;
+original floor/history/arbitration/response still determines processed outputs.
+
+Independent oracle:12,291 cases /24,582 full CPU+32MiB comparisons, every Q12 code,
+original notification/manual/brake/engine, actual Frozen substitutions, command-only
+writes/restoration and eight mutation-free unsupported-context rejections. Source-
+only tests cover8,193 exact quantizations and strict parsing/scheduling.
+Native-v3 proof:12 cases with generated/clean/repeat plus default comparisons,
+40 runs,3,599 injections per active path /10,797 total, every activation restored;
+3,599 actual Frozen-clean replacements, zero fallback; exact CPU/dumps/captures/
+steering/repetition. Zero/partial/full throttle/brake, transitions, simultaneous,
+native steering, wheel compatibility and Time Trial alternate stack are included.
+Fresh unchanged19-run pedal,28-run baseline and14-profile/4,199-substitution suites,
+complete native/public regressions and strict inherited/new proof verifiers pass.
+
+Authority: `decomp/gt3/virtual-pedals.json`;
+[report](docs/site/docs/virtual-pedals.md). Strict command:
+`just verify-virtual-pedals "$PWD"`. Private proof `local/virtual-pedals-v1/` retains
+failed missing-capture-directory and incomplete group-timeout attempts separately.
+All prior Frozen authorities and their pinned source remain byte-identical.
+
+**Stop at this bounded virtual-input checkpoint.** No physical pedals/calibration,
+USB/HID, clutch/handbrake/transmission/coupling/FFB/hardware recovery, general
+DriverInput, AI/reset/step or canonical integration. No universal scene/car/thread
+or long-session claim. This task does not reopen Pedal v1 or steering. Evaluation
+used the source overlay over publication commitdf24e2c. The user subsequently
+authorized source-only commit/push; publication does not change that evaluated
+context. Private evidence, original inputs and local configuration remain excluded.
+
+## Prior: Pedal v1 observed-context closure — re-frozen, stop
 
 The separately authorized closure proves the **unchanged semantic body** at all
 **4,199 actual entries /14 retained runs /five processing classes**, including

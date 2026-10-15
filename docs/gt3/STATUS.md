@@ -1,5 +1,17 @@
 # Status and evidence boundaries
 
+## Latest: bounded virtual throttle/brake experiment
+
+[Synthetic / Virtual Pedal v1](../site/docs/virtual-pedals.md) is a separate opt-in
+command-input experiment, not a reopened Frozen pedal implementation. It maps
+normalized [0,1] toQ12, restores temporary command fields, and reaches original
+notification/pedal/brake/engine processing.12,291 oracle cases /24,582 complete
+CPU+32MiB comparisons;12 native-v3 cases with generated/clean/repeat,3,599 actual
+Frozen replacements and zero fallback. Unchanged baseline/pedal/profile/native/
+public/strict proof suites pass. Canonical/default behavior and Frozen sources
+remain unchanged. No physical/calibration/DriverInput or adjacent scope. **Stop.**
+Authority: `decomp/gt3/virtual-pedals.json`; `just verify-virtual-pedals EXPLICIT_ROOT`.
+
 ## Latest: observed-context Pedal v1 closure — re-frozen
 
 [Closure](../site/docs/pedal-closure.md), authority `decomp/gt3/pedal-closure.json`:

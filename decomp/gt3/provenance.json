@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "virtual_pedal_experiment_registry": "virtual-pedals.json",
   "pedal_closure_registry": "pedal-closure.json",
   "pedal_admission_audit_registry": "pedal-admission-49af40.json",
   "pedal_profile_characterization_registry": "pedal-profiles.json",
