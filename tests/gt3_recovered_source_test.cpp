@@ -1,6 +1,8 @@
 // Source-only regression: synthetic data, not an original-game differential.
 #include "gt3_controls.hpp"
 #include "gt3_clean_steering.hpp"
+#include "gt3_clean_pedals.hpp"
+#include <cstring>
 #include "gt3_synthetic_wheel.hpp"
 #include <cmath>
 #include <cstdio>
@@ -47,5 +49,12 @@ int main() {
     require(!gt3::synthetic::parse_event("-1:0",event),"negative frame rejected");
     require(gt3::synthetic::axis_for_value(std::numeric_limits<double>::quiet_NaN())==-1,"nonfinite axis rejected");
     require(!gt3::clean::enabled,"clean runtime default remains disabled");
+    require(!gt3::pedals::enabled,"pedal runtime default remains disabled");
+    ps2::Cpu cpu{};cpu.pc=0x1e48fc;cpu.budget=7;const auto before=cpu;
+    require(!gt3::pedals::replace(cpu),"disabled pedal gate falls through");
+    gt3::pedals::enabled=true;
+    require(!gt3::pedals::replace(cpu),"unsupported pedal context falls through");
+    require(!std::memcmp(&cpu,&before,sizeof cpu),"fallback leaves all CPU state unchanged");
+    gt3::pedals::enabled=false;
     std::printf("Source-only consistency PASS: %u normalizations, 8193 quantizations; NOT an original oracle/live test\n",cases);
 }

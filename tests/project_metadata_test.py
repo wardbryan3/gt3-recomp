@@ -9,12 +9,29 @@ project = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(project)
 class MetadataTests(unittest.TestCase):
     def setUp(self):
-        self.data = {name:project.load(name) for name in ('manifest','symbols','types','provenance','current-validation')}
+        self.data = {name:project.load(name) for name in ('manifest','symbols','types','provenance','current-validation','pedal-validation','pedal-profiles','pedal-admission-49af40','pedal-closure')}
     def rejected(self, mutation):
         data=copy.deepcopy(self.data);mutation(data)
         with patch.object(project,'load',side_effect=lambda name:data[name]):
             with self.assertRaises(AssertionError):project.check()
     def test_current(self): project.check()
+    def test_closure_cannot_count_fallback_as_replacement(self):
+        self.rejected(lambda d:d['pedal-closure']['results'].update(live_fallbacks=299))
+    def test_closure_cannot_change_semantics_or_boundary(self):
+        self.rejected(lambda d:d['pedal-closure'].update(semantics_changed=True))
+        self.rejected(lambda d:d['pedal-closure'].update(resume_address='0x001e4c60'))
+    def test_closure_requires_current_source_identity(self):
+        self.rejected(lambda d:d['pedal-closure']['source_hashes'].update({'host/gt3_clean_pedals.cpp':'0'*64}))
+    def test_closure_cannot_expand_absolute_allowlist(self):
+        self.rejected(lambda d:d['pedal-closure']['admission'].update(absolute_command_allowlist=True))
+    def test_closure_registry_required(self):
+        self.rejected(lambda d:d['provenance'].update(pedal_closure_registry='invented.json'))
+    def test_stopped_profiles_cannot_claim_success(self):
+        self.rejected(lambda d:d['pedal-profiles'].update(status='passing'))
+    def test_stopped_profiles_cannot_erase_fallback(self):
+        self.rejected(lambda d:d['pedal-profiles']['results'].update(stop_case_fallbacks=0))
+    def test_stopped_profiles_provenance_link_required(self):
+        self.rejected(lambda d:d['provenance'].update(pedal_profile_characterization_registry='invented.json'))
     def test_unknown_state_rejected(self):
         self.rejected(lambda d:d['manifest']['functions'][0].update(lifecycle='looks-good'))
     def test_missing_evidence_rejected(self):
@@ -52,6 +69,29 @@ class MetadataTests(unittest.TestCase):
     def test_current_artifact_path_cannot_escape_repository(self):
         self.rejected(lambda d:d['current-validation']['artifacts'].append(
             {'id':'bad','path':'../private','sha256':'a'*64,'visibility':'private'}))
+    def test_pedal_cannot_claim_canonical_installation(self):
+        self.rejected(lambda d:d['pedal-validation'].update(runtime_installation='installed'))
+    def test_pedal_build_and_runtime_must_default_off(self):
+        for key in ('build_default','runtime_default'):
+            self.rejected(lambda d:d['pedal-validation'].update({key:True}))
+    def test_pedal_cannot_widen_boundary(self):
+        self.rejected(lambda d:d['pedal-validation'].update(resume_address='0x001e4c60'))
+    def test_pedal_live_requires_exact_abi_and_budget(self):
+        for key in ('complete_cpu','exact_dynamic_budget','exact_defined_cpu_traces'):
+            self.rejected(lambda d:d['pedal-validation']['results'].update({key:False}))
+    def test_pedal_requires_unchanged_pinned_source(self):
+        self.rejected(lambda d:d['pedal-validation']['source_hashes'].update({'host/gt3_clean_pedals.cpp':'0'*64}))
+    def test_pedal_frozen_requires_full_regressions(self):
+        self.rejected(lambda d:d['pedal-validation'].update(lifecycle='frozen',regressions='blocked'))
+    def test_pedal_frozen_requires_final_checkpoint(self):
+        self.rejected(lambda d:d['pedal-validation']['frozen_evaluation'].update(status='pending'))
+    def test_pedal_requires_pinned_private_artifacts(self):
+        self.rejected(lambda d:d['pedal-validation'].update(artifacts=[]))
+    def test_pedal_fixture_cannot_be_v2(self):
+        self.rejected(lambda d:d['pedal-validation']['fixture'].update(version=2))
+    def test_pedal_artifacts_cannot_escape_or_be_public(self):
+        for mutation in ({'path':'../outside'},{'visibility':'public'}):
+            self.rejected(lambda d:d['pedal-validation']['artifacts'][0].update(mutation))
     def test_current_tree_member_change_or_removal_fails(self):
         import tempfile, hashlib, json
         with tempfile.TemporaryDirectory() as tmp:

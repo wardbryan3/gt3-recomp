@@ -23,6 +23,47 @@
   ],
   "functions": [
     {
+      "id": "clean:process_accelerator_brake",
+      "pedal_validation": "current-main-pedal-v1",
+      "pedal_closure": "pedal-v1-observed-context-closure",
+      "validation_context": "current-main-validation-only-pedal-v1",
+      "address": "0x001e4478",
+      "name": "process_accelerator_brake",
+      "component": "clean-pedals",
+      "lifecycle": "frozen",
+      "evidence": ["artifact:pedal-join-original", "artifact:pedal-join-differential", "artifact:pedal-live-summary", "artifact:pedal-checkpoint-files", "artifact:closure-shadow-summary", "artifact:closure-live-summary"],
+      "confidence": "bounded current generated-EE full-CPU/cost/32MiB differentials and native v3 live proof; not hardware proof",
+      "generated_oracle": ["local/pedal-closure-v1/candidate-build/base/generated-original"],
+      "recovered_source": "host/gt3_clean_pedals.cpp",
+      "recovered_header": "host/gt3_clean_pedals.hpp",
+      "boundary": ["0x001e48fc", "0x001e4ba7"],
+      "gate_address": "0x001e48fc",
+      "resume_address": "0x001e4ba8",
+      "differential": {
+        "status": "passing",
+        "tests": ["tests/gt3_pedal_abi_audit.cpp", "tests/gt3_pedal_wrapper_test.cpp", "tests/gt3_pedal_discovery.cpp", "scripts/build_gt3_pedals.sh"],
+        "evidence": ["artifact:pedal-join-differential", "artifact:pedal-wrapper-differential", "artifact:pedal-retained-fixtures", "artifact:closure-join"]
+      },
+      "runtime": {
+        "status": "opt-in-integrated",
+        "scope": "validation-only",
+        "gate": "build script --enable-validation-pedal-substitution AND validation host --gt3-clean-pedals",
+        "default": "generated"
+      },
+      "live": {
+        "status": "validated-bounded",
+        "evidence": ["artifact:pedal-live-summary", "artifact:pedal-live-files", "artifact:closure-live-summary"]
+      },
+      "dependencies": ["0x001d92e0"],
+      "uncertainties": [
+        "USA v1.10 native only; the separately pinned closure covers all 14 observed representative contexts / five processing configurations, not arbitrary modes/cars/browser/physical devices.",
+        "Manual wrapper register/pointer context only; unsupported profiles, depth, budget and aliases fall back before mutation.",
+        "Original response evaluator, downstream coupling/handbrake/shift/engine/brake consumers remain generated; no new calibration or physical-pedal API.",
+        "Default historical snapshot_context does not apply to this explicitly current-main validation-only record; canonical ps2run remains generated-only."
+      ],
+      "next_action": "Stop at observed-context admission closure; no automatic continuation, canonical integration, API or adjacent recovery. See pedal-closure.json for the separately versioned current proof."
+    },
+    {
       "id": "0x001d8fb8",
       "address": "0x001d8fb8",
       "name": "unclassified_001d8fb8",

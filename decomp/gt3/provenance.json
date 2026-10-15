@@ -1,5 +1,10 @@
 {
   "schema_version": 1,
+  "pedal_closure_registry": "pedal-closure.json",
+  "pedal_admission_audit_registry": "pedal-admission-49af40.json",
+  "pedal_profile_characterization_registry": "pedal-profiles.json",
+  "pedal_validation_registry": "decomp/gt3/pedal-validation.json",
+  "pedal_provenance": "Newly written bounded semantic/ABI recovery over committed current-main baseline 46a32c7. Original static findings remain in retained REA evidence; fresh generated-EE, full-CPU/cost, wrapper/consumer and v3 live proof is independently pinned in pedal-validation.json. No assembly/decompiler bodies, original tables or generated code are published. This is technical provenance, not a clean-room or legal-rights certification. Historical artifact hashes/IDs below remain immutable.",
   "current_validation_registry": "decomp/gt3/current-validation.json",
   "artifacts": [
     {

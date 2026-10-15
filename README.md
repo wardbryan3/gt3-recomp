@@ -28,7 +28,18 @@ compile checked, not linked into ps2run or installed into generated bodies.**
 Historical exact/live results are explicitly contextualized. Fresh current-main
 baseline evidence is tracked [separately](docs/site/docs/current-baseline.md), using
 an isolated validation host rather than installing hooks into canonical ps2run.
-No pedal/FFB/AI API is implemented here.
+[Pedal Recovery v1](docs/site/docs/pedal-v1.md) now has a separately pinned bounded
+validation-only replacement; canonical ps2run remains generated-only. No physical
+pedal/FFB/AI API is implemented here. The later bounded
+[descriptor/profile characterization](docs/site/docs/pedal-profiles.md) and
+read-only [admission audit](docs/site/docs/pedal-admission-49af40.md) retain their
+historical stopped results. A separately authorized
+[observed-context closure](docs/site/docs/pedal-closure.md) now proves the unchanged
+body at all 4,199 retained representative entries, including Time Trial’s alternate
+stack position. Structural caller-frame admission passes 4,199 actual guarded
+substitutions with zero fallback. This bounded validation-only checkpoint is
+re-frozen; no universal reachability, physical-device or canonical integration
+claim, and no adjacent work follows automatically.
 
 [Legacy source ledger](experiments/legacy/README.md) preserves unique old source
 variants as restoration patches, not copied active runtime repositories. Raw

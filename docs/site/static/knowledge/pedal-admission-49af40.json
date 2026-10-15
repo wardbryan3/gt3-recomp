@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "id": "pedal-admission-49af40-read-only-v1",
+  "source_commit": "46a32c70d414d87d192c2d00039365bbb59afb27",
+  "source_context": "Existing Frozen/profiles overlay plus read-only retained-evidence analyzer; no new runtime build or gameplay execution.",
+  "status": "stopped-unproven-admission",
+  "guard_expansion_authorized": false,
+  "safe_admission_established": false,
+  "command_storage": "activation-local stack object; backing allocation not established",
+  "protected_hashes": {
+    "host/gt3_clean_pedals.cpp": "1dff127d6dc0fd0f7a6ae260ac6668b522daa11f1b1b0f8c572d79ce81eec057",
+    "host/gt3_clean_pedals.hpp": "c3827d736f956ae6ab032f68c9690f74d240d472d7896e785c426aed74e26d3a",
+    "decomp/gt3/pedal-validation.json": "961998e7311d0759358fb4123131f6da1f5d624be7a18b4061e10cac328242d4",
+    "decomp/gt3/pedal-profiles.json": "2913ee8157f91ca9c9c656cbaa5f2118ebb9fc99dbc172a84dbbca5a6b59c5a0"
+  },
+  "analyzer_sha256": "4bd31b6cf0d8274adf94eea35a5993c3b98de63782d0cff4e96ca71c91f71e17",
+  "analysis": {
+    "status": "stopped-unproven-admission",
+    "cases": {
+      "trusted": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "a438cce4009344ba782b94b3a8ea07bb42043f891c355a1933b1e0db59d57cf2"
+      },
+      "altezza-mt": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "755e795ac5e14cda76a5f54fbd2fbd3e5ee5646e5a0e12e0d3e950bc93e0e30c"
+      },
+      "alfa-at": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "4f24f3893330ea8398ac5e308d5d2721a9cb2cfe13a9b505fe905cc03d921db4"
+      },
+      "mrs-at": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "64a3389c26ff92fba288df8b46ea754d32262aadd5834ba57d61308462db7e72"
+      },
+      "time-trial": {
+        "entries": 299,
+        "wrapper_entry_links": 298,
+        "command_addresses": [
+          4828992
+        ],
+        "pedal_entry_sp": [
+          4828784
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "e6a136075dcf1147f9cc88741325ef0aec6e5fbce74029efbdec8aa597caeb5a"
+      },
+      "free-run": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4828992
+        ],
+        "pedal_entry_sp": [
+          4828784
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "fffbcc82ca1ae76482fda4d27a3a90ef29e94840e098432dbe02610c9050f2fc"
+      },
+      "license": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4828992
+        ],
+        "pedal_entry_sp": [
+          4828784
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "441821577863857ac6b094164ed0ceae4b49bcc650e53abf3d34fbb47d97d717"
+      },
+      "pad-left-stick-at": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "702ac7f7b7ed70f10acfe615a218a28ef6612ec88cac586408acb082ffdef8f1"
+      },
+      "pad-left-stick-mt": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "eaf6249fddb2c992fff5cc36a8f2dd532f7e90ab08025f171cd0e039300e0031"
+      },
+      "pad-dpad-at": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "28b6dd79355a827edd7ceb51a072d6567d6b6150a039d9ec91785dbc0b23edcb"
+      },
+      "compat-wheel-at": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 123,
+        "original_region_cost_max": 132,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "118461df60e3b93c76716e49a9d3ed508575bda409e194ce405efda039a74196"
+      },
+      "compat-wheel-mt": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 123,
+        "original_region_cost_max": 132,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "2ad9b1fd589097e77a929d97ae058249d5dff3d21bcb595b2a11b2dbe75ac03d"
+      },
+      "pad-stick-at-original": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "a438cce4009344ba782b94b3a8ea07bb42043f891c355a1933b1e0db59d57cf2"
+      },
+      "pad-stick-mt-original": {
+        "entries": 300,
+        "wrapper_entry_links": 299,
+        "command_addresses": [
+          4829008
+        ],
+        "pedal_entry_sp": [
+          4828800
+        ],
+        "original_region_cost_min": 63,
+        "original_region_cost_max": 72,
+        "observed_join_v0_s1_sp_gp": true,
+        "trace_sha256": "755e795ac5e14cda76a5f54fbd2fbd3e5ee5646e5a0e12e0d3e950bc93e0e30c"
+      }
+    },
+    "entries": 4199,
+    "wrapper_entry_links": 4185,
+    "fallback_comparison": {
+      "entries": 299,
+      "replaced": 0,
+      "fallback": 299,
+      "defined_cpu_budget_exact": true,
+      "observations_steering_dump_captures_exact": true,
+      "capture_count": 3
+    },
+    "actual_49af40_clean_body_differential": "not established; guard unchanged and no bypass",
+    "new_live_execution": false,
+    "instrumentation_added": false
+  },
+  "static_evidence_ids": [
+    "ev_1400757f0042c1816cd08e0d699b45f6100b951b601276f25894fe6a61daac4c",
+    "ev_1ff183ff06eea26b9c99da3cd4595acde5a9973972b7a8d7fcd150a403dd70ac",
+    "ev_4d5bbe7ff76bc8ecc8a5856449516711d30c4f3852802345dfd8700c3896ac00",
+    "ev_6b282703c7b457fdbc13c8de5d4a8557cfa46439cdffb362f9336b42c4b0fe37",
+    "ev_7a7a249ad0f3291deb0946a19d09b88008249c10d942c4bf564c68c2343b6858",
+    "ev_a97feea50bee968e6d4d240004c3c3679505a7e68e3c07d17550caa5053aa6b3",
+    "ev_cd75c411d387fc80dcd6cd69ec492ff126e1fca5323b75502da4d7ae62a893a2",
+    "ev_d8eb9a12c74539978d50bbaf9f564ada5a33ab691e1f45e6f70ebddda1775618"
+  ],
+  "findings": {
+    "owner": "001e4d38 64-byte stack activation; 16-byte command at frame+0",
+    "producer": "00210740 -> 001f4330 zeroes all 16 bytes, then existing input paths and optional virtual command hook",
+    "manual_caller": "001e4cb0 -> 001e4478; manual control alias car+1304",
+    "selection": "Common direct caller 001f3b64 in 001f39d8, return 001f3b6c; absolute buffer follows caller stack position, not a proven global mode selector.",
+    "lifetime": "Storage allocated on wrapper entry and released on return; no general no-escape proof for the optional virtual callback.",
+    "correction": "Earlier writable-BSS command-object attribution, including the Frozen source comment, is not an established ownership fact. Frozen source is deliberately unchanged.",
+    "non_interchangeability": "At command49af40, 49af50 is the owner frame saved-s0 slot. At command49af50, 49af40 is the nested 001e4cb0 saved-ra slot.",
+    "semantics": "Same observed format, region, aliases and original join contract; actual-49af40 clean-body equivalence and expanded safe admission remain unproven."
+  },
+  "unknowns": [
+    "Upstream cause of the 16-byte stack-position difference and complete owning thread/backing allocation.",
+    "All indirect callback targets, pointer retention and reentrancy/other stack activations.",
+    "Per-entry translation depth and all admission predicates; low-address exclusion is sufficient, not a new sole-cause proof.",
+    "Unmodified Frozen body never substitutes at49af40; no relocated-input surrogate, guard bypass or fallback count can establish that differential.",
+    "No new invalid/edge-profile, all-mode, long-session, enabled-admission or default-off/trace-only live expansion verification."
+  ],
+  "next_action": "Stop; no guard expansion. Any future proposal needs separately authorized actual-context ABI/cost/mutation and dynamic ownership/alias proof.",
+  "artifacts": [
+    {
+      "id": "artifact:admission-analysis",
+      "path": "local/pedal-admission-49af40-v1/analysis.json",
+      "sha256": "33313c9882355a6c5458fb35e5bd5072fcd0288d3c6e93aaa82747ce73f3ed73",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:admission-static",
+      "path": "local/pedal-admission-49af40-v1/static.snapshot.json",
+      "sha256": "10448abc6ba37b3f94e87b15db69045c22eb896bfe46c99bf9743fef3b757b7d",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:admission-protected",
+      "path": "local/pedal-admission-49af40-v1/protected-before.sha256",
+      "sha256": "732f74140a39d9f8e48af7e783231d8856695daf497536e65538773e6d8cf1c0",
+      "visibility": "private"
+    },
+    {
+      "id": "artifact:admission-elf-layout",
+      "path": "local/pedal-admission-49af40-v1/elf-layout.json",
+      "sha256": "cc6c5a6a93305b6bbad295572f518ad46178c8ab17ee71db06805722c9d7250f",
+      "visibility": "private"
+    }
+  ]
+}

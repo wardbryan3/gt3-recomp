@@ -74,7 +74,7 @@ endif()
 # Reviewed recovery source checkpoint. This library is NOT linked into ps2run
 # or generated game bodies: current main retains the original runtime path.
 if(NOT EMSCRIPTEN)
-    add_library(gt3_recovered STATIC host/gt3_clean_steering.cpp host/gt3_synthetic_wheel.cpp)
+    add_library(gt3_recovered STATIC host/gt3_clean_steering.cpp host/gt3_synthetic_wheel.cpp host/gt3_clean_pedals.cpp)
     target_include_directories(gt3_recovered PUBLIC host)
     target_link_libraries(gt3_recovered PUBLIC ps2runtime)
 endif()

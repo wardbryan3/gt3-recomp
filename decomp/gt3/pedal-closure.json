@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "id": "pedal-v1-observed-context-closure",
+  "lifecycle": "frozen",
+  "stop": true,
+  "source_commit": "46a32c70d414d87d192c2d00039365bbb59afb27",
+  "runtime_installation": "canonical-generated; isolated validation only",
+  "build_default": false,
+  "runtime_default": false,
+  "boundary": [
+    "0x001e48fc",
+    "0x001e4ba7"
+  ],
+  "resume_address": "0x001e4ba8",
+  "semantics_changed": false,
+  "semantic_prefix_sha256": "4cac3d6f6053834daad794d95727691055a8c91ef3157eacbd0fcfc83143bfa2",
+  "cases": [
+    "trusted",
+    "altezza-mt",
+    "alfa-at",
+    "mrs-at",
+    "time-trial",
+    "free-run",
+    "license",
+    "pad-left-stick-at",
+    "pad-left-stick-mt",
+    "pad-dpad-at",
+    "compat-wheel-at",
+    "compat-wheel-mt",
+    "pad-stick-at-original",
+    "pad-stick-mt-original"
+  ],
+  "results": {
+    "shadow_entries": 4199,
+    "live_substitutions": 4199,
+    "live_fallbacks": 0,
+    "observed_processing_classes": 5,
+    "join_cases": 131072,
+    "wrapper_cases": 2160,
+    "fallback_cases": 24
+  },
+  "admission": {
+    "kind": "manual-activation-frame-and-return-chain",
+    "absolute_command_allowlist": false,
+    "low_frame_lane": [
+      "0x00400000",
+      "0x00500000"
+    ],
+    "command_from_entry_sp": 208,
+    "return_chain": [
+      "0x001e4cc8",
+      "0x001e4dfc",
+      "0x001f3b6c"
+    ],
+    "owner_code_fingerprint": "d79ba29ed968508a",
+    "guard_uses_kernel_serialization": false
+  },
+  "gates": {
+    "shadow": "passing",
+    "differential": "passing",
+    "live": "passing",
+    "baseline": "passing",
+    "pedals": "passing",
+    "public": "passing"
+  },
+  "historical_sources": {
+    "host/gt3_clean_pedals.cpp": {
+      "id": "artifact:closure-old-cpp",
+      "path": "local/pedal-closure-v1/frozen-before.cpp",
+      "sha256": "1dff127d6dc0fd0f7a6ae260ac6668b522daa11f1b1b0f8c572d79ce81eec057",
+      "visibility": "private",
+      "kind": "file"
+    },
+    "scripts/audit_gt3_pedal_admission.py": {
+      "id": "artifact:closure-old-analyzer",
+      "path": "local/pedal-closure-v1/admission-analyzer-before.py",
+      "sha256": "4bd31b6cf0d8274adf94eea35a5993c3b98de63782d0cff4e96ca71c91f71e17",
+      "visibility": "private",
+      "kind": "file"
+    }
+  },
+  "artifacts": [
+    {
+      "id": "artifact:closure-proof-files",
+      "path": "local/pedal-closure-v1/proof-files-v1.json",
+      "sha256": "72e20c4bd2b068038366276f0dce4fb480a22dda334769ef4c0462d45a47b21e",
+      "visibility": "private",
+      "kind": "file-manifest"
+    },
+    {
+      "id": "artifact:closure-old-cpp",
+      "path": "local/pedal-closure-v1/frozen-before.cpp",
+      "sha256": "1dff127d6dc0fd0f7a6ae260ac6668b522daa11f1b1b0f8c572d79ce81eec057",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-old-analyzer",
+      "path": "local/pedal-closure-v1/admission-analyzer-before.py",
+      "sha256": "4bd31b6cf0d8274adf94eea35a5993c3b98de63782d0cff4e96ca71c91f71e17",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-shadow-summary",
+      "path": "local/pedal-closure-v1/shadow-live/summary.json",
+      "sha256": "52ab74028ae34c2a064bacdf23b478e7f74991771b7c9e895c59f6cf9d94de6d",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-live-summary",
+      "path": "local/pedal-closure-v1/live-matrix/summary.json",
+      "sha256": "ec9dbc03f252aeb58e64095c5daef37104c388b4452adab2b516c9d8d0ab04ce",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-join",
+      "path": "local/pedal-closure-v1/candidate-build/join-differential.log",
+      "sha256": "2dfb4b047261f19a5daa3fc31c2d1a5ab319e704ae6b90aed5b6a481c4e9e530",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-pedal-live",
+      "path": "local/pedal-closure-v1/pedal-live-accepted/summary.json",
+      "sha256": "714dca637290355fba0c198819ffe844fcf1fd2e3ff319802b0f74dbb531896a",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-baseline-live",
+      "path": "local/pedal-closure-v1/current-live/summary.json",
+      "sha256": "871d55f1bf65448f038e1a4647fb4e2dc7f906fd4e9906e1f25bce85bbcde126",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-ownership",
+      "path": "local/pedal-closure-v1/ownership-analysis.json",
+      "sha256": "3fbe8e581d0b7dc6f5e095e0c85916e389bef73e68532389806394fc1bca34b4",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-static",
+      "path": "local/pedal-closure-v1/static.snapshot.json",
+      "sha256": "b44b03965d5bf938087c0b0d10b5c2e397bde5f527cf74abd8eb90703105bb7b",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:closure-native-files",
+      "path": "local/pedal-closure-v1/final-native-files-v1.json",
+      "sha256": "85c283fced605b60e0a7e9d6f82b5c100de67e96410f1c8dbba9494f21f5bab7",
+      "visibility": "private",
+      "kind": "file-manifest"
+    },
+    {
+      "id": "artifact:closure-final-gates",
+      "path": "local/pedal-closure-v1/final-gate-files-v1.json",
+      "sha256": "c74d68452e3e086ea0fceb05ea0d56dd7c0055b39bbf954942e14a87d86853b7",
+      "visibility": "private",
+      "kind": "file-manifest"
+    }
+  ],
+  "static_evidence_ids": [
+    "ev_1f9242475ae212c4365d0ca347eac71d6028cb821b215dabe95e7283cbec4f09",
+    "ev_3983d3cb0de28313c4953bd30f622b53896f421c4bacbf7ff63ba71ae5bfa342",
+    "ev_4427e496b6df3b747e5dbe4e222a56ee9d13b8a8c470e07a30cb4afdf19f25c7",
+    "ev_4547be1d9e97e1a6e5805916799589a36145e210eb731b4cca975b368963e495",
+    "ev_801a043d99e73aa281ad98c40b9b870ec3019c0f533a5ec40a6e0c3c4c5c8df0",
+    "ev_8fd477bfe28ed93854bb478e4efa64b52d87a6b4def74a01007a92dde8ed2478",
+    "ev_f6c07db1770bca8e7f2b5d5922485d3e89b4c651ab5fdff58d2ce8146a11a82d",
+    "ev_fd5d5837b68d901596b38ab5c7ba7734bf56140210edcd05549347476b503792",
+    "ev_fd9bff35c1184e5f7e1c2f5cf2329177d02a2beb60d88e4cb44c68eeaa4df7e6"
+  ],
+  "limitations": [
+    "Finite USA v1.10 observed representative player-driving contexts, not arbitrary modes/cars/calibrations/hooks/threads or long sessions.",
+    "Native pad and existing synthetic steering compatibility remain distinct; no physical pedals, PS2 hardware or browser proof.",
+    "No canonical installation, clean-room/legal certification or adjacent recovery authorization. Stop.",
+    "Historical Frozen/survey/admission authorities retain their original stopped/bounded results and hashes; explicit historical source artifacts are required."
+  ],
+  "source_hashes": {
+    "host/gt3_clean_pedals.cpp": "97e9662ea94e5328deb1d3117b187968553a493ebe1d42616db85ae49def623e",
+    "host/gt3_clean_pedals.hpp": "c3827d736f956ae6ab032f68c9690f74d240d472d7896e785c426aed74e26d3a",
+    "tests/gt3_pedal_abi_audit.cpp": "ef9f03aef60bac7b2d08faa80aa6056e4c27cbceae01eddbb341f23b25d6e215",
+    "tests/gt3_pedal_closure_observer.cpp": "7ded2dc22e0f10cd1dc189f47062833e56a74643b361058703e5daac678bed97",
+    "tests/gt3_pedal_closure_layout.cpp": "a57334defd44fe8a45fbe6786039130fcdba6addebe5b0fc188966263c137a64",
+    "tests/gt3_pedal_closure_test.py": "6644f7e320e02eb7f7370e483e415f97ee7350addd1e776d7f154cba8b3e7007",
+    "scripts/build_gt3_pedal_closure.sh": "3cce5b2bbc3b9293aaf7563e619fe051952cc1007a62d013e7338ef73e19db84",
+    "scripts/validate_gt3_pedal_closure.py": "7ba2edf4d2dcaa65e4ff8da055388de461c7a1058d801a06a6702eb24a09290c",
+    "scripts/verify_gt3_pedal_closure.py": "7b0629d172f78afa633d25525f25d8b708b7d6417fb4aaaaf3f65f66e24fcebe",
+    "scripts/gt3_pedal_authority.py": "9bc88fb442d799f3248ca66a314a7b501659d9cd8c878df66982950833364d54",
+    "scripts/audit_gt3_pedal_admission.py": "ee18f53b0d21020c2e97ea158aedd25323b5445f07249d1675176fad41828edb",
+    "scripts/project/project.py": "8d71ec74ebf8db662dd2cde8210a46f5b5346145be3b5e4108db2a80c22158c9",
+    "decomp/gt3/pedal-validation.json": "961998e7311d0759358fb4123131f6da1f5d624be7a18b4061e10cac328242d4",
+    "decomp/gt3/pedal-profiles.json": "2913ee8157f91ca9c9c656cbaa5f2118ebb9fc99dbc172a84dbbca5a6b59c5a0",
+    "decomp/gt3/pedal-admission-49af40.json": "ae48453aa711e9212daa56c4339c1518e8600fd28d1432a8d0f4fc06ab4b1add"
+  }
+}

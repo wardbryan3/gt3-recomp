@@ -1,5 +1,54 @@
 # Status and evidence boundaries
 
+## Latest: observed-context Pedal v1 closure — re-frozen
+
+[Closure](../site/docs/pedal-closure.md), authority `decomp/gt3/pedal-closure.json`:
+unchanged semantic body passes4,199 actual-entry complete CPU/32MiB/exact-cost/
+mutation differentials and4,199 actual guarded substitutions, zero fallback, all14
+observed contexts /five processing classes. The16-byte displacement is the original
+96/112-byte mode-caller frame difference, within the same running-thread stack.
+Structural frame/return-chain admission replaces the absolute-pointer exception.
+Fresh pedal/profile/current baseline live and full native/public/private gates pass.
+Both gates default OFF; canonical ps2run remains generated-only and byte-identical.
+Historical stopped authorities below are unchanged. **Observed discovery closed;
+stop.** No universal/physical proof, new API, canonical installation or adjacent work.
+
+## Prior read-only 0049AF40 admission audit: stopped
+
+[Audit](../site/docs/pedal-admission-49af40.md): both observed addresses are
+activation-local stack command positions, not independently established global
+BSS objects. Same original layout/call chain and retained ABI/cost observations;
+299 Time Trial entries compare exactly against protective fallback, **not clean
+body execution**. Safe admission remains unproven; no expansion. Frozen source,
+guard and prior authorities are unchanged. No new gameplay/build/instrumentation.
+Authority: `decomp/gt3/pedal-admission-49af40.json`;
+`just verify-pedal-admission EXPLICIT_REPOSITORY_ROOT` verifies retained evidence.
+
+## Prior descriptor/profile characterization: stopped
+
+See [the report](../site/docs/pedal-profiles.md) and
+`decomp/gt3/pedal-profiles.json`: 4,199 original entries, one descriptor family,
+five processing configurations. Four paired cases pass 1,200 substitutions;
+Time Trial then records 0 replacements / 299 protective fallbacks with command
+0049AF40 instead of previously audited 0049AF50. Remaining clean pairs and fresh
+full native regressions were not run after stop. Frozen implementation/authority,
+canonical runtime and gate defaults are unchanged. Any admission audit needs
+separate authorization. `just verify-pedal-profiles EXPLICIT_REPOSITORY_ROOT`
+checks retained stopped evidence, not expanded live equivalence.
+
+## Prior authorized pedal continuation
+
+Committed/pushed baseline `46a32c7` was followed by bounded recovery of
+001E48FC–001E4BA7, resume001E4BA8. See [Pedal v1](../site/docs/pedal-v1.md) and
+`decomp/gt3/pedal-validation.json`:131,072 exact full-CPU/cost join cases,
+2,160 wrapper cases/6,480 full-CPU+32MiB comparisons,19 v3 live runs/seven paired
+scenarios,2,100 substitutions/zero accepted fallbacks and4,200 original player
+brake/engine observations. Traces/captures/complete guest dumps match. Full native
+regressions, final public gates and strict private/protected-input checks pass.
+The exact bounded validation-only implementation is **Frozen; stop here**. Canonical ps2run
+stays generated-only and byte-identical. No physical-pedal API or adjacent recovery.
+`just verify-pedals EXPLICIT_REPOSITORY_ROOT` strictly verifies separate new proof.
+
 ## Selective-decompilation source checkpoint
 
 Current main preserves the later controls/mapping, clean steering and synthetic

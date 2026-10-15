@@ -18,6 +18,9 @@ test: build
     ctest --test-dir build/source --output-on-failure
     python3 tests/gt3_patch_test.py
     python3 -m unittest discover -s tests -p gt3_baseline_validation_test.py
+    python3 -m unittest discover -s tests -p gt3_pedal_profiles_test.py
+    python3 -m unittest discover -s tests -p gt3_pedal_admission_test.py
+    python3 -m unittest discover -s tests -p gt3_pedal_closure_test.py
     python3 -m unittest discover -s tests -p project_metadata_test.py
     python3 -m unittest discover -s tests -p publication_test.py
 
@@ -25,6 +28,9 @@ test: build
 check:
     python3 scripts/project/project.py check
     scripts/project/check-types.sh
+    python3 -m unittest discover -s tests -p gt3_pedal_profiles_test.py
+    python3 -m unittest discover -s tests -p gt3_pedal_admission_test.py
+    python3 -m unittest discover -s tests -p gt3_pedal_closure_test.py
     python3 -m unittest discover -s tests -p project_metadata_test.py
     python3 -m unittest discover -s tests -p publication_test.py
     python3 scripts/audit_public.py
@@ -47,12 +53,28 @@ verify-private root:
 verify-current root:
     python3 scripts/project/project.py verify-current '{{root}}'
 
+# Separately pinned new pedal proof; also verifies authoritative baseline/v3 fixture.
+verify-pedals root:
+    python3 scripts/project/project.py verify-pedals '{{root}}'
+
+# Retained stopped-survey evidence, NOT an expanded equivalence/Frozen claim.
+verify-pedal-profiles root:
+    python3 scripts/project/project.py verify-pedal-profiles '{{root}}'
+
+# Read-only stack/admission findings; never changes or bypasses the Frozen gate.
+verify-pedal-admission root:
+    python3 scripts/audit_gt3_pedal_admission.py verify --root '{{root}}'
+
 docs-generate:
     python3 scripts/project/project.py docs
 
 docs-build: docs-generate
     npm --prefix docs/site run diagrams
     npm --prefix docs/site run build
+
+# Explicit private closure proof, including inherited immutable stopped evidence.
+verify-pedal-closure root:
+    python3 scripts/verify_gt3_pedal_closure.py '{{root}}'
 
 # Binds all interfaces; use trusted networks only. Existing private server unchanged.
 docs-dev: docs-generate

@@ -6,6 +6,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#ifdef GT3_PEDAL_DIFFERENTIAL
+#include "gt3_clean_pedals.hpp"
+#include <vector>
+#endif
 void register_generated_code();
 namespace {
 constexpr unsigned car=0x600000,input=0x501000,command=0x502000,race=0x700000,knots=0x710000;
@@ -14,7 +18,22 @@ float get(unsigned a) { return std::bit_cast<float>(ps2::ld32(a)); }
 void call(unsigned entry,unsigned a,unsigned b=0) {
     ps2::Cpu c{};c.pc=entry;c.budget=1000000;c.r[4].d[0]=a;c.r[5].d[0]=b;
     c.r[28].d[0]=0x3579f0;c.r[29].d[0]=0x800000;c.r[31].d[0]=0x1000000;
+#ifdef GT3_PEDAL_DIFFERENTIAL
+    const auto before=c;
+    const std::vector<unsigned char> initial(ps2::g_ram,ps2::g_ram+0x2000000);
+    gt3::pedals::enabled=false;
+#endif
     ps2::call(c,entry,0);
+#ifdef GT3_PEDAL_DIFFERENTIAL
+    const auto expected=c;
+    const std::vector<unsigned char> expected_ram(ps2::g_ram,ps2::g_ram+0x2000000);
+    std::memcpy(ps2::g_ram,initial.data(),initial.size());c=before;gt3::pedals::enabled=true;
+    ps2::call(c,entry,0);
+    if(std::memcmp(&c,&expected,sizeof c)||std::memcmp(ps2::g_ram,expected_ram.data(),expected_ram.size())) {
+        std::fprintf(stderr,"Whole original wrapper/consumer differential failed at %08x\n",entry);std::abort();
+    }
+    gt3::pedals::enabled=false;
+#endif
     if(c.pc!=0x1000000 || c.r[29].w[0]!=0x800000)std::abort();
 }
 }
@@ -54,4 +73,8 @@ int main(int argc,char **argv) {
         ++cases;
     }
     std::fprintf(stderr,"Original generated pedal discovery PASS: %u fixtures; no live pedal claim\n",cases);
+#ifdef GT3_PEDAL_DIFFERENTIAL
+    if(gt3::pedals::counts.replaced!=cases)std::abort();
+    std::fprintf(stderr,"Clean pedal whole-wrapper/original-consumer PASS: %u fixtures, complete CPU and 32MiB RAM\n",cases);
+#endif
 }

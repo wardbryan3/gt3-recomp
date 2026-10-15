@@ -1,4 +1,4 @@
-> **Evidence context:** historical private experiment. Current main preserves source and findings; clean steering/synthetic runtime installation is not yet revalidated or enabled here.
+> **Evidence context:** the proposal below is historical. Current native baseline and bounded validation-only pedal recovery now have separate authorities. Queue entries remain proposals, never permission.
 
 ---
 title: Prioritized queue and precise next-cycle proposal
@@ -23,20 +23,56 @@ flowchart TD
   K --> L[Checkpoint 2 implementation - separately authorized]
 ```
 
-## Pedal Recovery v1 audit outcome
+## Latest: observed-context discovery/admission closed
 
-The explicitly requested [v1 audit](pedal-recovery-v1.md) stopped before
-implementation. A subsequent [native-baseline task](current-baseline.md) restored
-tools, fresh regressions, a normal-boot v3 race fixture and isolated current-main
-steering/synthetic live proof. No pedal boundary expansion or lifecycle promotion
-followed. **Stop at that baseline**; a separate request is needed to resume the
-pedal contract/differential work below, not an adjacent subsystem.
+The separately authorized [closure](pedal-closure.md) proves the unchanged body at
+all4,199 actual survey entries and4,199 guarded substitutions, zero fallback, across
+all14 representative runs /five processing classes. Time Trial/Free Run/B-1 use
+the same stack-local layout with a proven16-byte mode-caller frame difference.
+Structural admission replaces the one-address exception; all fresh native/live/
+public/private gates pass. **Re-frozen, validation-only; stop.**
 
-## Proposed next cycle: pedal semantics only
+No unsupported **observed** processing class remains. This is not universal mode/
+car/calibration/thread/long-session coverage or physical hardware proof. No new
+pedal API, canonical installation, adjacent subsystem or next recovery is authorized.
+The older stopped records below remain historical, not current blockers or work orders.
+
+## Prior read-only admission audit outcome
+
+The separately authorized [49AF40 audit](pedal-admission-49af40.md) established
+stack-local command ownership and bounded original/fallback equality, **not safe
+admission or actual-context clean-body equivalence**. It stopped without a guard
+change. Remaining ownership/indirect-hook and exact ABI/cost/mutation/live proof
+obligations are not authorization to execute another cycle or any adjacent work.
+
+## Earlier descriptor/profile characterization outcome
+
+The separately authorized [finite survey](pedal-profiles.md) **stopped** on
+Time Trial: 299 original entries / 0 replacements / 299 protective fallbacks,
+command0049AF40 rather than the previously audited0049AF50 context. Four earlier
+pairs passed1,200 substitutions; remaining pairs and full native regressions were
+not run after stop. No Frozen change. A possible future bounded command/alias
+admission audit requires explicit authorization; it is not permission to modify
+guards, recover adjacent systems or resume gameplay validation automatically.
+
+## Pedal Recovery v1 continuation outcome
+
+The [stopped audit](pedal-recovery-v1.md) and [native baseline](current-baseline.md)
+were followed by an explicit user-authorized [Pedal v1](pedal-v1.md) continuation.
+Its exact original/clean ABI/cost, wrapper/consumer and native-v3 live checks pass.
+The boundary did not widen; canonical ps2run remains generated-only. All final
+gates pass; the bounded validation-only implementation is **Frozen**, recorded in
+`decomp/gt3/pedal-validation.json`.
+
+**This prior Frozen checkpoint remains closed.** Its later separately authorized
+characterization stopped as recorded above; no adapter or neighboring subsystem
+work follows automatically.
+
+## Historical authorized proposal: pedal semantics only
 
 **Need:** recover the original accelerator/brake contract before any physical-pedal adapter. Steering is already sufficient and frozen. No new device features required.
 
-**Exact candidate target:** interior **`001E48FC–001E4BA7`** of `001E4478`, resume **`001E4BA8`**. Audit all branch/delay-slot paths and outgoing register state before installation; if a complete contract cannot be shown, stop instead of widening the target. No replacement tonight.
+**Exact candidate target:** interior **`001E48FC–001E4BA7`** of `001E4478`, resume **`001E4BA8`**. Audit all branch/delay-slot paths and outgoing register state before installation; if a complete contract cannot be shown, stop instead of widening the target. That original proposal is now completed in the isolated validation host only; it does not authorize a broader replacement.
 
 **In scope:** accelerator/auxiliary arbitration required by this region, digital slewing, analog nonzero floor, mode4 response evaluation, prior control-state bytes, writes to car+13AC/+13B0 and control-state +0/+2, exact dynamic EE cost, relevant FPU state, `v0 = uint16(car+14BA)` at resume, and the computed policy in `s1` for the later `001E4180` call. Represent unknown policy values neutrally. The original prefix supplies control kind/context; do not infer human-facing mode labels from numeric values.
 

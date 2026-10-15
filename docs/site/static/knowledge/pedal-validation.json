@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "id": "current-main-pedal-v1",
+  "source_commit": "46a32c70d414d87d192c2d00039365bbb59afb27",
+  "context": "current-main-validation-only-pedal-v1",
+  "lifecycle": "frozen",
+  "frozen_evaluation": {
+    "status": "passing",
+    "gates": ["just check", "just test", "just docs-build", "strict baseline/pedal/historical verification", "protected ISO/ELF/card hashes"],
+    "artifact": "artifact:pedal-checkpoint-files",
+    "stop": true
+  },
+  "source_overlay": "new bounded recovery/tests over committed baseline; no canonical runtime hook",
+  "runtime_installation": "canonical-generated; pedal gate in isolated validation harness only",
+  "build": "passing",
+  "differential": "passing",
+  "regressions": "passing",
+  "live": "passing",
+  "build_default": false,
+  "runtime_default": false,
+  "boundary": [
+    "0x001e48fc",
+    "0x001e4ba7"
+  ],
+  "resume_address": "0x001e4ba8",
+  "fixture": {
+    "status": "passing",
+    "version": 3,
+    "artifact": "artifact:pedal-v3-fixture",
+    "saved_frame": 4801,
+    "clock_utc_epoch": 1791964800,
+    "continuation_input_frame": 4802,
+    "independent_boot_defined_state_exact": true,
+    "independent_boot_complete_guest_dump_exact": true,
+    "independent_boot_raw_file_exact": false,
+    "raw_file_difference": "22 bytes in compiled native EE Thread padding only; both raw states retained unchanged",
+    "uninterrupted_continuation_exact": true
+  },
+  "baseline_registry": "decomp/gt3/current-validation.json",
+  "results": {
+    "join_original_cases": 131072,
+    "join_clean_cases": 131072,
+    "complete_cpu": true,
+    "exact_dynamic_budget": true,
+    "dynamic_cost_range": [
+      48,
+      152
+    ],
+    "fallback_cases": 14,
+    "fallback_cpu_ram_unchanged": true,
+    "whole_wrapper_cases": 2160,
+    "whole_wrapper_consumer_differentials": 6480,
+    "whole_ram_bytes": 33554432,
+    "retained_original_fixtures": 22,
+    "live_runs": 19,
+    "live_scenarios": 7,
+    "clean_live_updates": 2100,
+    "original_response_calls_from_clean": 1800,
+    "live_fallbacks": 0,
+    "original_brake_engine_consumer_calls": 4200,
+    "exact_defined_cpu_traces": true,
+    "exact_pedal_traces": true,
+    "exact_steering_traces": true,
+    "exact_captures": true,
+    "exact_complete_guest_dumps": true,
+    "canonical_sha256": "b22b692a3bf8dbcce7c3defb57605a96b8763efae10685cc7a082e1d77410d4a",
+    "evidence_tree_members": {
+      "build": 623,
+      "live": 129,
+      "regressions": 7
+    }
+  },
+  "source_hashes": {
+    "host/gt3_clean_pedals.cpp": "1dff127d6dc0fd0f7a6ae260ac6668b522daa11f1b1b0f8c572d79ce81eec057",
+    "host/gt3_clean_pedals.hpp": "c3827d736f956ae6ab032f68c9690f74d240d472d7896e785c426aed74e26d3a"
+  },
+  "artifacts": [
+    {
+      "id": "artifact:pedal-checkpoint-files",
+      "path": "local/pedal-v1-resume/frozen-checkpoint-files.json",
+      "sha256": "bf587bd74d7c5597dc0852ed43ea0177579cb076da2002234e7f6f9c512757f3",
+      "visibility": "private",
+      "kind": "file-manifest"
+    },
+    {
+      "id": "artifact:pedal-join-original",
+      "path": "local/pedal-v1-resume/candidate-build-3/join-original.log",
+      "sha256": "614037fae57d02a92e7e34be0c55745861baa4aa5ba4e76baa3e3aef5f95e160",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-join-differential",
+      "path": "local/pedal-v1-resume/candidate-build-3/join-differential.log",
+      "sha256": "b773a1d5dfb680523591c8784440794db55d97201bc73767164797fffbf362f4",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-wrapper-differential",
+      "path": "local/pedal-v1-resume/candidate-build-3/wrapper-policy-differential.log",
+      "sha256": "7a2cf38cd5f82f6fdb07e478dc8019756d5c2fd7ea9a91fd9e0b83d69cf51a46",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-retained-fixtures",
+      "path": "local/pedal-v1-resume/candidate-build-3/wrapper-differential.log",
+      "sha256": "ea33e14b7fc814ee41a48223a71faa6511dff41fba79d7e684052d358b831ddd",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-live-summary",
+      "path": "local/pedal-v1-resume/live-attempt-2/summary.json",
+      "sha256": "5336e01f37a356e3f6814a62ad121ee01a3b13ebf341c5477ed4f4e3c2c2f81b",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-regressions",
+      "path": "local/pedal-v1-resume/full-regressions/regressions.log",
+      "sha256": "7db37f38d0e6dde039a26c592859d15d74d36ce6ed580facb75019ec71d57fd0",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-build-identity",
+      "path": "local/pedal-v1-resume/candidate-build-3/pedal-build-identity.json",
+      "sha256": "b07d09869da58204aa96429cf19bacfc0de88d4e5af5ab0f40ded02b2b31fee5",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-build-inputs",
+      "path": "local/pedal-v1-resume/candidate-build-3/base/build-identity.json",
+      "sha256": "e69b57e80ba12381ea49d5e6b37e70c43d1c9fedae524bc90ea694c78c61d4ec",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-build-files",
+      "path": "local/pedal-v1-resume/accepted-build-files.json",
+      "sha256": "13e137466f6f9cab34baa19b9ab411042c554d1ea851e6555c45283a276098a2",
+      "visibility": "private",
+      "kind": "file-manifest"
+    },
+    {
+      "id": "artifact:pedal-live-files",
+      "path": "local/pedal-v1-resume/accepted-live-files.json",
+      "sha256": "e2f6bda6c2b6f11a0fe4920aeb7893b050d2650cfa978b3a2bc2d5d399bb4d86",
+      "visibility": "private",
+      "kind": "file-manifest"
+    },
+    {
+      "id": "artifact:pedal-regressions-files",
+      "path": "local/pedal-v1-resume/accepted-regressions-files.json",
+      "sha256": "e083698664da83c5752be5c0c181d16b0865ec228d2572dc00bea1de5da00f4f",
+      "visibility": "private",
+      "kind": "file-manifest"
+    },
+    {
+      "id": "artifact:pedal-v3-fixture",
+      "path": "local/baseline-v3/accepted-live/capture/race-start-v3.state",
+      "sha256": "da2661b490f977bd2d1b4d076d957bd8580aebf301f3c02e83b25964312c895a",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-original-elf",
+      "path": "local/legacy/resolution-repo/games/gt3-usa-v110/core.elf",
+      "sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:pedal-original-iso",
+      "path": "local/game-input/gt3-usa-v1.10.iso",
+      "sha256": "0946bb943a766d0afe057fbff5aa96132b16a797f3e3edc985a3b6d2f3afee0e",
+      "visibility": "private",
+      "kind": "file"
+    }
+  ],
+  "limitations": [
+    "Original USA v1.10 native runtime only; one trusted Super Speedway race fixture.",
+    "Original generated oracle, not physical-PS2/physical-pedal proof; no browser or arbitrary-car/mode guarantee.",
+    "Descriptors remain original generated calls with null derivative; no evaluator recovery.",
+    "Semantic probe PC compared; stale direct-branch dispatch Cpu.pc retained separately in raw traces.",
+    "Current-main validation-only gate; canonical ps2run remains generated-only.",
+    "First live attempt correctly exercised fallback on the previously unsupported 0049AF50 BSS command buffer; retained unchanged. The explicit BSS context was audited with a new build, not forced past the guard.",
+    "No steering/synthetic algorithm, renderer, recompiler, save-state format, coupling, transmission, clutch, handbrake, physical-device or FFB changes."
+  ],
+  "next_dependency": "Separately authorized descriptor/profile reachability characterization for additional original modes/cars, before any broader pedal API or recovery; do not start it automatically."
+}

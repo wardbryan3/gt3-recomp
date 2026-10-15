@@ -1,4 +1,4 @@
-> **Public checkpoint context:** historical lifecycle/runtime/live fields describe the preserved private experiment. All inventories carry `snapshot_context`; canonical current main compiles recovery source but does not install it. Fresh isolated native validation is separately recorded in `current-validation.json`. Public `check` verifies schema/source/type relationships only. `verify-private EXPLICIT_ROOT` separately and strictly verifies all retained original hashes and IDs. Raw exports are never documentation download assets.
+> **Public checkpoint context:** historical lifecycle/runtime/live fields default to the preserved private experiment; the new pedal record explicitly overrides this with its current-main validation-only context. All inventories carry `snapshot_context`; canonical current main compiles recovery source but does not install it. Fresh isolated native validation is separately recorded in `current-validation.json`. Public `check` verifies schema/source/type relationships only. `verify-private EXPLICIT_ROOT` separately and strictly verifies all retained original hashes and IDs. Raw exports are never documentation download assets.
 
 # Knowledge schema v1 and authority rules
 
@@ -49,6 +49,95 @@ artifact and fails on missing/changed files. This is separate from historical
 isolated validation harness is not a canonical ps2run runtime installation. Never
 promote a current live status based solely on historical evidence or a v2 header
 rewrite. Generated current-status pages and JSON mirrors derive from this file.
+
+## pedal-validation.json
+
+Immutable authority for the original Frozen version; current structural admission
+is separately versioned in `pedal-closure.json` below. Separate authority for the
+explicitly resumed **001E48FC–001E4BA7** pedal region,
+resume **001E4BA8**, over committed baseline46a32c7. It does not rewrite baseline
+or historical evidence/status. The associated manifest record carries explicit
+`pedal_validation`, `validation_context` and runtime `scope: validation-only`;
+top-level historical snapshot context is a default, not this new record's context.
+The parent native symbol remains001E4478; the interior seam is not a new function.
+
+Both build/runtime defaults must be false. Passing/Frozen requires independently
+pinned original/clean complete-CPU and exact-budget proof, wrapper/consumer full
+RAM differentials, regressions, native-v3 fixture and bounded live equivalence.
+Public consistency checks validate metadata/source hashes, not game semantics.
+Frozen here means the exact bounded **validation-only** source is frozen, never
+canonical installation or a hardware/physical-device guarantee. Published source
+hashes reject silent alteration of the evaluated implementation/header.
+
+`just verify-pedals EXPLICIT_REPOSITORY_ROOT` strictly verifies baseline proof,
+new artifact and complete build/live/regression manifests, native-v3 header and
+unchanged baseline fixture/ISO/ELF identities. Missing/changed files fail; no silent
+skip or rehash. New provenance points at this registry; eleven historical artifact
+hashes/66 REA IDs still belong to the historical verifier unchanged. All raw files
+stay private. Generated pedal validation page/knowledge mirror derive from this
+new authority, and typed partial pedal layouts have generated offset assertions.
+
+## pedal-profiles.json
+
+Separate schema-version1 authority for the finite, original-only descriptor/profile
+reachability survey and its **stopped-unsupported-context** outcome. Provenance
+links this registry separately; it does not update any function lifecycle or the
+Frozen pedal authority. Exact descriptor/rate fingerprints, processing selectors,
+command contexts and native-versus-existing-synthetic reachability stay distinct.
+Only factual fingerprints/metadata are public; raw descriptor words/captures and
+the five static REA records stay in pinned ignored artifacts.
+
+The record preserves four passing pairs/1,200 substitutions and the Time Trial
+stop:299 original entries,0 replacements,299 protective fallbacks. Remaining
+pairs/full native regressions are explicitly not run after stop. Public checks
+validate these distinctions, source hashes and unchanged Frozen authority hash.
+`just verify-pedal-profiles EXPLICIT_REPOSITORY_ROOT` additionally verifies prior
+baseline/Frozen proof, seven new artifacts/501 evidence-tree members, recomputes
+the observed inventory, and checks the stopped log and retained static records.
+Missing/changed evidence fails, with no skip/rehash or broader equivalence claim.
+The executed validator is separately preserved; later reducer-only reporting
+additions do not masquerade as an independently repeated gameplay run.
+
+## pedal-admission-49af40.json
+
+Separately linked read-only audit authority, status `stopped-unproven-admission`.
+It pins the unchanged Frozen and stopped-survey authorities/source, the analyzer,
+four new private artifacts and eight retained static REA records. Recomputed
+retained trace analysis establishes activation-local stack ownership/layout and
+bounded original/fallback equality, not actual49AF40 clean-body execution.
+`safe_admission_established` and `guard_expansion_authorized` must remain false.
+Public checks/tests require no game artifacts; explicit
+`just verify-pedal-admission EXPLICIT_REPOSITORY_ROOT` verifies all inherited proof,
+new files and recomputed analysis. No lifecycle or prior evidence hash is changed.
+The earlier BSS command-object attribution is qualified by this new audit, not by
+rewriting the Frozen source comment or prior immutable authorities.
+
+## pedal-closure.json
+
+Separate current admission authority: `pedal-v1-observed-context-closure`, same
+bounded region/resume and semantic prefix as original Frozen. It pins current
+source/tool hashes, explicit historical source artifacts, actual-entry shadow and
+actual guarded live summaries, original-frame diagnostics, static evidence and
+complete private proof manifests. Lifecycle may be `validating` or `frozen`;
+Frozen requires every named gate passing. Build/runtime defaults must remain false,
+canonical generated-only, semantics unchanged, five observed processing classes,
+14 cases,4,199 actual-entry comparisons and4,199 substitutions with zero fallback.
+Structural-frame admission cannot become an absolute command allowlist.
+
+Public `check` requires the exact current source hashes and the original immutable
+historical expectations. A changed current file is accepted only as an explicitly
+pinned new version whose predecessor is registered as a private artifact; no hash
+mismatch is silently ignored. `verify-pedals` additionally verifies these closure
+artifacts, including the actual original CPP/analyzer bytes. The old Frozen,
+stopped-survey and stopped-audit registries remain unchanged and recompute their
+original outcomes. `just verify-pedal-closure EXPLICIT_REPOSITORY_ROOT` verifies
+all inherited evidence and independently rechecks every retained shadow/live
+trace, count, dump, capture, input/binary identity and semantic-prefix equality.
+Missing evidence, fallback-as-proof or source drift fails closed. Generated
+`registry/pedal-closure` and knowledge JSON expose facts, never raw game material.
+
+The finite observed-context closure is not universal coverage, physical-device or
+canonical integration proof, and does not authorize another recovery.
 
 ## Generated views
 

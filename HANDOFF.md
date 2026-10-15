@@ -20,7 +20,7 @@ history, license and notices remain intact.
   synthetic-wheel source, plus original-dependent fixture source, are preserved.
 - `gt3_recovered` is a compile-checked source library with source-only consistency
   tests. It is **not linked into ps2run or installed into generated bodies** on main.
-- Registry:132 selected records /129 canonical functions; historical lifecycle,
+- Registry:133 selected records /129 canonical functions; historical lifecycle,
   differential and live statuses describe the preserved old runtime, explicitly
   labeled in `snapshot_context`. Four old steering seams remain bounded/frozen.
 - Curated Docusaurus site, compiled offset assertions, metadata lookup and strict
@@ -48,6 +48,146 @@ A missing/changed private artifact fails the explicit verifier. Source-only chec
 never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
+
+## Latest: Pedal v1 observed-context closure — re-frozen, stop
+
+The separately authorized closure proves the **unchanged semantic body** at all
+**4,199 actual entries /14 retained runs /five processing classes**, including
+Time Trial, Free Run and B-1 at0049AF40. Isolated shadow execution compared complete
+CPU/32MiB RAM/exact budget and bounded mutations, then restored original state.
+All entries have one running owner: native EE thread10, stack493700–49B700.
+Explicit original mode-entry probes resolve the16-byte difference:00181E90 uses a
+96-byte frame versus00187A50's112, entering common001811B8 at49B350/49B340 from
+identical outer SP49B3B0. Earlier BSS/global-buffer attribution is superseded.
+
+The low-address exception is now a bounded structural manual-frame/return-chain
+check, plus original wrapper fingerprint. No arithmetic/helper/consumer/steering
+or runtime/recompiler/save-format semantics changed. It admits the actual command,
+not a relocated surrogate. Complete CPU/RAM/budget equality at the join preserves
+any retained alias; no whole-game no-retention theorem is claimed. Reentry was
+not encountered in the observed original owner/hook lifetimes.
+
+Fresh proof:131,072 exact join cases,24 mutation-free fallbacks,2,160 wrapper cases /
+6,480 full comparisons;68 profile-path runs with4,199 guarded substitutions and
+zero accepted fallback;19 original Pedal v1 live runs with2,100 substitutions;
+28 fresh baseline runs with normal-boot v3 capture; complete native regressions,
+public gates and strict inherited/closure/private verifiers. Canonical ps2run
+remains generated-only, baseline hash unchanged; build/runtime gates default OFF.
+
+Current authority: `decomp/gt3/pedal-closure.json`;
+[closure report](docs/site/docs/pedal-closure.md). Strict verification:
+`just verify-pedal-closure "$PWD"`. Private proof: `local/pedal-closure-v1/`.
+Old Frozen/survey/audit authorities and failed runs are unchanged. Their original
+CPP and audit analyzer are separately pinned historical artifacts; source version
+resolution checks both the new source hash and old immutable expectation, never
+silently skips a mismatch. Missing historical bytes fail private verification.
+
+**All observed representative admission discovery is closed; stop.** This is not
+all modes/cars/calibrations/threads/long sessions, browser, physical hardware,
+clean-room certification or canonical installation. No unsupported observed class
+remains; unmatched contexts retain original fallback, while unobserved matching
+contexts acquire no live-proof guarantee. The guard is not a scene allowlist. No pedal API,
+adjacent coupling/transmission/clutch/handbrake, steering rewrite, physical/FFB,
+AI/reset/step or next recovery is authorized. Evaluation used the source overlay
+over46a32c7; the subsequent source-only publication commit does not change that
+validation context. Private evidence, original inputs and local configuration are
+excluded from publication.
+
+## Prior: read-only 0049AF40 admission audit — stopped
+
+The separately authorized audit established that 0049AF40/0049AF50 are observed
+positions of the **same activation-local 16-byte stack command layout**, owned by
+001E4D38's64-byte frame, not two independently identified global BSS commands.
+The earlier BSS attribution (including the Frozen comment) is qualified by the new
+report, not rewritten in protected source/authorities. At Time Trial command49AF40,
+49AF50 is a saved-s0 slot; at Single Race command49AF50,49AF40 is nested saved-ra.
+They are not interchangeable pointers within one activation.
+
+Reanalysis of4,199 retained original entries establishes command=entrySP+D0 and
+original join v0/s1/SP/GP;4,185 have preceding wrapper-entry links. Original native
+pad region costs63–72, compatibility costs123–132. The retained Time Trial original
+versus unmodified-guard run now compares exactly across defined CPU/budget traces,
+observations, steering, complete dump and3 captures:0 replacements/299 fallbacks.
+This is **fallback equality**, not actual49AF40 clean-body equivalence.
+
+**Safe admission remains unproven; stop without expansion.** Upstream stack-position
+cause/backing allocation, complete indirect-hook lifetime/reentrancy and actual-
+context clean ABI/cost/mutation proof remain open. No new runtime build/gameplay,
+relocation, guard bypass or new instrumentation was performed. Protected CPP/HPP,
+Frozen authority and stopped-survey authority hashes are unchanged.
+
+Authority: `decomp/gt3/pedal-admission-49af40.json`;
+[report](docs/site/docs/pedal-admission-49af40.md). Four new private artifacts/eight
+static REA records under `local/pedal-admission-49af40-v1/`; REA project closed.
+`just verify-pedal-admission "$PWD"` verifies inherited proof and recomputes this
+read-only analysis. Final unchanged `just check`, `just test`, `just docs-build`,
+strict admission/inherited proof and historical private verification passed, as did
+all four protected source/authority hash checks. These are not a fresh full native
+gameplay regression or expanded live validation.
+No guard/source change, next recovery, physical/synthetic pedals or adjacent work
+is authorized. Changes remain local/uncommitted over46a32c7 and the prior overlay.
+
+## Prior: descriptor/profile characterization — stopped
+
+Separately authorized original-only survey: 4,199 entries across 12 selected and
+2 exploratory cases, one descriptor family / five processing configurations.
+UI-reviewed cars include ALTEZZA, Alfa 156, MR-S, SLK230 Kompressor and New Beetle
+2.0, plus a Time Trial preset whose exact model is unverified. Native pad and
+existing synthetic steering compatibility observations remain separate.
+
+Four original/unchanged-Frozen pairs pass 1,200 exact substitutions. **Time Trial
+then stopped the cycle: 299 original entries, 0 replacements, 299 protective
+fallbacks**, at command buffer **0049AF40**, outside the previously audited
+0049AF50 context. Free Run/B-1 also observed 0049AF40 original-only; their clean
+pairs were not attempted. Remaining pairs/full native regressions were not run
+after stop. This is not an output mismatch or a Frozen regression/promotion.
+
+Authority: `decomp/gt3/pedal-profiles.json`; [report](docs/site/docs/pedal-profiles.md).
+Private evidence: `local/pedal-profiles-v1/`, 501 pinned files, failed attempt
+retained. `just verify-pedal-profiles "$PWD"` verifies this stopped evidence plus
+unchanged prior baseline/Frozen proof. Frozen CPP/HPP and `pedal-validation.json`
+are byte-identical to before the survey. No runtime/default/algorithm changes.
+Final public check/test/docs, strict stopped/baseline/Frozen/historical evidence
+verification and Frozen source/authority hash checks passed. These are not a new
+full native gameplay regression run. Source base remains46a32c7 plus the existing
+Frozen overlay and new read-only survey tooling/docs; no commit/push was made.
+**Stop.** Any 0049AF40 alias/admission audit or guard expansion needs separate
+bounded authorization. No new gameplay runs or adjacent recovery are authorized.
+
+## Pedal Recovery v1 — prior Frozen checkpoint
+
+Baseline was committed and pushed as `46a32c7` before this continuation. New source
+recovers only **001E48FC–001E4BA7**, resume **001E4BA8**, in an isolated validation
+host. Canonical ps2run is still generated-only and byte-identical to baseline
+(`b22b692a…10d4a`). No steering/synthetic algorithm, runtime, renderer, recompiler,
+original input/card/snapshot or save-state-format change. CMake only adds the new
+source to the existing compile-checked test library, not canonical linkage.
+
+Authority: `decomp/gt3/pedal-validation.json`; operational report:
+[Pedal v1](docs/site/docs/pedal-v1.md), [join contract](docs/site/docs/pedal-join-contract.md).
+131,072 original and exact clean join cases compare complete CPU/scratch/FCR31,
+mutation surface and dynamic budget (observed48–152). 2,160 wrapper/policy cases
+produce6,480 full-CPU/32MiB comparisons through original coupling/brake/engine.
+14 fallbacks leave CPU and all RAM unchanged. 19 v3 live runs/seven paired cases
+pass:2,100 substitutions,zero accepted fallbacks,1,800 original descriptor calls,
+4,200 original player brake/engine observations,exact CPU/pedal/steering traces,
+captures and complete guest dumps. Existing2e-6 tolerance remains unchanged.
+Fresh full native regressions, `just check`, `just test`, `just docs-build`, strict
+historical/current/pedal verifiers and protected ISO/ELF/card checks pass. The exact
+bounded validation-only implementation is **Frozen**, recorded in the new authority
+rather than inferred from historical statuses.
+
+Build and runtime gates both default OFF; canonical gameplay has no pedal gate.
+`just verify-pedals "$PWD"` strictly verifies new private proof and the unchanged
+baseline/v3 fixture. Private accepted trees under `local/pedal-v1-resume/` pin
+623 build/129 live/7 regression files; failed attempts are retained. Do not update
+hashes to hide failures. No raw game/evidence/tooling files may be staged.
+
+**That Frozen evaluation passed and remains unchanged.** The later separately
+authorized characterization above stopped at an unsupported admission context;
+it did not reopen this implementation. Do not start any broader pedal API,
+coupling, transmission, clutch, handbrake, physical devices, FFB or AI/reset/step.
+Original 001E4180 remains `update_control_coupling_candidate`.
 
 ## Proven historical results (not new-main validation)
 
@@ -88,7 +228,7 @@ working documented build toolchain and a safe identity-pinned v3 race fixture wi
 current-main original/clean steering and synthetic baseline revalidation. Do not
 start adjacent transmission/clutch/handbrake recovery.
 
-## Current-main native baseline restored — stop here
+## Prior completed checkpoint: current-main native baseline restored
 
 CMake 4.4.4 / Ninja 1.13.2 and their required dependencies were restored. Fresh
 current-main tools regenerated EE/VU translations from the fingerprint-verified
@@ -122,10 +262,11 @@ No host/runtime/recompiler/CMake gameplay source or frozen control semantics cha
 See [the recipe and limitations](docs/site/docs/current-baseline.md). All new game
 outputs remain ignored under `local/baseline-v3/`; failed attempts were retained.
 
-**Stop after this baseline.** No pedal or adjacent recovery was resumed. A separate
-request is required to continue the next bounded recovery; never restore old loaders.
+That baseline task stopped without resuming pedals. The subsequent explicit user
+request authorized only the bounded continuation recorded above; it did not
+supersede protections or authorize old loaders/neighboring work.
 
-Proposed pedal tail001E48FC–001E4BA7, resume001E4BA8, remains unimplemented.
-Descriptor/policy audit, v0/s1/FPU/ABI and exact-cost handoff proof must precede any
-replacement. No physical wheel/pedal/clutch/FFB, physics, AI/reset/step implementation
+The originally proposed tail001E48FC–001E4BA7, resume001E4BA8, is now recovered
+and independently tested in a validation-only host. Historical stop reports remain
+historical; the new authority controls the present bounded Frozen evaluation. No physical wheel/pedal/clutch/FFB, physics, AI/reset/step implementation
 is authorized by this source checkpoint. See the site's queue and unknowns.

@@ -29,7 +29,7 @@ Authoritative inventory: `decomp/gt3/symbols.json`. Names ending in `candidate` 
 | `0x001e4320` | `unclassified_001e4320` | low | `ev_6d791be32090b211f598a7fffe668ef1f0ecc94bf2dcef2f48ac3bf69e712a44`, `ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d` |
 | `0x001e4368` | `filter_stick` | high within bounded region | `ev_e555a6259e2c5e108e5ce8560ddf19c07a3c0874d952675829b973cbf082011d` |
 | `0x001e4470` | `unclassified_001e4470` | low | `ev_ab529eae84b77c8495bdcd745a9d14a640718910b26e4fb2b412c53fcb9a4de3` |
-| `0x001e4478` | `process_driver_controls_partial` | high within bounded region | `ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71`, `ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958`, `ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc` |
+| `0x001e4478` | `process_driver_controls_partial` | high within bounded region | `artifact:pedal-join-differential`, `artifact:pedal-live-summary`, `ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71`, `ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958`, `ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc` |
 | `0x001e4cb0` | `apply_manual_command` | high | `ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71`, `ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059` |
 | `0x001e4cf0` | `unclassified_001e4cf0` | low | `ev_817743565b2b263540e4c0e8f0c7cd82fe3367e1ce4aeb51dd8ae0eee7b39059` |
 | `0x001e4d38` | `update_manual_driver` | high | `ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71`, `ev_258503eb44a72bbfba935881d62a546fddbd2f7400ba1d97c66d3b557b0d5ae7` |

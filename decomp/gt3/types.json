@@ -6,6 +6,41 @@
   "float_representation": "EE bit-pattern u32; ps2::fp arithmetic",
   "layouts": [
     {
+      "name": "PedalCommandPartial",
+      "cpp": "gt3::pedals::CommandPartial",
+      "size": "0x10",
+      "source": "host/gt3_clean_pedals.hpp",
+      "coverage": "bounded read-only accelerator/brake/auxiliary command view; no neighboring recovery",
+      "fields": [
+        {"name":"flags","offset":"0x0","type":"u8","meaning":"representation flags, preserved numeric bits","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"mode","offset":"0x1","type":"u8","meaning":"numeric mode, 4 selects applicable original descriptors","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"accelerator","offset":"0x8","type":"u16","meaning":"unsigned pressure or wrapping digital halfword","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"brake","offset":"0xa","type":"i16","meaning":"signed pressure or digital nonzero halfword","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"auxiliary","offset":"0xc","type":"u16","meaning":"unsigned request arbitrated before accelerator processing; not physical clutch","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]}
+      ]
+    },
+    {
+      "name":"PedalControlPartial","cpp":"gt3::pedals::ControlPartial","size":"0x4",
+      "source":"host/gt3_clean_pedals.hpp","coverage":"two bounded writable bytes; other bytes opaque and unchanged",
+      "fields":[
+        {"name":"auxiliary_active","offset":"0x0","type":"u8","meaning":"auxiliary arbitration/history indicator, not a physical-device interpretation","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"accelerator_history","offset":"0x2","type":"u8","meaning":"numeric history/source state; unknown values retained where original does","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]}
+      ]
+    },
+    {
+      "name":"PedalCarPartial","cpp":"gt3::pedals::CarPartial","size":"0x14bc",
+      "source":"host/gt3_clean_pedals.hpp","coverage":"manual-wrapper partial view only; no opaque padding writes or full-car claim",
+      "fields":[
+        {"name":"control","offset":"0x1304","type":"PedalControlPartial","meaning":"manual wrapper control-state alias; only nested +0/+2 written","confidence":"high bounded differential/live","evidence":["artifact:pedal-join-differential","artifact:pedal-live-summary"]},
+        {"name":"control_kind","offset":"0x136d","type":"i8","meaning":"signed numeric classification, not a new device type","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"processed_accelerator","offset":"0x13ac","type":"EE float bits u32","meaning":"processed accelerator before original coupling/effective-accelerator propagation","confidence":"high bounded differential/live","evidence":["artifact:pedal-join-differential","artifact:pedal-live-summary"]},
+        {"name":"processed_brake","offset":"0x13b0","type":"EE float bits u32","meaning":"processed brake before original policy coupling/distribution","confidence":"high bounded differential/live","evidence":["artifact:pedal-join-differential","artifact:pedal-live-summary"]},
+        {"name":"numeric_policy","offset":"0x13e5","type":"u8","meaning":"numeric arbitration/coupling policy, not physical clutch mode","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"policy_suppression","offset":"0x14b8","type":"u8","meaning":"nonzero forces local numeric policy zero","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]},
+        {"name":"auxiliary_suppression","offset":"0x14ba","type":"u16","meaning":"clears auxiliary before arbitration; required outgoing v0","confidence":"high bounded differential","evidence":["artifact:pedal-join-differential"]}
+      ]
+    },
+    {
       "name": "BindingRecord",
       "cpp": "gt3::BindingRecord",
       "size": "0x6",

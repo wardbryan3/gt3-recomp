@@ -2,13 +2,20 @@
 title: Pedal Recovery v1 — stopped prerequisite audit
 ---
 
+## Subsequent authorized continuation
+
+After the separate prerequisite baseline was committed/pushed as `46a32c7`, an
+explicit user request resumed only the bounded pedal tail. See [Pedal v1](pedal-v1.md)
+and [join audit](pedal-join-contract.md) for its new source, exact ABI/cost,
+wrapper/consumer and native-v3 live proof. The stopped cycle below remains a
+historical report; it does not describe the present implementation status.
+
 ## Subsequent prerequisite restoration
 
 The separate [current-main native baseline](current-baseline.md) task has now
 restored dependencies, fresh builds/regressions and a normal-boot identity-pinned
 v3 race fixture, and repeated bounded steering/synthetic live validation. Its new
-evidence is separate from this earlier stopped pedal audit. **No pedal recovery
-was resumed or promoted.** The blocker descriptions below remain historical facts
+evidence is separate from this earlier stopped pedal audit. **That baseline task did not resume or promote pedal recovery.** The blocker descriptions below remain historical facts
 about the earlier attempt, not current tool/fixture availability.
 
 ## Outcome

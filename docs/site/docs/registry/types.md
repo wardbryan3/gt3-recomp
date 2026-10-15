@@ -6,6 +6,41 @@ title: "Partial type knowledge"
 
 Authoritative inventory: `decomp/gt3/types.json`. Offset assertions are generated into `build/foundation/type-assertions.cpp` and compiled with `just check`. All guest pointers are 32-bit little-endian; EE floats retain bit patterns. **Do not treat opaque padding as recovered fields or bulk-write it.**
 
+## PedalCommandPartial
+
+Size `0x10`. bounded read-only accelerator/brake/auxiliary command view; no neighboring recovery. Source: `host/gt3_clean_pedals.hpp`.
+
+| Offset | Field | Representation | Meaning |
+|---|---|---|---|
+| `0x0` | `flags` | `u8` | representation flags, preserved numeric bits |
+| `0x1` | `mode` | `u8` | numeric mode, 4 selects applicable original descriptors |
+| `0x8` | `accelerator` | `u16` | unsigned pressure or wrapping digital halfword |
+| `0xa` | `brake` | `i16` | signed pressure or digital nonzero halfword |
+| `0xc` | `auxiliary` | `u16` | unsigned request arbitrated before accelerator processing; not physical clutch |
+
+## PedalControlPartial
+
+Size `0x4`. two bounded writable bytes; other bytes opaque and unchanged. Source: `host/gt3_clean_pedals.hpp`.
+
+| Offset | Field | Representation | Meaning |
+|---|---|---|---|
+| `0x0` | `auxiliary_active` | `u8` | auxiliary arbitration/history indicator, not a physical-device interpretation |
+| `0x2` | `accelerator_history` | `u8` | numeric history/source state; unknown values retained where original does |
+
+## PedalCarPartial
+
+Size `0x14bc`. manual-wrapper partial view only; no opaque padding writes or full-car claim. Source: `host/gt3_clean_pedals.hpp`.
+
+| Offset | Field | Representation | Meaning |
+|---|---|---|---|
+| `0x1304` | `control` | `PedalControlPartial` | manual wrapper control-state alias; only nested +0/+2 written |
+| `0x136d` | `control_kind` | `i8` | signed numeric classification, not a new device type |
+| `0x13ac` | `processed_accelerator` | `EE float bits u32` | processed accelerator before original coupling/effective-accelerator propagation |
+| `0x13b0` | `processed_brake` | `EE float bits u32` | processed brake before original policy coupling/distribution |
+| `0x13e5` | `numeric_policy` | `u8` | numeric arbitration/coupling policy, not physical clutch mode |
+| `0x14b8` | `policy_suppression` | `u8` | nonzero forces local numeric policy zero |
+| `0x14ba` | `auxiliary_suppression` | `u16` | clears auxiliary before arbitration; required outgoing v0 |
+
 ## BindingRecord
 
 Size `0x6`. six-byte record storage; first halfword meaning unknown. Source: `host/gt3_controls.hpp`.

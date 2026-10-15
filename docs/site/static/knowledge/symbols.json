@@ -328,7 +328,13 @@
     {
       "address": "0x001e4478",
       "native_name": "FUN_001e4478",
+      "interior_recovery_seams": [
+        {"implementation":"clean:process_steering","gate":"0x001e45a8","resume":"0x001e48fc","context":"historical bounded steering; fresh baseline separately pinned"},
+        {"implementation":"clean:process_accelerator_brake","gate":"0x001e48fc","resume":"0x001e4ba8","context":"current-main validation-only pedal v1; not an independent native entry"}
+      ],
       "evidence": [
+        "artifact:pedal-join-differential",
+        "artifact:pedal-live-summary",
         "ev_1ae7e5b58f8018c49aa9ed4a976e3984f3dda1001e36148fc94cff18145abd71",
         "ev_4827844f7d8db4d5eae4302c47de04a2f2d0a72fee6ddfa4856e821bf4004958",
         "ev_bd75205028a72307c6662fe769c9a5cb673340ce549400fac86ff1b2139eb2dc"

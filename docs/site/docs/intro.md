@@ -12,11 +12,11 @@ Recover only what the checkpoints require. Keep the generated implementation exe
 1. [Permissions and agent rules](permissions.md): changes need a bounded request.
 2. [Getting started](getting-started.md): local tools, isolated builds, tests, docs.
 3. [Frozen steering baseline](steering.md): four default-OFF substitution sites; originals remain available.
-4. [Pedal discovery](pedals.md): the next dependency-ordered recovery candidate, **not implemented tonight**.
+4. [Pedal v1](pedal-v1.md): bounded current-main validation-only recovery, with [historical discovery](pedals.md) kept separate.
 5. [Morning report / handoff](handoff.md) and [prioritized queue](queue.md).
 
-The machine-readable authorities are `decomp/gt3/{manifest,symbols,types,provenance}.json`. Status/type/symbol pages are generated from them. Retained static evidence lives in the original `docs/*-evidence.json` and `evidence/rea/project-init.json`; fixtures and running-game observations are explicitly separate.
+The machine-readable authorities are `decomp/gt3/{manifest,symbols,types,provenance}.json`, with separate `current-validation.json` baseline and `pedal-validation.json` current pedal proof. Status/type/symbol pages are generated from them. Retained static evidence lives in the original `docs/*-evidence.json` and `evidence/rea/project-init.json`; fixtures and running-game observations are explicitly separate.
 
 No physical-wheel support, pedal injection, shifter, clutch axis, modern force-feedback mapping, AI interface, deterministic reset/step API, Windows port or physics replacement was added during initialization. Existing synthetic steering and clean steering remain independent opt-ins. Existing files were not moved.
 
-**Initialization complete; stop and await an explicit next-cycle request.**
+**Stop after the bounded pedal Frozen checkpoint; await a separate request for further work.**

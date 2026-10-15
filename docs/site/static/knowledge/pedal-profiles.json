@@ -1,0 +1,500 @@
+{
+  "schema_version": 1,
+  "id": "pedal-descriptor-profile-characterization-v1",
+  "source_commit": "46a32c70d414d87d192c2d00039365bbb59afb27",
+  "context": "read-only original/generated survey plus unchanged Frozen validation host; local source overlay",
+  "status": "stopped-unsupported-context",
+  "runtime_installation": "none; canonical-generated and Frozen validation gates unchanged",
+  "build_default": false,
+  "runtime_default": false,
+  "boundary": [
+    "0x001e48fc",
+    "0x001e4ba7"
+  ],
+  "resume_address": "0x001e4ba8",
+  "frozen_registry_sha256": "961998e7311d0759358fb4123131f6da1f5d624be7a18b4061e10cac328242d4",
+  "frozen_source_hashes": {
+    "host/gt3_clean_pedals.cpp": "1dff127d6dc0fd0f7a6ae260ac6668b522daa11f1b1b0f8c572d79ce81eec057",
+    "host/gt3_clean_pedals.hpp": "c3827d736f956ae6ab032f68c9690f74d240d472d7896e785c426aed74e26d3a"
+  },
+  "source_hashes": {
+    "tests/gt3_pedal_profiles_observer.cpp": "0ff0ddc70c372b6cecb29bbbc5f6478b7c8cc55c0dc811fb75827a44786f1f70",
+    "scripts/build_gt3_pedal_profiles.sh": "58e60869d7061dc40a848f42a591f1afa8ec3900bb7bcf36a0d5990242e1b2d6",
+    "scripts/characterize_gt3_pedal_profiles.py": "dfe19ec4206c1a5c0e1fba698cc17cc7b0a9dee516a3bb7fb0cb0f16a7cc9cb6"
+  },
+  "source_overlay": "No Frozen implementation, guard, calibration, gate default or authority change. Executed validator retained privately; current reducer additionally reports command contexts.",
+  "observations": {
+    "scope": "finite observed matrix, not exhaustive reachability",
+    "descriptors": [
+      {
+        "id": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+        "mode": 1,
+        "sites": [
+          "accelerator_descriptor",
+          "brake_descriptor"
+        ]
+      }
+    ],
+    "profiles": [
+      {
+        "id": "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42",
+        "selectors": {
+          "accelerator_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "brake_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "rates_and_floor_sha256": "484f7bf60ab5a5b964e4f982b68023f902c0e804fb19ea60e80f98c1330c54fc",
+          "mode": 2,
+          "representation_flags": 14,
+          "kind": 0,
+          "effective_policy": 0,
+          "auxiliary_suppressed": false
+        },
+        "cases": [
+          "trusted",
+          "alfa-at",
+          "mrs-at",
+          "license",
+          "pad-left-stick-at",
+          "pad-dpad-at",
+          "pad-stick-at-original"
+        ],
+        "reachability": [
+          "native-pad"
+        ],
+        "command_contexts": [
+          4829008,
+          4828992
+        ],
+        "observed_updates": 1900
+      },
+      {
+        "id": "profile:6773e21fed6c9ea578ab3f8eddd9556870b15c68fe927cbc65b80059e00bb0a4",
+        "selectors": {
+          "accelerator_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "brake_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "rates_and_floor_sha256": "484f7bf60ab5a5b964e4f982b68023f902c0e804fb19ea60e80f98c1330c54fc",
+          "mode": 2,
+          "representation_flags": 14,
+          "kind": 0,
+          "effective_policy": 1,
+          "auxiliary_suppressed": false
+        },
+        "cases": [
+          "altezza-mt",
+          "time-trial",
+          "free-run",
+          "pad-left-stick-mt",
+          "pad-stick-mt-original"
+        ],
+        "reachability": [
+          "native-pad"
+        ],
+        "command_contexts": [
+          4829008,
+          4828992
+        ],
+        "observed_updates": 1499
+      },
+      {
+        "id": "profile:f907437d7cda6ce1aef56183dbdfdb8c965a39ee6292745a3f40de22697c8b7c",
+        "selectors": {
+          "accelerator_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "brake_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "rates_and_floor_sha256": "484f7bf60ab5a5b964e4f982b68023f902c0e804fb19ea60e80f98c1330c54fc",
+          "mode": 3,
+          "representation_flags": 14,
+          "kind": 0,
+          "effective_policy": 0,
+          "auxiliary_suppressed": false
+        },
+        "cases": [
+          "pad-dpad-at"
+        ],
+        "reachability": [
+          "native-pad"
+        ],
+        "command_contexts": [
+          4829008
+        ],
+        "observed_updates": 200
+      },
+      {
+        "id": "profile:d4b8beb54e63117f4c7cdec8e8449fbc11eb6677f8735873c23b270412989925",
+        "selectors": {
+          "accelerator_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "brake_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "rates_and_floor_sha256": "484f7bf60ab5a5b964e4f982b68023f902c0e804fb19ea60e80f98c1330c54fc",
+          "mode": 4,
+          "representation_flags": 14,
+          "kind": 0,
+          "effective_policy": 0,
+          "auxiliary_suppressed": false
+        },
+        "cases": [
+          "compat-wheel-at"
+        ],
+        "reachability": [
+          "existing-synthetic-wheel-compatibility"
+        ],
+        "command_contexts": [
+          4829008
+        ],
+        "observed_updates": 300
+      },
+      {
+        "id": "profile:fb89ff35594221237eaa2ca440f5b9d1abec856a551968e90c062140818432f9",
+        "selectors": {
+          "accelerator_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "brake_descriptor": "descriptor:331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83",
+          "rates_and_floor_sha256": "484f7bf60ab5a5b964e4f982b68023f902c0e804fb19ea60e80f98c1330c54fc",
+          "mode": 4,
+          "representation_flags": 14,
+          "kind": 0,
+          "effective_policy": 1,
+          "auxiliary_suppressed": false
+        },
+        "cases": [
+          "compat-wheel-mt"
+        ],
+        "reachability": [
+          "existing-synthetic-wheel-compatibility"
+        ],
+        "command_contexts": [
+          4829008
+        ],
+        "observed_updates": 300
+      }
+    ],
+    "cases": [
+      {
+        "id": "trusted",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "AT",
+          "gameplay": "Arcade Single Race",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "78046b16581ab625e3b32822fe9912827c0c73493cc7c558d65df45e41064e8f"
+      },
+      {
+        "id": "altezza-mt",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "MT",
+          "gameplay": "Arcade Single Race",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:6773e21fed6c9ea578ab3f8eddd9556870b15c68fe927cbc65b80059e00bb0a4"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "527a2267e614726704a126e6ec25dc7f8a0a93329849180ba1a5b8547a65272b"
+      },
+      {
+        "id": "alfa-at",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "Alfa Romeo 156 2.5 V6 24V",
+          "transmission": "AT",
+          "gameplay": "Arcade Single Race",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "ff8264a71b8880d6f52f95c64c681cc9a41db6924dc0e731d5b0632acc90c3c1"
+      },
+      {
+        "id": "mrs-at",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "Toyota MR-S S Edition",
+          "transmission": "AT",
+          "gameplay": "Arcade Single Race",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "d36138f99f4003938cff33975ad30f495933e087cf93651110c413dbe583c7ce"
+      },
+      {
+        "id": "time-trial",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "Time Trial No.1 preset (exact model not independently identified)",
+          "transmission": "MT",
+          "gameplay": "Arcade Time Trial / Mid-Field Raceway",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:6773e21fed6c9ea578ab3f8eddd9556870b15c68fe927cbc65b80059e00bb0a4"
+        ],
+        "updates": 299,
+        "command_contexts": [
+          4828992
+        ],
+        "original_trace_sha256": "d119bbffbd1ca9838952694aca8aa06c7fbca22f706bddf906f14698d523af96"
+      },
+      {
+        "id": "free-run",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "Mercedes-Benz SLK230 Kompressor",
+          "transmission": "MT",
+          "gameplay": "Arcade Free Run",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:6773e21fed6c9ea578ab3f8eddd9556870b15c68fe927cbc65b80059e00bb0a4"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4828992
+        ],
+        "original_trace_sha256": "85f868d574e077620bb33ff867297aa36a40aef4ef85a492341a47a6fb9bb87a"
+      },
+      {
+        "id": "license",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "Volkswagen New Beetle 2.0",
+          "transmission": "preset; no gearbox selection claimed",
+          "gameplay": "Simulation License B-1",
+          "control": "buttons"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4828992
+        ],
+        "original_trace_sha256": "feaa86e06809ce27096cdb8bcde5c5458314a918746c998e8947591f4f65644b"
+      },
+      {
+        "id": "pad-left-stick-at",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "AT",
+          "gameplay": "Arcade Single Race",
+          "control": "left-stick steering + pedal buttons"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "3b04efa847dab556a8da06c27a2d4ac10d78b3f2aede94b84d8b1e91c6340d6c"
+      },
+      {
+        "id": "pad-left-stick-mt",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "MT",
+          "gameplay": "Arcade Single Race",
+          "control": "left-stick steering + pedal buttons"
+        },
+        "profiles": [
+          "profile:6773e21fed6c9ea578ab3f8eddd9556870b15c68fe927cbc65b80059e00bb0a4"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "ccccd0c7f7a6dfb192186f4c63ac23168480ad11200917a78ac0a50d06c470fd"
+      },
+      {
+        "id": "pad-dpad-at",
+        "reachability": "native-pad",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "AT",
+          "gameplay": "Arcade Single Race",
+          "control": "D-pad steering + pedal buttons"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42",
+          "profile:f907437d7cda6ce1aef56183dbdfdb8c965a39ee6292745a3f40de22697c8b7c"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "2b5a8f034e09ad8d28ab3398360c7cf05f8c1fd048ccfe29135d6b59b4dee59c"
+      },
+      {
+        "id": "compat-wheel-at",
+        "reachability": "existing-synthetic-wheel-compatibility",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "AT",
+          "gameplay": "Arcade Single Race",
+          "control": "existing synthetic wheel compatibility selector; not physical pedals"
+        },
+        "profiles": [
+          "profile:d4b8beb54e63117f4c7cdec8e8449fbc11eb6677f8735873c23b270412989925"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "4341f7351e44c6e75289e3823792cf0a3061801bd7cc7c833b7ec03d35e9eb97"
+      },
+      {
+        "id": "compat-wheel-mt",
+        "reachability": "existing-synthetic-wheel-compatibility",
+        "labels": {
+          "car": "ALTEZZA",
+          "transmission": "MT",
+          "gameplay": "Arcade Single Race",
+          "control": "existing synthetic wheel compatibility selector; not physical pedals"
+        },
+        "profiles": [
+          "profile:fb89ff35594221237eaa2ca440f5b9d1abec856a551968e90c062140818432f9"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "d704b9751d7400f6873c2c9f73bdad23ba71d160cf0498b70819627e8c06b11f"
+      },
+      {
+        "id": "pad-stick-at-original",
+        "reachability": "native-pad",
+        "labels": {
+          "note": "axis0 right-stick attempt: steering remained zero; NOT left-stick coverage"
+        },
+        "profiles": [
+          "profile:2951d7b2b545642808d2b1cd65609235553bae9dc47e004256b64ded8e4dfa42"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "78046b16581ab625e3b32822fe9912827c0c73493cc7c558d65df45e41064e8f"
+      },
+      {
+        "id": "pad-stick-mt-original",
+        "reachability": "native-pad",
+        "labels": {
+          "note": "axis0 right-stick attempt: steering remained zero; NOT left-stick coverage"
+        },
+        "profiles": [
+          "profile:6773e21fed6c9ea578ab3f8eddd9556870b15c68fe927cbc65b80059e00bb0a4"
+        ],
+        "updates": 300,
+        "command_contexts": [
+          4829008
+        ],
+        "original_trace_sha256": "527a2267e614726704a126e6ec25dc7f8a0a93329849180ba1a5b8547a65272b"
+      }
+    ],
+    "original_updates": 4199,
+    "original_response_calls": {
+      "0x49d060": 600,
+      "0x49d070": 600
+    }
+  },
+  "results": {
+    "paired_cases_passed": 4,
+    "exact_substitutions": 1200,
+    "stop_case": "time-trial",
+    "stop_case_original_entries": 299,
+    "stop_case_replaced": 0,
+    "stop_case_fallbacks": 299,
+    "remaining_pairs": "not run after stop",
+    "fresh_full_native_regressions": "not run after stop"
+  },
+  "static_evidence_ids": [
+    "ev_019d0ddfe3af43f305ecc20e85bdf11f898d3d27075006085076cfb6cc20d871",
+    "ev_1299e6cddf43584257aa982d8de0c32d77f7511086456aa59ab021c262a65d5a",
+    "ev_4eebb4f49f38ccc0be6cf560e970fe8b1618e7921c8708121b1781b5bf3c9c7a",
+    "ev_c51de5678a4a0d14eac3aca349d8970a85eec3f8f875ec36bb4e8f64aa021168",
+    "ev_feab776222bcd1c41df0b83a8411a581391761004135bee5693696ab9a2eb1c3"
+  ],
+  "artifacts": [
+    {
+      "id": "artifact:profiles-plan",
+      "path": "local/pedal-profiles-v1/plan.json",
+      "sha256": "a5c89238ab1907b9b434649d07fc3484c6a5660f6ab63c73979f4088b37b690d",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:profiles-report",
+      "path": "local/pedal-profiles-v1/report.json",
+      "sha256": "5ac38c8f9ada00610243e0ef4241b3966e4821f4019ae0193636e29e11a58f51",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:profiles-stop",
+      "path": "local/pedal-profiles-v1/paired-1/STOP.json",
+      "sha256": "b619222d3db452615c20efb4e69ba80cc587e18aff70dbc386cfbfe4b5a8994a",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:profiles-executed-validator",
+      "path": "local/pedal-profiles-v1/paired-1/validator-executed.py",
+      "sha256": "684d391ecf72bb0e7417dbda24f13619fcd2e03a45028f15113a51054cb72813",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:profiles-time-trial-log",
+      "path": "local/pedal-profiles-v1/paired-1/time-trial/run.log",
+      "sha256": "0e877dea88e6c17e8214320c3a45d4a7fa554238463bc0426d87fc04d2bd9ab1",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:profiles-static",
+      "path": "local/pedal-profiles-v1/selector-analysis.snapshot.json",
+      "sha256": "d7b7b74cb1cea0295c54c3f8c85e26436441fa424fa82941d865cf9e43a9f5f2",
+      "visibility": "private",
+      "kind": "file"
+    },
+    {
+      "id": "artifact:profiles-files",
+      "path": "local/pedal-profiles-v1/evidence-files.json",
+      "sha256": "117fa61f21a4a06ad19a28cc6cac4ea7a2eace54ea9bb991b626e933ade1bdf3",
+      "visibility": "private",
+      "kind": "file-manifest"
+    }
+  ],
+  "limitations": [
+    "Finite original USA v1.10 matrix; not exhaustive reachability, calibration or physical hardware proof.",
+    "Five processing configuration keys do not establish admission: Time Trial uses command 0049AF40, outside the previously audited 0049AF50 context.",
+    "Free Run and B-1 also observed 0049AF40 original-only; clean comparisons were not attempted after the Time Trial stop.",
+    "Mode4 observations use the existing synthetic steering compatibility selector, not native or physical wheel/pedal coverage.",
+    "Two axis0 exploratory runs had no steering effect; not counted as left-stick coverage. Actual axis2 runs are separate.",
+    "Time Trial No.1 exact vehicle model was not independently identified. Free Run SLK230 Kompressor and license New Beetle 2.0 labels were reviewed against UI captures.",
+    "No new independent uninstrumented live comparator, full native regression run or all-profile equivalence claim; Frozen prior proofs remain unchanged."
+  ],
+  "next_action": "Stop. Any admission/alias audit or guard expansion requires separate bounded authorization; no adjacent recovery."
+}

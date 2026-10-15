@@ -9,6 +9,11 @@ import re
 import sys
 ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / 'decomp/gt3'
+sys.path.insert(0,str(ROOT/'scripts'))
+from characterize_gt3_pedal_profiles import check_record as check_profile_record, summarize as summarize_profiles
+from audit_gt3_pedal_admission import check_record as check_admission_record
+from gt3_pedal_authority import source_version
+from verify_gt3_pedal_closure import check_record as check_closure_record
 def load(name): return json.loads((DB / (name + '.json')).read_text())
 def check_current():
     """Public consistency only. Private validation is explicit and never skipped."""
@@ -37,8 +42,65 @@ def check_current():
         assert v['fixture']['artifact'] in ids, 'Current fixture must have its own pinned artifact'
     return v
 
-def verify_current(root):
-    v=check_current(); root=Path(root).resolve()
+def check_pedals():
+    """Public source/metadata consistency, not execution of the private oracle."""
+    v=load('pedal-validation'); baseline=check_current()
+    assert v['schema_version']==1 and v['id']=='current-main-pedal-v1'
+    assert v['context']=='current-main-validation-only-pedal-v1'
+    assert re.fullmatch(r'[0-9a-f]{40}',v['source_commit'])
+    assert v['runtime_installation']=='canonical-generated; pedal gate in isolated validation harness only'
+    assert v['build_default'] is False and v['runtime_default'] is False
+    assert v['boundary']==['0x001e48fc','0x001e4ba7'] and v['resume_address']=='0x001e4ba8'
+    assert v['lifecycle'] in ('live-validated','frozen')
+    for gate in ('build','differential','regressions','live'):
+        assert v[gate] in ('pending','passing','failed','blocked')
+    assert v['fixture']['version']==3 and v['fixture']['status']=='passing'
+    for key in ('version','saved_frame','continuation_input_frame','clock_utc_epoch'):
+        assert v['fixture'][key]==baseline['fixture'][key], 'Pedals must use authoritative native v3 context'
+    ids=set()
+    for a in v['artifacts']:
+        assert a['id'] not in ids;ids.add(a['id'])
+        assert re.fullmatch(r'[0-9a-f]{64}',a['sha256'])
+        path=Path(a['path'])
+        assert not path.is_absolute() and '..' not in path.parts and path.parts[0]=='local'
+        assert a['visibility']=='private' and a.get('kind','file') in ('file','file-manifest')
+    assert ids and v['fixture']['artifact'] in ids
+    if v['lifecycle']=='frozen':
+        assert v['frozen_evaluation']['status']=='passing' and v['frozen_evaluation']['stop'] is True
+        assert v['frozen_evaluation']['artifact'] in ids and v['frozen_evaluation']['gates']
+    pinned_fixture=next(a for a in v['artifacts'] if a['id']==v['fixture']['artifact'])
+    baseline_fixture=next(a for a in baseline['artifacts'] if a['id']==baseline['fixture']['artifact'])
+    assert pinned_fixture['path']==baseline_fixture['path'] and pinned_fixture['sha256']==baseline_fixture['sha256']
+    original=next(a for a in v['artifacts'] if a['id']=='artifact:pedal-original-elf')
+    assert original['sha256']==load('manifest')['original_elf_sha256']
+    if v['live']=='passing' or v['lifecycle']=='frozen':
+        assert all(v[g]=='passing' for g in ('build','differential','regressions','live'))
+        for key in ('complete_cpu','exact_dynamic_budget','fallback_cpu_ram_unchanged',
+                    'exact_defined_cpu_traces','exact_pedal_traces','exact_steering_traces',
+                    'exact_captures','exact_complete_guest_dumps'):
+            assert v['results'][key] is True, key
+        assert v['results']['join_clean_cases']>0 and v['results']['whole_wrapper_cases']>0
+        assert v['results']['clean_live_updates']>0 and v['results']['live_fallbacks']==0
+    assert set(v['source_hashes'])=={'host/gt3_clean_pedals.cpp','host/gt3_clean_pedals.hpp'}
+    for name,sha in v['source_hashes'].items():
+        source_version(ROOT,name,sha)
+    return v
+
+def verify_pedals(root):
+    v=check_pedals();verify_current(root)
+    verify_current(root,v,'Pedal validation')
+    baseline=check_current()
+    summary=next(a for a in baseline['artifacts'] if a['id']=='artifact:current-live-summary')
+    original_iso=json.loads((Path(root)/summary['path']).read_text())['iso_sha256']
+    assert next(a for a in v['artifacts'] if a['id']=='artifact:pedal-original-iso')['sha256']==original_iso, 'Protected original ISO identity changed'
+    closure=check_closure()
+    verify_current(root,closure,'Current pedal closure')
+    for name,count in v['results']['evidence_tree_members'].items():
+        a=next(a for a in v['artifacts'] if a['id']==f'artifact:pedal-{name}-files')
+        assert len(json.loads((Path(root)/a['path']).read_text())['files'])==count
+
+def verify_current(root, validation=None, label='Current validation'):
+    v=check_current() if validation is None else validation; root=Path(root).resolve()
     nested=0
     def verify_file(a):
         p=Path(a['path'])
@@ -58,14 +120,47 @@ def verify_current(root):
         a=next(a for a in v['artifacts'] if a['id']==v['fixture']['artifact'])
         with (root/a['path']).open('rb') as stream:header=stream.read(12)
         assert header[:8]==b'PS2STATE' and int.from_bytes(header[8:12],'little')==3, 'Current fixture is not native v3'
-    print(f"Current validation: {len(v['artifacts'])} artifact hashes + {nested} evidence-tree members verified; no files changed")
+    print(f"{label}: {len(v['artifacts'])} artifact hashes + {nested} evidence-tree members verified; no files changed")
+
+def check_closure():
+    return check_closure_record(load('pedal-closure'),ROOT)
+
+def check_profiles():
+    return check_profile_record(load('pedal-profiles'),ROOT)
+
+def verify_profiles(root):
+    verify_pedals(root)
+    v=check_profiles();root=Path(root).resolve()
+    verify_current(root,v,'Stopped profile characterization')
+    artifacts={a['id']:a for a in v['artifacts']}
+    plan=json.loads((root/artifacts['artifact:profiles-plan']['path']).read_text())
+    assert summarize_profiles(plan)==v['observations'],'Observed profile inventory differs'
+    stop=json.loads((root/artifacts['artifact:profiles-stop']['path']).read_text())
+    assert len(stop['completed'])==v['results']['paired_cases_passed']
+    assert sum(c['replaced'] for c in stop['completed'])==v['results']['exact_substitutions']
+    log=(root/artifacts['artifact:profiles-time-trial-log']['path']).read_text()
+    assert '[gt3-pedals] replaced=0 fallback=299 response_calls=0' in log
+    snapshot=json.loads((root/artifacts['artifact:profiles-static']['path']).read_text())
+    records=snapshot['evidence_bundle']['records']
+    assert {r['evidence_id'] for r in records}==set(v['static_evidence_ids'])
+    assert all(r['subject']['digest']['sha256']==load('manifest')['original_elf_sha256'] for r in records)
+    print('Historical unsupported context retained; that stopped record makes no expanded claim. Current closure is a separate authority.')
 
 def check():
     m, s, t, p = (load(n) for n in ('manifest', 'symbols', 'types', 'provenance'))
     for d in (m,s,t,p): assert d['schema_version'] == 1, 'Unsupported schema'
     artifacts = {a['id']:a for a in p['artifacts']}
     assert len(artifacts)==len(p['artifacts']), 'Duplicate artifact ID'
-    refs = set(artifacts)
+    pedals=check_pedals();check_profiles();check_closure()
+    assert p['pedal_profile_characterization_registry']=='pedal-profiles.json'
+    assert p['pedal_admission_audit_registry']=='pedal-admission-49af40.json'
+    assert p['pedal_closure_registry']=='pedal-closure.json'
+    check_admission_record(load('pedal-admission-49af40'))
+    pedal_artifacts={a['id']:a for a in pedals['artifacts']}
+    assert not set(artifacts)&set(pedal_artifacts), 'Evidence contexts must not collide'
+    closure_artifacts={a['id']:a for a in check_closure()['artifacts']}
+    assert not (set(artifacts)|set(pedal_artifacts)) & set(closure_artifacts)
+    refs = set(artifacts)|set(pedal_artifacts)|set(closure_artifacts)
     for a in p['artifacts']:
         assert re.fullmatch(r'[0-9a-f]{64}', a['sha256']), 'Malformed artifact hash'
         assert a['visibility'] == 'private', 'Raw evidence must remain private'
@@ -112,6 +207,11 @@ def check():
     current=check_current()
     for f in m['functions']:
         if 'current_validation' in f:assert f['current_validation']==current['id']
+        if 'pedal_closure' in f:assert f['pedal_closure']==check_closure()['id']
+        if 'pedal_validation' in f:
+            assert f['pedal_validation']==pedals['id'] and f['lifecycle']==pedals['lifecycle']
+            assert f['validation_context']==pedals['context'] and f['runtime']['scope']=='validation-only'
+            assert f['boundary']==pedals['boundary'] and f['resume_address']==pedals['resume_address']
     return m,s,t,p
 
 def docs():
@@ -119,7 +219,7 @@ def docs():
     def page(name,title,text):
         (dest/'registry'/name).write_text(f'---\ntitle: "{title}"\n---\n\n<!-- Generated from decomp/gt3 JSON; edit metadata, not this page. -->\n\n'+text.rstrip()+'\n')
     counts=Counter(f['lifecycle'] for f in m['functions'])
-    text='## Lifecycle inventory\n\nStatuses describe the **preserved private experiment**, not canonical current-main installation. Fresh isolated validation is tracked separately in [current validation](current-validation.md); canonical ps2run retains generated execution.\n\nThis is **selected evidence inventory, not whole-game recovery coverage**. Identified entries are not authorized replacements. Dependencies from pseudocode remain candidates.\n\n'
+    text='## Lifecycle inventory\n\nThe default context is the **preserved private experiment**, not canonical current-main installation. The new pedal record explicitly overrides that historical context: see [pedal validation](pedal-validation.md). Fresh isolated baseline validation is tracked in [current validation](current-validation.md); canonical ps2run retains generated execution.\n\nThis is **selected evidence inventory, not whole-game recovery coverage**. Identified entries are not authorized replacements. Dependencies from pseudocode remain candidates.\n\n'
     text+='\n'.join(f'- **{k}**: {counts[k]}' for k in m['lifecycle_order'])+'\n\n'
     text+='| Original entry | Semantic name | State | Diff | Runtime | Live |\n|---|---|---|---|---|---|\n'
     for f in m['functions']:text+=f"| `{f['address']}` | `{f['name']}` | {f['lifecycle']} | {f['differential']['status']} | {f['runtime']['status']} | {f['live']['status']} |\n"
@@ -143,8 +243,26 @@ def docs():
     text+='\n'.join('- '+s for s in current['limitations'])+'\n\n'
     text+='Private evidence is fingerprinted in `decomp/gt3/current-validation.json`; use `just verify-current EXPLICIT_REPOSITORY_ROOT`. Raw snapshots, binaries, traces and captures are not published. See [current baseline](../current-baseline.md).\n'
     page('current-validation.md','Current-main native baseline',text)
+    pedals=check_pedals()
+    text=f"Source base: `{pedals['source_commit']}` plus documented source overlay. Lifecycle: **{pedals['lifecycle']}**. **Validation-only**, not canonical integration.\n\n"
+    text+='| Gate | Result |\n|---|---|\n'+''.join(f'| {k} | {pedals[k]} |\n' for k in ('build','differential','regressions','live'))
+    text+='\n'+''.join('- '+item+'\n' for item in pedals['limitations'])
+    text+='\nUse `just verify-pedals EXPLICIT_REPOSITORY_ROOT` for strict private verification. See [pedal recovery](../pedal-v1.md) and [join contract](../pedal-join-contract.md).\n'
+    page('pedal-validation.md','Pedal v1 validation',text)
+    profiles=check_profiles()
+    text='**Stopped at an unsupported reachable context; no Frozen expansion.**\n\n'
+    text+=f"Original-only observations: {profiles['observations']['original_updates']}; descriptor families: 1; processing configurations: 5. Four paired cases pass 1,200 substitutions. Time Trial stops with 0 replacements / 299 protective fallbacks.\n\n"
+    text+='Fresh full native regressions and remaining pairs were not run after stop. See [reachability report](../pedal-profiles.md). Strict retained-evidence check: `just verify-pedal-profiles EXPLICIT_REPOSITORY_ROOT`.\n'
+    text+='\nThis is the immutable earlier stop, not the current admission result. See [observed-context closure](../pedal-closure.md).\n'
+    page('pedal-profiles.md','Historical stopped pedal profile characterization',text)
+    closure=check_closure()
+    text=f"Lifecycle: **{closure['lifecycle']}**; isolated validation only, both gates default OFF. Boundary unchanged.\n\n"
+    text+='| Gate | Result |\n|---|---|\n'+''.join(f'| {k} | {value} |\n' for k,value in closure['gates'].items())
+    text+='\n4,199 actual-context full-CPU/32MiB/cost/mutation shadow comparisons and 4,199 guarded substitutions, zero fallback, across all 14 observed contexts / five processing classes. Not universal or physical-device proof.\n\n'
+    text+='See [closure report](../pedal-closure.md). Strict private verification: `just verify-pedal-closure EXPLICIT_REPOSITORY_ROOT`. Historical stopped records/hashes are not rewritten.\n'
+    page('pedal-closure.md','Pedal v1 observed-context closure',text)
     knowledge=ROOT/'docs/site/static/knowledge';knowledge.mkdir(parents=True,exist_ok=True)
-    for name in ('manifest','symbols','types','provenance','current-validation'):
+    for name in ('manifest','symbols','types','provenance','current-validation','pedal-validation','pedal-profiles','pedal-admission-49af40','pedal-closure'):
         (knowledge/f'{name}.json').write_bytes((DB/f'{name}.json').read_bytes())
     print('Public documentation generated: facts/metadata only; no raw evidence copied')
 
@@ -171,13 +289,19 @@ def type_assertions():
     out.write_text('\n'.join(lines)+'\n')
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['check','docs','status','lookup','evidence','type-assertions','verify-private','verify-current']);parser.add_argument('query',nargs='?');a=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['check','docs','status','lookup','evidence','type-assertions','verify-private','verify-current','verify-pedals','verify-pedal-profiles']);parser.add_argument('query',nargs='?');a=parser.parse_args()
     if a.command=='verify-private':
         if not a.query:parser.error('explicit private experiment root required')
         verify_private(a.query);return
     if a.command=='verify-current':
         if not a.query:parser.error('explicit current repository root required')
         verify_current(a.query);return
+    if a.command=='verify-pedal-profiles':
+        if not a.query:parser.error('explicit current repository root required')
+        verify_profiles(a.query);return
+    if a.command=='verify-pedals':
+        if not a.query:parser.error('explicit current repository root required')
+        verify_pedals(a.query);return
     if a.command=='type-assertions':type_assertions();return
     if a.command=='docs':docs();return
     m,s,t,p=check()

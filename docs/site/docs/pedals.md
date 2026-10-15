@@ -1,19 +1,27 @@
-> **Evidence context:** historical private experiment. Current main preserves source and findings; clean steering/synthetic runtime installation is not yet revalidated or enabled here.
+> **Current admission:** [Observed-context closure](pedal-closure.md) is re-frozen: unchanged body,4,199 actual-context differentials and4,199 guarded substitutions, zero fallback, all14 observed representative runs /five classes. No universal/physical/canonical-integration claim; stop.
+
+> **Evidence context:** original discovery below is historical. Fresh steering/synthetic proof is in [current baseline](current-baseline.md); separately authorized bounded pedal recovery is in [Pedal v1](pedal-v1.md). Canonical ps2run remains generated-only.
 
 ---
 title: Throttle and brake — detailed original-code discovery
 ---
 
-**Discovery only.** All pedal/control processing remains generated; existing wheel-builder pedal writes are preserved legacy behavior, not new pedal recovery. No physical or synthetic pedal adapter was added.
+**Historical discovery narrative.** Canonical pedal/control processing remains generated. A new bounded validation-only replacement is documented separately; no physical or synthetic pedal adapter was added.
 
 ## Current requested cycle
 
 [Pedal Recovery v1 prerequisite audit](pedal-recovery-v1.md) stopped before
 implementation. A separate [current-main baseline](current-baseline.md) task has
 since restored tools, fresh regressions, a native v3 race fixture and bounded
-steering/synthetic live proof. It did **not** resume pedals: no clean pedal
-differential, installation or live replacement result is claimed. The historical
-discovery below remains unchanged.
+steering/synthetic live proof. It did not itself resume pedals. A subsequent
+explicit request produced [Pedal v1](pedal-v1.md), with exact join/wrapper/consumer
+and bounded v3 live proof in an isolated default-OFF host. The discovery below
+retains its historical context; it is not the new validation report.
+
+The subsequent [descriptor/profile reachability survey](pedal-profiles.md)
+**stopped at an unsupported command-buffer context**, without changing Frozen.
+Four paired cases passed; remaining clean pairs/full native regressions were not
+continued. Original-only configuration observations are not broader equivalence.
 
 ## Original producers
 
@@ -27,7 +35,7 @@ For ordinary fixture values, `pressure = min((255-raw-threshold)*2,256)`; nonpos
 
 `001E4D38` builds a command, preserves the original optional virtual command hook, and calls `001E4CB0`. That wrapper calls **`001E4478(car,command,car+1304)`**, then copies processed accelerator **car+13AC → car+1428**, and calls `001EAC60` with processed brake **car+13B0**.
 
-The prospective accelerator/brake boundary is **`001E48FC–001E4BA7`**, resuming original **`001E4BA8`**. It is not installed. Original steering, handbrake, shift dispatch, coupling helper and epilogue remain outside it.
+The accelerator/brake boundary is **`001E48FC–001E4BA7`**, resuming original **`001E4BA8`**. It is now recovered only in the separately documented validation host, not installed into canonical ps2run. Original steering, handbrake, shift dispatch, coupling helper and epilogue remain outside it.
 
 Accelerator processing is not a simple `command+8 /4096`: policy-dependent arbitration includes auxiliary command `+12`, analog flags 2/8, prior state, and control-state bytes. It mutates car+13AC and control-state bytes at car+1304/+1306. Digital rise/fall constants are at **002D4930/34**. Analog nonzero pressure applies `x + k*(1-x)` with **k at 00352990**; exactly zero remains special. Mode 4 applies signed response descriptor **0049D060** through `001D92E0`. Descriptor mode 0/default is identity; 1 is shifted quadratic, 2 is shifted square-root; optional derivative behavior and EE edge cases must be audited before any clean recovery. Real live descriptor contents/calibration are not inferred from zero-initialized fixture data.
 
