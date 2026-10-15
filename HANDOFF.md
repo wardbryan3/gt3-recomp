@@ -49,7 +49,61 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Handbrake Recovery v1 — Frozen bounded validation-only, stop
+## Latest: Virtual Handbrake v1 — validated bounded input, stop
+
+Separately authorized virtual input supplies finite normalized binary64[0,1] at
+original command-builder return001E4D5C, before original notification/manual
+processing. Q=nearest(value*4096), positive half ties up; invalid/out-of-range,
+NaN/infinity and invalid/disordered schedules reject rather than clamp/sort.
+Analog flag0x10 and signed halfword+14 only; three possible command-byte writes,
+restored at001E4E68 with full16-byte integrity checks. No processed car/calibration/
+pad-channel/other-command writes. Original digital/floor/history and downstream
+coupling/shift/brake/engine code are not changed. Half input means Q2048, with
+GT3's original nonzero floor, not an invented half-force mapping.
+
+New original proof covers49,170 cases at both ELF-initial and observed native
+floor bit patterns /98,340 complete final CPU+32MiB comparisons,393,360 semantic
+stage comparisons,590,040 original rear-formula assertions,49,170 actual Frozen
+substitutions; all4,097 Q12 centers, all4,096 half-tie boundaries/neighbors,8,192
+rational random values and precision/zero edges per calibration. Ten mutation-free
+unsupported contexts and seven invalid values per calibration; no tolerance change.
+
+52 native-v3 runs pass:16 generated/clean/repeat triplets plus four default controls;
+8,596 actual clean substitutions,zero fallback,25,788 injections/restorations.
+All4,097 codes reached actual native processing in a repeated sweep. Twelve
+representative contexts cover seven distinct v3 states, five UI-identified cars,
+Arcade Single Race/Time Trial/Free Run and Simulation B-1, AT/MT, native left-stick/
+D-pad/shift and existing Frozen wheel-steering compatibility. Time Trial model and
+license preset gearbox remain unclassified. Exact CPU/budget, full dumps,captures,
+steering, commands/processed/downstream/repeat and calibration-specific original
+results match. This is not all modes/cars/concurrent owners/browser/physical proof.
+
+Initial exact-parity live trio stopped on a wrong reference-table calibration
+assumption: ELF floor3DCCCCCD versus initialized native3DCCCCCC. Both are now tested
+independently; no runtime/processor calibration was changed. A combined oracle
+tool-group timeout left partial, unaccepted results; full unchanged repeat passed.
+Executed reducer version is preserved; final analysis uses exact binary64 rational
+rounding to avoid floating half-step addition loss. All raw attempts remain in
+ignored `local/virtual-handbrake-v1/`; no evidence hash was rewritten to hide failure.
+
+All native/source/docs and new/inherited strict gates pass, including the full
+available native baseline regressions, a fresh23-run unchanged handbrake matrix,
+12 new public protocol/authority/reducer tests and deliberate missing/changed
+private-evidence rejection tests. Captures were reviewed privately. Authority:`decomp/gt3/virtual-handbrake.json`;
+report:`docs/site/docs/virtual-handbrake.md`. Use additive
+`just --justfile virtual-handbrake.just check`, `test`, `docs-build`, and
+`verify-virtual-handbrake "$PWD"`. All old proof-pinned sources/authorities/CMake/
+justfiles/runtime/recompiler/canonical host remain byte-identical; canonical
+installation stays false and build/runtime defaults OFF. New adapter tests are
+in that companion workflow, not silently added to earlier pinned build files.
+
+**Stop after this virtual input checkpoint.** No adjacent clean code, physical/
+network/generalized controller, clutch rename, transmission/coupling/physics/FFB,
+replay codec, canonical integration or next recovery. The source overlay is over
+e5a99ac; generated archives are identity-verified reused baseline inputs, not a new
+whole-game retranslation. No new commit/push has been requested for this task.
+
+## Prior: Handbrake Recovery v1 — Frozen bounded validation-only, stop
 
 Separately authorized clean recovery substitutes only001E4BB8–001E4C5F,
 resume001E4C60, inside001E4478. New partial views identify command flags/+14
@@ -92,7 +146,8 @@ all-mode/car/long-session/browser or physical proof is claimed. No synthetic or
 physical handbrake input, transmission recovery, clutch rename, wheel-brake/physics
 expansion, FFB, canonical integration or next subsystem. Source/build context is
 the evaluated overlay over the pinned commit, not a new full game recompile or
-publication commit. No commit/push was requested.
+publication commit. The user subsequently authorized source-only commit/push as
+e5a99ac; publication does not change that evaluated context.
 
 ## Prior: Synthetic / Virtual Pedal Controller v1 — bounded, stop
 

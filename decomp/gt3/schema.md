@@ -188,6 +188,40 @@ CPU/dump/capture/steering/repeat equivalence and original shift-interface decisi
 then invokes unchanged inherited strict suites. Missing/changed evidence fails.
 No raw analysis, game material or new input adapter is published.
 
+## virtual-handbrake.json
+
+Separate `synthetic-virtual-handbrake-v1` input-experiment authority, linked from
+manifest `virtual_handbrake`, not a new recovered-function entry or mutation of
+`handbrake.json`. Status `validated-bounded` requires every named gate passing;
+canonical installation, build/runtime defaults, processed-car writes, physical
+proof and Frozen modification stay false. `sources` pins new code/tools;
+`protected` includes the exact unchanged Frozen authority/source/runtime/recompiler
+and prior build/check files. Public checks never read private game artifacts.
+
+The virtual binary64 [0,1] protocol uses nearest Q12 / positive half ties up and
+rejects invalid/out-of-range input before quantization. Its only possible guest
+writes are command bytes0/14/15 at001E4D5C, restored at001E4E68. Mode, other action
+bytes, calibration and processed car state are not adapter-owned. Original analog
+floor/history/coupling/brake/shift-interface behavior stays original/Frozen.
+
+Strict `just --justfile virtual-handbrake.just verify-virtual-handbrake EXPLICIT_ROOT`
+verifies every private file/tree member, both observed calibration oracle tables,
+49,170 actual Frozen oracle cases /98,340 full final CPU+32MiB comparisons,
+52 native runs /8,596 clean substitutions /all4,097 live Q12 codes, seven distinct
+v3 fixture identities,12 representative car/mode/AT/MT/control contexts, repeats,
+command restoration, independent schedules and original downstream observations.
+It then invokes unchanged inherited strict proof. Missing/changed evidence fails.
+
+Retained failed calibration assumptions, incomplete tool-budget attempts and the
+executed observation reducer are separate immutable artifacts. Final reduction
+uses exact binary64 integer-ratio rounding; changing analysis does not masquerade
+as a changed runtime or rewrite raw observations. Original ELF initial floor and
+initialized native floor differ by one bit; neither is blindly substituted for
+the other. Old Frozen lifecycle/coverage records retain their evaluated context.
+New source is compiled/tested through the additive workflow, not by altering the
+older proof-pinned CMake/justfiles. Generated registry page and knowledge JSON are
+metadata only, never raw game code/data/captures. Stop at virtual handbrake input.
+
 ## Generated views
 
 `just docs-generate` regenerates status/symbol/type pages and mirrors five baseline Markdown narratives into the site, touching no original evidence. `just lookup QUERY` returns full maintained records. `just evidence ADDRESS` prints retained canonical batch pseudocode with citation, not fresh decompiler output. `just check` checks these authorities and compiles asserted layouts.

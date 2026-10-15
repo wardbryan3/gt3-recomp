@@ -56,6 +56,14 @@ Canonical ps2run and earlier Frozen systems remain unchanged. Additive tasks use
 `just --justfile handbrake.just check` and `verify-handbrake EXPLICIT_REPOSITORY_ROOT`;
 the earlier proof-pinned root justfile is preserved byte-for-byte.
 
+[Virtual Handbrake v1](docs/site/docs/virtual-handbrake.md) supplies finite normalized
+[0,1] input to the existing analog command boundary, not directly to car state.
+It preserves the Frozen processor and original downstream behavior, rejects
+out-of-range values, and has separate multi-car/mode/AT/MT native evidence.
+Its additive tasks use `just --justfile virtual-handbrake.just check`, `test`,
+`docs-build` and `verify-virtual-handbrake EXPLICIT_ROOT`; earlier proof-pinned
+build/check files remain unchanged. Both build/runtime gates default OFF.
+
 [Legacy source ledger](experiments/legacy/README.md) preserves unique old source
 variants as restoration patches, not copied active runtime repositories. Raw
 exports and game artifacts remain private; public docs build without them.

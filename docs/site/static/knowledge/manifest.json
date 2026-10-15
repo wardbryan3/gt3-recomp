@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "current_validation_registry": "decomp/gt3/current-validation.json",
+  "virtual_handbrake": {"id": "synthetic-virtual-handbrake-v1", "registry": "virtual-handbrake.json", "scope": "validation-only"},
   "profile": "gt3-usa-v110",
   "original_elf_sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
   "lifecycle_order": [
