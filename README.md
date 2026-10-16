@@ -64,6 +64,14 @@ Its additive tasks use `just --justfile virtual-handbrake.just check`, `test`,
 `docs-build` and `verify-virtual-handbrake EXPLICIT_ROOT`; earlier proof-pinned
 build/check files remain unchanged. Both build/runtime gates default OFF.
 
+[MT selector recovery v1](docs/site/docs/transmission-recovery-v1.md) recovers one
+small original selection/rearm function, with its speed search and all downstream
+transmission behavior still generated. Independent exact CPU/RAM/cost tests and
+bounded native substitutions apply only to an isolated default-OFF validation
+overlay, not canonical gameplay. Additive tasks use `transmission.just`; earlier
+Frozen source/build authorities are unchanged. No clutch/Neutral/shifter API is
+added, and comprehensive transmission recovery remains gated.
+
 [Legacy source ledger](experiments/legacy/README.md) preserves unique old source
 variants as restoration patches, not copied active runtime repositories. Raw
 exports and game artifacts remain private; public docs build without them.

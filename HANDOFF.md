@@ -49,7 +49,69 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Engine-to-drivetrain power-transfer report — read-only, open gates
+## Latest: One MT selector recovered — bounded validation-only, stop
+
+Separately authorized first recovery iteration over HEAD
+`edc65a105ba682449391a2d62c513af8b9005e53` recovers whole **001E5458–001E553B**.
+[Report](docs/site/docs/transmission-recovery-v1.md), authority
+`decomp/gt3/transmission.json`, implementation `host/gt3_clean_transmission.*`.
+This is an uncommitted additive source-hash context, not a new full translation.
+Original baseline/oracle source remains82987dec7a71d76414adfff8663da5494a280938.
+No commit/push. Earlier Frozen/CMake/root recipes/canonical host/runtime/recompiler
+remain byte-identical. The historical134-record inventory is unchanged; this
+separate companion authority is not an automatic registry-count promotion.
+
+The bounded MT selection/rearm body returns accepted index or−1, updates+13BE,
+and preserves complete original CPU/scratch/stack/budget effects. Maximum byte
+is **car+20A**, not210. Reverse-to-forward speed selection **001E4E80 stays
+generated**, as do owner/policy dispatch5690, state/commit77E0/4E78, AT/policies2–6,
+coupling, engine, transmission power transfer, wheels/chassis and input delivery.
+Selection does not imply engagement;0 remains Reverse,−1 no accepted selection,
++139C coupling candidate. No clutch/Neutral/H-pattern/virtual transmission or
+calibration/timing/torque change.
+
+Fresh proof:663,959 completeCPU/exact-budget original differentials, entire car/
+padding and stack every case,649 whole32MiB comparisons plus cumulative mutation
+surface check;20 fullCPU+32MiB mutation-free fallbacks;1,008 original77E0→5690→
+clean5458→original4E78 fullCPU+32MiB/cost comparisons. Exercised costs13–4103.
+15 accepted native-v3 runs/7500 total updates:MT cycle600,MT Reverse600,AT control300
+updates, five modes each (untouched original,build-OFF,trace-only,clean,repeat).
+2,400 actual substitutions AND2,400 real-entry fullCPU+32MiB/cost shadows,zero
+fallback;two retained generated speed calls. Exact final snapshots,complete36MiB
+dumps,captures and repeated entry/exit traces. Owner0/policy1/car01FBB7BC/stack49AF30
+qualified;AT enters MT zero times. No all-car/mode/device/hardware claim.
+
+Failed link/offset/host compile/overbroad stack guard and short AT no-capture runs
+are retained, not accepted.24 native processes total:15 accepted,8 completed
+exclusions,one aborted guard attempt. Corrected guards/test fixtures reran full
+oracles before new native attempts; no comparisons/tolerance weakened. Original
+inputs/snapshots/cards,parts/settings/credits remain unchanged. Archive-preflight
+fresh builds reproduce actually executed oracle/wrapper/ON/OFF binaries exactly;
+native runs retain their original executed paths/identities.
+
+New source/tests/build/proof tasks are additive in `transmission.just`, preserving
+older proof-pinned CMake/justfiles. Run root check/test/docs-build plus
+`just --justfile transmission.just check`, `test`, and
+`verify-transmission "$PWD"`. Private plan,static bundles,builds,runs,manifests,
+rejected sources and missing/changed-evidence fault checks stay ignored under
+`local/transmission-recovery-v1/`. Strict verification re-executes oracles; it is
+not another native-matrix launch. Inherited immutable verifiers are separate and
+do not mean their earlier gameplay matrices were rerun. The raw deep-parent
+verifier now rejects three changed public docs; that failure remains retained.
+New strict verification explicitly resolves exact edc65a1 versions of HANDOFF,
+transmission.md and sidebars.js, matching immutable old pins, and separately pins
+current docs. This is version-qualified parent verification, not a silent skip,
+old-manifest/hash rewrite or runtime/evidence read substitution.
+
+The exact source-pinned bounded validation overlay is Frozen only with every
+recorded gate passing; canonical installation remains false,both gates OFF by
+default. Read the authority's final lifecycle/gates,not historical registry fields.
+Comprehensive recovery gates in the power-transfer report remain OPEN.
+**Stop after this one iteration.** Next recommendation only:separately bound
+original001E4E80's EE FP/table/loop/preemption contract if later authorized. No next
+implementation,canonical integration,physical/control expansion or commit/push.
+
+## Prior: Engine-to-drivetrain power-transfer report — read-only, open gates
 
 The consolidated [power-transfer report](docs/site/docs/transmission-power-transfer-v1.md)
 reconciles Map/Reverse/engagement evidence and traces engine effort, state-dependent

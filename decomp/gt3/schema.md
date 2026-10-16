@@ -222,6 +222,38 @@ New source is compiled/tested through the additive workflow, not by altering the
 older proof-pinned CMake/justfiles. Generated registry page and knowledge JSON are
 metadata only, never raw game code/data/captures. Stop at virtual handbrake input.
 
+## transmission.json
+
+Separate `clean-mt-selector-v1` authority for whole001E5458–001E553B; no resume
+address. It is not silently inserted into the older proof-pinned manifest/types
+or historical registry count. Its companion checker and header static assertions
+validate partial request/car layouts and source hashes. Generated001E4E80 remains
+a required dependency; original policy dispatch, state/selection commit and all
+power-transfer processing are not recovered by this record.
+
+Lifecycle `frozen` requires every named gate passing: independent original full
+CPU/ABI/cost differentials, whole original consumer-chain comparisons, actual-entry
+native shadow/substitution proof, default-OFF controls, source/regression and strict
+provenance checks. It means the exact bounded validation-only source, never
+canonical installation/all-car/physical proof. Isolated car/frame comparisons and
+649 whole32MiB checks must not become a claim of fullRAM at every exhaustive case;
+1,008 wrappers and2,400 live shadows do compare full32MiB individually. Earlier
+Frozen records/CMake/root recipes remain byte-identical.
+
+Use additive `transmission.just` for source compilation/tests and explicit
+`verify-transmission EXPLICIT_REPOSITORY_ROOT`. Public checks need no game files;
+strict verification checks all required pinned members, actual executed identities,
+byte-identical archive-preflight rebuild bindings, v3 fixtures and five-way native
+parity, and re-executes original-dependent oracles. Missing/changed evidence fails.
+Rejected offset/link/guard/capture attempts remain immutable and excluded.
+`historical_public_versions` explicitly identifies three current documentation
+versions and their preserved edc65a1 predecessors, whose hashes must match the old
+deep-parent manifest. Version-qualified parent verification changes only those
+three historical documentation reads; no runtime/evidence read or old expectation
+changes. The raw parent rejection on current docs remains retained. Public checks
+pin current docs but never read private predecessor bytes. No clutch/Neutral/
+H-pattern command, calibration/timing change or next recovery follows.
+
 ## Generated views
 
 `just docs-generate` regenerates status/symbol/type pages and mirrors five baseline Markdown narratives into the site, touching no original evidence. `just lookup QUERY` returns full maintained records. `just evidence ADDRESS` prints retained canonical batch pseudocode with citation, not fresh decompiler output. `just check` checks these authorities and compiles asserted layouts.

@@ -18,7 +18,20 @@ policy/owner and clutch-parts dataflow, rejected leads, and explicit missing
 fixtures. It remains read-only and **not recovery-ready**; the historical leads
 below are not the current model.
 
-This is a dependency map, not recovery. Retained static batch evidence is in `evidence/rea/project-init.json`; use `just evidence ADDRESS`. All routines stay generated.
+## New bounded recovery checkpoint
+
+[MT selector recovery v1](transmission-recovery-v1.md) now recovers only whole
+`001E5458–001E553B`, with independent exact differential, opt-in integration and
+bounded native proof. Its original `001E4E80` dependency, dispatcher/commit,
+AT/alternate policies and all engine/driveline/wheel processing remain generated.
+The separate source-pinned authority is `decomp/gt3/transmission.json`; canonical
+installation remains false and build/runtime gates default OFF. This does not
+close the comprehensive power-transfer report's unresolved gates.
+
+The **following historical dependency map** is not new recovery authorization.
+Retained static batch evidence is in `evidence/rea/project-init.json`; use
+`just evidence ADDRESS`. Except for the explicitly bounded validation-only MT
+entry above, these original routines stay generated.
 
 ## Shift / gearing
 
