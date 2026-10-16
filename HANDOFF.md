@@ -49,7 +49,54 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Moving-forward Reverse / neutral-like mapping — read-only, stop
+## Latest: Engagement reconnaissance — partial read-only continuation
+
+Investigation at source `bdf1cf605a826626bfc65dcf0146e0729b098c5a` remains
+**partial, not recovery-ready**. No transmission implementation, runtime/Frozen
+change, direct state/configuration writes, parts purchase/installation, money or
+save edits. The earlier Reverse and control checkpoints remain unchanged.
+
+**ESTABLISHED within the new finite ALTEZZA MT coverage:** Reverse-derived
+forward-selected coast and independently brake-derived forward state0 share the
+original admission machinery. Nonzero +139C only permits further tests: moving
+sufficiently fast in the selected direction requires effective accelerator >0.25;
+otherwise sampled RPM must exceed the calibrated threshold (2500 here). Moving
+coast admits state2 at drive-entry frame5403; the stopped brake-derived case waits
+until5418/RPM2604. Handbrake/brake veto and release cases are separately retained.
++139C remains coupling candidate, not clutch; state0 is not renamed Neutral.
+
+Per-update order is checked: input/coupling,001E6D48 admission,001E5B98 drive,
+001E7500 engine/synchronization, then001E77E0 selection. Later completion cannot
+retroactively explain earlier drive. The reducer checks admission, rate-crossing
+completion and applicable abort predicates against each observed state2/3 entry.
+These are original-only observations, not clean ABI/dynamic-cost differentials.
+
+**Static findings, not live reachability:** the original parts_drv_clutch UI path
+resolves to parts category15 and a calibration converter. This does not establish
+an independent player clutch input or identify config205 as an upgrade parameter.
+001F8A00 is qualified as an additional coupling-zero writer through the alternate
+control path. Policy3 inverse-brake fractional generation and policy6 veto/
+exact-one mechanics remain distinct from unproved player-facing configuration.
+
+Private `local/engagement-map-v1/` retains19 cumulative REA records and ten
+observer/untouched-original/observer-repeat trios:30 original-only runs,4508
+observed /13524 total updates. Full dumps, native-v3 final states, captures and
+repeat traces match exactly. The non-delivered analog-axis attempt is excluded.
+Continuation ledger:`investigation-notes-pass-1.md` in that private directory.
+Explicit partial verifier:`python3 local/engagement-map-v1/verify.py`;911 pinned
+members. Missing/changed read faults reject without changing retained evidence.
+Root check/test/docs-build, public audit and diff checks passed; no fresh inherited
+private/Frozen suite is claimed by this pass. Publication does not change the
+source/build context of those original-only runs.
+
+**UNRESOLVED:** policy2–6 producers/reachability, remaining consumer/control-owner
+qualification, synchronization-calibration/config205 producer closure and an
+independent installed-clutch comparison. No policy3/6 live fixture or upgraded-part
+differential is established. Finish those bounded dependencies before claiming
+final reconnaissance completion; no recovery, virtual Neutral/clutch/H-pattern,
+physical integration or adjacent subsystem implementation is authorized.
+
+## Prior: Moving-forward Reverse / neutral-like mapping — read-only, stop
 
 Continuation at source `6c82588` is documented in
 [Reverse / neutral-like mapping v1](docs/site/docs/transmission-reverse-v1.md).
