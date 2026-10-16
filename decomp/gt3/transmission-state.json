@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "id": "transmission-state-decisions-v1",
+  "status": "validated-bounded",
+  "source_base": "511f8575325e8d585ead26e92f56d109780d5635",
+  "original_elf_sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763",
+  "runtime": {
+    "canonical_installation": false,
+    "build_default": false,
+    "runtime_default": false,
+    "replacement": "admission-only"
+  },
+  "recovered": {
+    "admission": {
+      "boundary": [
+        "001e6d48",
+        "001e6ec7"
+      ],
+      "whole_function": true,
+      "abi_replacement": true,
+      "dependency": "original001e6ca8/001e6c28",
+      "lifecycle": "validated-bounded"
+    },
+    "synchronization": {
+      "boundary": "001e7590 decision phase + separately modelled free integration after001e755c",
+      "abi_replacement": false,
+      "status": "semantic-projection-validated"
+    },
+    "selection": {
+      "boundary": "001e77f8 decision phase",
+      "abi_replacement": false,
+      "status": "semantic-projection-validated"
+    }
+  },
+  "proof": {
+    "admission_cases": 156464,
+    "whole_ram_cases": 306,
+    "semantic_cases": 628352,
+    "mutation_free_rejections": 12,
+    "cost_min": 22,
+    "cost_max": 103,
+    "native_runs": 49,
+    "native_updates": 19278,
+    "admission_substitutions": 8262,
+    "admission_shadows": 8262,
+    "selector_substitutions": 7362,
+    "helper_substitutions": 6,
+    "fallback": 0,
+    "reproduced_objects_executables": 12
+  },
+  "remaining_gates": [
+    "Native independently reached policies2-6 and exact-one/fractional behavior",
+    "Nonzero original configuration205 and installed-clutch comparison",
+    "Whole-engine and whole-commit ABI/scheduling/cost recovery",
+    "Full initialization/reset implementation and bulk-copy/alias/indirect closure",
+    "All-car/mode/thread/long-session/device/physical hardware proof",
+    "Original engine production and full downstream forces remain generated"
+  ],
+  "sources": {
+    "host/gt3_transmission_state.cpp": "a9cd9a8643e97e22936e1aa9af640529c9f4ac229d075687d4c47be3f30b0165",
+    "host/gt3_transmission_state.hpp": "6a5f514189c43785e348bd97a3db1b3feace62d38f20f046e40142cab4beb259",
+    "host/gt3_clean_transmission_admission.cpp": "f628496d2fbfc43d954ed631418fa21917691a67a43c3702792d0afadb6e45d5",
+    "host/gt3_clean_transmission_admission.hpp": "042e6b24be7beafb7df9c7632501516a710b7e75903116081b90e9efe99d2a92",
+    "scripts/validate_gt3_transmission_state.py": "a157dd78061109e0f9909307a4968c3c6869c019c9015b4127d911a37616b83c",
+    "scripts/project/transmission_state.py": "19f417d7c7350e1743ec2d15afdd790a4a95b72dad72877a9a2e4851b1be6229",
+    "tests/gt3_transmission_state_oracle.cpp": "4f85c6c420005d168b1a619dbd81ad44ad9b17c77ea174a9017a6a2a8e66a22c",
+    "tests/gt3_transmission_state_host.inc": "7d72f6329ad6c1640eace43d210343b788232aa0d81fcf5fd28cbebfaff6c8ef",
+    "tests/gt3_transmission_state_source_test.cpp": "c9b20806bbebab87abb5e4c64d7f69cc4ad0a6c199db44c777726f3ff2e7f6d0",
+    "tests/gt3_transmission_state_test.py": "2592743ec9fd5c6a71da218470eee0accb1c25017601d8ba7d0c71fed5778025",
+    "docs/site/docs/transmission-state-v1.md": "57d684ab3abc977b66c1e0610a6b2392df3b55cece4d57880edb65df912e6cf8",
+    "transmission-state.just": "81e07b5224bc09dec30636606a1b9ebdbb8017aecdde2a9fc1242db71124320c"
+  },
+  "protected": {
+    "host/gt3_clean_transmission_speed.cpp": "6e8adbecdaae6ef86f0c1ab34a438f90b0dab8cde867ffe0bbf3eadd437ec97c",
+    "host/gt3_clean_transmission_speed.hpp": "ccbc67e31b05b0d4e2424f872e169ac3e0c3d2da5ba26b2e1c615fdec9e63033",
+    "scripts/validate_gt3_transmission_speed.py": "6a6914b49eb349b54369e323edde922bf87811993399a789f0dd4de8b9fdd8dc",
+    "scripts/project/transmission_speed.py": "ffea174bac6a20c1944a9f8c2e9c7a93b8a722152bc5f09cadf7d0fd9be72710",
+    "tests/gt3_transmission_speed_oracle.cpp": "d860243162a93bff7940e792051b9ae8fa4351cb7a52b8231582ff44bdbf7ff7",
+    "tests/gt3_transmission_speed_source_test.cpp": "5f77effa30ca596e4c360a77441636a1ff582bc6e41f9dc84847dbb07713521e",
+    "tests/gt3_transmission_speed_composition.cpp": "b7f78623e5f06f30ed9a5704a5a2e1f5056fa524d0f91f63302ba487418b4382",
+    "tests/gt3_transmission_speed_context.cpp": "c70d4d3461029bfd5036138a8f0e3a33397f030a04ebe7037887c4b2a0939414",
+    "tests/gt3_transmission_speed_frozen_driver.cpp": "012739066a2a28f238bb199f8ce81e365c145af3daf5a1d70a5f44588835438e",
+    "tests/gt3_transmission_speed_host.inc": "ed7087908f3e7bc310d8607b6cb799f0172e336c4f624dd6785b53ebde4e13b1",
+    "tests/gt3_transmission_speed_test.py": "e2bb6d2b63973dab9e79319a18ec07c632ebe92459c4886f5dd0657873bab675",
+    "docs/site/docs/transmission-speed-v1.md": "1a06a4144d62459ab2c034c103a6c83019d1b153c4b81af530c14b268e1f0b06",
+    "transmission-speed.just": "8f5fa0109b7672e9827565ec94f4b8d17c74cea6128e6c614c5b96880bbb19f5",
+    "HANDOFF.md": "2c2fd057ac9b20b3de0f0aca39116f7e5667ad78f4f6b8642d6867813a3c403e",
+    "README.md": "59d9a2190d9a1c837f14b11a37529ee9ab59767cc24dc60ff9c91c821318d202",
+    "CMakeLists.txt": "47d1e8ffd5d140d80d136c3eadd3fbe6fc0b19eec3f7e0778211abdab6d9456b",
+    "justfile": "5ea76a6186eabf33f41eba46ce668f297ee730d54b4699a604c90426d6a438d6",
+    "decomp/gt3/schema.md": "91ab9e7ed413ded99910fe228fb257822a46e957a0965740adc44918b710720e",
+    "decomp/gt3/transmission.json": "d789a12461fc8efebe0ad69fa7a29ddbd1d461860803579031a7396d564abc1b",
+    "docs/site/docs/transmission.md": "f8e0aeeb643056dfc1f8da8663bfde2211e911abd0fae608cd8b221f6e3605c3",
+    "docs/site/docs/transmission-recovery-v1.md": "d88312908b4adeb3977e21a6c5a0ca9d30553c33f4435f0558514c26476dfb77",
+    "docs/site/sidebars.js": "0ee2a34e172ee438aed7d56d5a8c9b92b0b50e760a0ec07fadbc4ccf8cd5343a",
+    "host/gt3_clean_transmission.cpp": "117ca0493916534b23bf3c96f9973e170c45249136162db17298e0d7c230998b",
+    "host/gt3_clean_transmission.hpp": "caee698648d5ec2bccf033a8e8eda464ad5dad4f2451f81e5d534c77f922ec85",
+    "scripts/build_gt3_transmission.sh": "b8d326c1c30cd736fd75b0f30764f0c8b985fbdcb80e2557c8e39c1ce3eae553",
+    "scripts/build_gt3_transmission_live.sh": "c1eda5ba89e50f5d92044714c90375c538b343b23c0cd8453a71bfbfe2bfcfab",
+    "scripts/project/transmission.py": "b54a9086ab6681a47d7de9ef88ebf27db9834db8fd94c4f495e8931389a02744",
+    "scripts/validate_gt3_transmission.py": "4d61547b07d7668d4f4dd0b016a642d0eab1d7929ae066fac33ec9a675f56ca6",
+    "tests/gt3_transmission_host.inc": "3abbb6ecca74b1601628b685fea46bda68e633d6f14037d7f25145fe5c57e875",
+    "tests/gt3_transmission_oracle.cpp": "a99c1d41e54b2bc537aba8e4d7a728d72220f009305f01f1bc9ae10be8df64d6",
+    "tests/gt3_transmission_source_test.cpp": "614b6b8b67626d86ea1e154693573794d55cd18ed26002cd8dcd31158c00f830",
+    "tests/gt3_transmission_test.py": "12cccb99bf3aa1f45f8c71ef7f4fafb65fcf0088e4129ed9e0e6985ef612748c",
+    "tests/gt3_transmission_wrapper.cpp": "0c720f4c11b8c5c36afd81692d6b24db71467b549967c8760754521c093d11ae",
+    "transmission.just": "6a216d7bc4551b6d473d6bec18958168c92a04fa55e22888e6a508ce11ce97f5",
+    "decomp/gt3/transmission-speed.json": "52e4db157cf63ba07abbed39a8b99d7ff3d07a5332701516cd699913ada510af",
+    "AGENTS.md": "69ddef38ff937deeff52cbc7ecb12f2b6fba2b4796d6be996945371fc45a02b1",
+    "docs/gt3/PUBLICATION.md": "8f276317ba99690fbf6f478a7525ca446f4457754ee115a30a92299fdd6c3da7",
+    "LICENSE": "6c0e3d033ae273f580b39b57486c532aee12ed2d1cf69a6e7279b399f40c14eb"
+  },
+  "private": {
+    "manifest": "local/transmission-state-v1/manifest-final.json",
+    "sha256": "bc3670ec3fe093622edfd7ac420e67e887cfd1e450e026ebb634ef7152c17162",
+    "members": 671
+  },
+  "evidence": {
+    "admission": "ev_04f7f4fa255cfd7b17b2382c2b8f6607b46001126f3763211ecbfebc96c025cf",
+    "engine": "ev_ba862eb7a3b5186afe285c12642ec3333b3edf31134220656870980836379388",
+    "selection": "ev_ad6ff9600494d25109501f34eb4acb29d1d1310a63ef420b3789449066d27014",
+    "reset": "ev_298b7ddf5a8c401a87d925db782ec4251ac5bbbc89c59ce20a1dd5c886cb93a6",
+    "moving_start": "ev_0b08f844316e8ee6a68867bf1f4ff7a5ec807fd6661539a06ddd633a60288bac"
+  }
+}
