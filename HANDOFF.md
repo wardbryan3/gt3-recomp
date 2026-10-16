@@ -49,7 +49,55 @@ never claim to have independently repeated an original-game differential or live
 race. Public docs include factual references/fingerprints, not raw analysis/game
 files. Existing private docs service and protected legacy builds remain unchanged.
 
-## Latest: Engagement reconnaissance — partial read-only continuation
+## Latest: Engine-to-drivetrain power-transfer report — read-only, open gates
+
+The consolidated [power-transfer report](docs/site/docs/transmission-power-transfer-v1.md)
+reconciles Map/Reverse/engagement evidence and traces engine effort, state-dependent
+transfer, rate synchronization, selection, owner/policy processing, clutch-parts
+conversion, and the downstream wheel/chassis distinction. Starting documentation
+context is `0ec5cfa`; retained engagement runs remain built at `bdf1cf6`.
+No new native runs, instrumentation, transmission implementation, input injection,
+configuration/parts/save/credits changes, or runtime/Frozen modifications.
+
+**ESTABLISHED within retained original traces:** all4508 drive stages pass exact
+pre-ratio magnitude/rear-product checks. State populations:0=2011,1=1510,2=849,
+3=138. All138 state3 stages have zero calibration-derived transfer coefficient
+`car+0x2A4` and zero engine-directed term. This is an additional interruption
+mechanism, not state0's bypass and not a universal property of state3. Ordinary
+net engine effort is nonzero NEGATIVE in all138, not138 cuts of positive acceleration.
+77 state2
+stages retain nonzero effort with zero coupling candidate. Candidate one likewise
+does not guarantee drive in forward-selected state0. Wheel forces, rate, and
+vehicle acceleration remain distinct from engine-directed contribution.
+
+**Corrections/qualification:** `001DDAD0`'s saved-register11 dispatch handles
+placement/initial conditions, not a demonstrated policy2–6 producer. The generic
+`001FC5C0` offset1048 belongs to a separate scene-owned0x4F0-stride object array,
+not an established car coupling consumer. The assembled configuration is not
+aliased to `car+16`; the rejected inventory attempt is retained and excluded.
+Policy6 reads raw command signed byte+2 and signed HALFWORD+12. Its exact-one
+synchronization path, shared with policy3, differs from ordinary completion.
+
+The clutch converter writes configuration204, while state3's coefficient derives
+from205. Zero initialization is identified; no affirmative nonzero205 producer
+was established through the inspected converter closure. No speculative204→205
+repair or upgraded-clutch effect is justified. Twelve pinned historical original
+dumps contain only owner0/effective ordinary0/1 contexts and zero+2A4; this is
+read-only inventory, not new live coverage or physical-controller proof.
+
+**UNRESOLVED and explicitly gated:** independently reached policies2–6, original
+fractional policy3 delivery, policy6/alternate-owner execution, nonzero205 source,
+a matched independently installed clutch fixture, and wider device/configuration
+absence claims. The report gives minimum original experiments; none is declared
+impossible. Comprehensive clean recovery is **not ready or authorized**.
+Private continuation/evidence index and fail-closed verification are under ignored
+`local/transmission-deep-v1/`; rejected searches/provider requests and timeout
+attempts are retained. Earlier checkpoint evidence/authorities remain unchanged.
+Root check/test/docs-build, public audit, retained private original profile and
+inherited handbrake/virtual-handbrake proof verification passed; no historical
+native matrix is claimed freshly executed. No commit/push was requested for this continuation.
+
+## Prior: Engagement reconnaissance — partial read-only continuation
 
 Investigation at source `bdf1cf605a826626bfc65dcf0146e0729b098c5a` remains
 **partial, not recovery-ready**. No transmission implementation, runtime/Frozen

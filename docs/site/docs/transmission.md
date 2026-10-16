@@ -12,6 +12,11 @@ priority list on this page are preserved as history, not current authorization.
 The later [moving-forward Reverse investigation](transmission-reverse-v1.md)
 reproduces original neutral-like free-engine behavior without identifying a new
 neutral ratio or renaming the coupling candidate.
+The consolidated [engine-to-drivetrain power-transfer report](transmission-power-transfer-v1.md)
+adds the state-3 calibration-dependent interruption, bounded transition model,
+policy/owner and clutch-parts dataflow, rejected leads, and explicit missing
+fixtures. It remains read-only and **not recovery-ready**; the historical leads
+below are not the current model.
 
 This is a dependency map, not recovery. Retained static batch evidence is in `evidence/rea/project-init.json`; use `just evidence ADDRESS`. All routines stay generated.
 
