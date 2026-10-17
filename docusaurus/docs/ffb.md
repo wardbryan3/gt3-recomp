@@ -1,3 +1,7 @@
+---
+title: Historical original output and force-feedback reconnaissance
+---
+
 :::note Historical source context
 
 This page preserves findings/instructions from the pre-restructuring context
@@ -8,11 +12,7 @@ and [execution status](development/restructuring.md) for maintained commands and
 
 :::
 
-> **Evidence context:** historical private experiment. Current main preserves source and findings; clean steering/synthetic runtime installation is not yet revalidated or enabled here.
-
----
-title: Original output and force-feedback reconnaissance
----
+> **Evidence boundary:** retained static reconnaissance, not current hardware or product validation. Neither product integrates recovered gameplay; see [current authorities](reference/current-authorities.md). The unresolved chain below is not a supported host FFB API.
 
 **Do not invent modern FFB.** Discover original intent and serialization first. This is a promising static output-side chain, not proof of hardware output or a complete force-feedback implementation.
 
@@ -28,7 +28,7 @@ flowchart LR
   PKT -. transport / hardware unverified .-> WHEEL[Physical wheel - future]
 ```
 
-## Observations
+## Recorded observations {#observations}
 
 - Containing function `001DFD90` computes a bounded quantity from vehicle/wheel state and a low-speed steering path, clamps [-1,+1], scales by 127, and writes **car+16D6** with byte encoding **128 - quantized value** modulo 256. Center is 128, +1 encodes 1, -1 encodes 255. This is not certified torque or direction on a real wheel.
 - `001E0618` passes **car+16D4** to `002107D8(input,output)` for certain control kinds/suppression states. Existing two adjacent output bytes may serve other device effects; meanings remain unknown.
@@ -42,4 +42,4 @@ Queries at `001E05BC` resolve to a larger containing function; do not treat that
 
 Static batches: `ev_9395aaa13532a19b05afec561ea998b7c03989faea05627636704787221af94e`, `ev_ff8997fb8ed6bb85972c73b96ebe4d32812ac88bd4b9d45661ec638e69456811`, `ev_3fe84107b7ecd332f7b5cebfff164bdf138b1f3aaef0a6a7bb6d6c45ce3c85f5`, `ev_165b3c82d776f439e6f9eb8ec234f9c3643f2da7bd56c21118350a38d1144a2f`, `ev_4ef76d60bb0dc49cb12cf462792b364808d21cba69e7e50d832f5cfcff2ff604`.
 
-Remaining: inspect original assembly/call signatures and actual vtable targets, trace all byte producers, configuration strength/disable policy, output timing/rate, device packet transport and host handling. Original pad vibration must not be mistaken for wheel FFB. No output fixtures, live output capture, physical wheel, packet sending, or FFB replacement was added. Hardware integration requires a separate permission cycle after original semantics are evidenced.
+Unresolved in this reconnaissance: original assembly/call signatures and actual vtable targets, all byte producers, configuration strength/disable policy, output timing/rate, device packet transport and host handling. Original pad vibration must not be mistaken for wheel FFB. No output fixtures, live output capture, physical wheel, packet sending, or FFB replacement was added. Hardware integration requires a separate permission cycle after original semantics are evidenced.

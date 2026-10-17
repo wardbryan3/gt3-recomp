@@ -14,7 +14,7 @@ inputs. The JSON definitions are in `project/gt3/authority-schema.json`.
 | `migration-map.json` | Mechanical logical-old to active-new paths; not source-version equivalence |
 | `retirements.json` | Obsolete active front doors/recipes and their exact historical preservation context |
 | `historical-context.json` | Exact baseline Git identity and explicitly pinned private source predecessors |
-| `source-manifest.json` | Current **candidate** source/dependency identity; never integration permission |
+| `source-manifest.json` (optional; absent in this checkout) | When explicitly recorded, **candidate** source/dependency identity; never integration permission |
 | `proofs.json` | Independent bounded current proof/report identities and their dependency closures |
 | `approvals.json` | Separate explicit bounded product approval, referring to required independent proof layers |
 | `progress.json` | Derived execution progress, **not** source policy, proof or approval |
@@ -48,6 +48,13 @@ source identity. Instead proof and approval each carry the exact observed depend
 closure; active approval requires matching independent proof layers and exact current
 source. Progress cannot approve anything. New candidates use exclusive creation and
 must not overwrite the previous evaluated context or silently renew old approval.
+
+A `passed-bounded` status in `proofs.json` records the evaluated report and its
+dependency closure. Reading that status or passing `just check` does **not**
+re-execute private reports or prove their artifacts are present in this checkout.
+An absent optional candidate manifest is not a missing proof silently treated as
+passed: candidate identity, recorded proof and private verification are different
+claims.
 
 `just check` validates public declared consistency. `just verify-approval` explicitly
 requires every private current report and its exact artifacts, including fresh ISO

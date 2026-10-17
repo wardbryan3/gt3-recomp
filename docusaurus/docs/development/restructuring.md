@@ -71,6 +71,11 @@ recovery**. Existing archives were not overwritten or deleted.
 
 ## Current validation, not inherited approval
 
+The results below describe the evaluated restructuring context recorded in the
+proof dependency closures. Later documentation or tooling edits do not
+retroactively requalify those builds or reports. Public documentation checks are
+not a fresh private product matrix, and empty approval records remain empty.
+
 Public source/software tests, partial type assertions, mechanical body comparisons,
 current authority/approval negatives and publication checks pass. Relocated gameplay
 bodies are byte-identical to the baseline except explicit include-path changes.
@@ -165,7 +170,8 @@ remain protected; current verification results can be regenerated with the root
 commands. Technical phase progress is reporting only, never integration approval.
 
 A validation-only clone is not another development tree. No commit/push is implied;
-the current source context must be described honestly as an uncommitted overlay.
+the evaluated source context was an uncommitted overlay, even though that source
+was subsequently committed. Describe each new evaluation by its actual source identity.
 Private attempts/manifests and machine-specific restore instructions remain ignored
 under `local/restructuring/`. No original ISO/ELF, save/card, protected executable,
 generated body or historical expectation is changed.

@@ -1,18 +1,31 @@
-:::note Historical source context
+---
+title: Historical knowledge schema and authority rules
+---
 
-This page preserves findings/instructions from the pre-restructuring context
-`aee79fba37937e4dc99dac4263589d005112c504` and its explicitly versioned predecessors.
-Paths, Frozen labels and native validation-host results below are **historical**,
-not current product integration approval. Use the [current workflow](../workflow.md)
-and [execution status](../development/restructuring.md) for maintained commands and actual gates.
+## Scope and current entry points
 
-:::
+This reference defines retained fields for the original GT3 USA v1.10 knowledge
+records. Their paths, lifecycle/runtime/live statuses, source hashes and Frozen
+labels describe the pre-restructuring context
+`aee79fba37937e4dc99dac4263589d005112c504` and explicitly versioned predecessors.
+References below to "current" or "new" source in a record mean **current at that
+record's evaluation**, not a fresh execution of today's products. Later authorities
+qualify earlier findings without rewriting them. This is not a complete schema for
+all later transmission/extension records.
 
-> **Public checkpoint context:** historical lifecycle/runtime/live fields default to the preserved private experiment; the new pedal record explicitly overrides this with its current-main validation-only context. All inventories carry `snapshot_context`; canonical current main compiles recovery source but does not install it. Fresh isolated native validation is separately recorded in `current-validation.json`. Public `check` verifies schema/source/type relationships only. `verify-private EXPLICIT_ROOT` separately and strictly verifies all retained original hashes and IDs. Raw exports are never documentation download assets.
+Historical lifecycle/runtime/live fields default to the preserved private experiment
+via `snapshot_context`; pedal validation overrides that default with its separately
+evaluated validation-only context. `current-validation.json` records a separate
+baseline evaluation, not permanent current status. Neither product installs the
+readable recoveries. See [current authorities](current-authorities.md) for current
+ownership/proof/approval and [workflow](../workflow.md) for maintained commands.
 
-# Knowledge schema v1 and authority rules
-
-These JSON files are the maintained knowledge authorities for the original GT3 USA v1.10 profile. `tools/project.py check` implements consistency/hash validation without an external schema package; `tools/check-types.sh` generates and compiles C++ size/offset assertions. The checker is intentionally not a semantic proof engine.
+`just check` validates public consistency and compiles partial-layout assertions
+through `scripts/project/project.py`; it is not a semantic proof engine. Root
+`just verify-* EXPLICIT_ROOT` commands below explicitly verify **historical**
+contexts and fail on missing/changed required private inputs. Exact old checker
+and recipe versions remain in Git; do not run retired tools/companion justfiles
+against the active tree. Raw exports are never documentation download assets.
 
 ## manifest.json
 
@@ -25,7 +38,7 @@ Each bounded implementation/identified original entry has:
 - Independent `differential {status,tests,evidence}`, `runtime {status,gate,default}`, `live {status,evidence}`. Original-only fixture is not differential-passing. Standalone helper is not installed runtime replacement.
 - `dependencies`: candidate decompiler callee addresses, explicitly not complete verified edges; empty allowed.
 - `uncertainties`, actionable `next_action`.
-- Installed `frozen` replacements additionally require inclusive `boundary [start,end]`, `gate_address`, optional `resume_address`. An interior boundary must resume at `end+1`, and frozen status requires passing differential, opt-in integration/default generated and bounded live validation.
+- Historical `frozen` replacement records additionally require inclusive `boundary [start,end]`, `gate_address`, optional `resume_address`. An interior boundary must resume at `end+1`, and frozen status requires passing differential, opt-in integration/default generated and bounded live validation in the evaluated context. The label does not authorize current installation.
 
 Lifecycle values: `unknown`, `identified`, `traced`, `recovered`, `differential-passing`, `opt-in-integrated`, `live-validated`, `frozen`. Promotion is manual and evidence-gated. The selected inventory is not an overall recovery-percentage denominator.
 
@@ -45,7 +58,7 @@ Evidence hashes are immutable expectations. A mismatch requires investigation, n
 
 ## current-validation.json
 
-Separate authority for fresh current-main baseline attempts/results. Historical
+Separate authority for the then-current baseline attempts/results. Historical
 function lifecycle and evidence hashes are not overwritten by this record. It
 pins the source commit, validation-only runtime scope, build/regression/live gates,
 native-v3 fixture status and private artifact paths/hashes. A passing gate requires
@@ -56,9 +69,9 @@ A passing fixture also requires a native `PS2STATE` v3 header at private verific
 `just verify-current EXPLICIT_REPOSITORY_ROOT` strictly verifies every listed new
 artifact and fails on missing/changed files. This is separate from historical
 `verify-private EXPLICIT_DONOR_ROOT`; neither silently skips missing proof. The
-isolated validation harness is not a canonical ps2run runtime installation. Never
+isolated validation harness was not a canonical ps2run runtime installation. Never
 promote a current live status based solely on historical evidence or a v2 header
-rewrite. Generated current-status pages and JSON mirrors derive from this file.
+rewrite. This retained record is distinct from current product proof.
 
 ## pedal-validation.json
 
@@ -84,8 +97,8 @@ new artifact and complete build/live/regression manifests, native-v3 header and
 unchanged baseline fixture/ISO/ELF identities. Missing/changed files fail; no silent
 skip or rehash. New provenance points at this registry; eleven historical artifact
 hashes/66 REA IDs still belong to the historical verifier unchanged. All raw files
-stay private. Generated pedal validation page/knowledge mirror derive from this
-new authority, and typed partial pedal layouts have generated offset assertions.
+stay private. Typed partial pedal layouts have generated offset assertions; these
+assert layout consistency, not runtime equivalence.
 
 ## pedal-profiles.json
 
@@ -134,17 +147,17 @@ canonical generated-only, semantics unchanged, five observed processing classes,
 14 cases,4,199 actual-entry comparisons and4,199 substitutions with zero fallback.
 Structural-frame admission cannot become an absolute command allowlist.
 
-Public `check` requires the exact current source hashes and the original immutable
-historical expectations. A changed current file is accepted only as an explicitly
-pinned new version whose predecessor is registered as a private artifact; no hash
-mismatch is silently ignored. `verify-pedals` additionally verifies these closure
-artifacts, including the actual original CPP/analyzer bytes. The old Frozen,
-stopped-survey and stopped-audit registries remain unchanged and recompute their
-original outcomes. `just verify-pedal-closure EXPLICIT_REPOSITORY_ROOT` verifies
-all inherited evidence and independently rechecks every retained shadow/live
+The historical checker requires the exact evaluated source hashes and original
+immutable expectations. Explicitly versioned private predecessors preserve source
+that Git did not contain; relocation must not silently ignore a hash mismatch.
+The closure verifier additionally checks the actual original CPP/analyzer bytes.
+The old Frozen, stopped-survey and stopped-audit registries remain unchanged and
+recompute their original outcomes.
+`just verify-pedal-closure EXPLICIT_REPOSITORY_ROOT` verifies all inherited evidence
+and independently rechecks every retained shadow/live
 trace, count, dump, capture, input/binary identity and semantic-prefix equality.
-Missing evidence, fallback-as-proof or source drift fails closed. Generated
-`registry/pedal-closure` and knowledge JSON expose facts, never raw game material.
+Missing evidence, fallback-as-proof or source drift fails closed. Public knowledge
+JSON exposes facts, never raw game material.
 
 The finite observed-context closure is not universal coverage, physical-device or
 canonical integration proof, and does not authorize another recovery.
@@ -152,8 +165,8 @@ canonical integration proof, and does not authorize another recovery.
 ## virtual-pedals.json
 
 Separate `synthetic-virtual-pedals-v1` experimental authority, not a recovered
-function or Frozen lifecycle change. Source checks and private verification live
-in `scripts/project/virtual_pedals.py`; the Frozen project checker is unchanged.
+function or Frozen lifecycle change. Its historical source checks and private
+verifier are evaluated separately from the unchanged Frozen checker.
 It pins new source/tool hashes, unchanged protected Frozen/runtime/recompiler
 hashes, exact virtual Q12 protocol, command-only boundary/restore fields, original
 static records and complete private build/oracle/live/regression manifests.
@@ -166,8 +179,8 @@ private artifact/member, native-v3 input and executable identities, full CPU/RAM
 capture/steering/repetition parity, independent frame schedules, command restoration
 and original downstream observations, then invokes unchanged inherited verifiers.
 Missing/changed proof fails, never silently skips. Historical failures/incomplete
-runs remain retained; no earlier authority/hash is rewritten. Generated views and
-knowledge mirror publish facts only, not raw game artifacts.
+runs remain retained; no earlier authority/hash is rewritten. Public knowledge
+metadata contains facts only, not raw game artifacts.
 
 ## handbrake.json
 
@@ -188,15 +201,14 @@ must not become digital/intermediate **live** proof; original scheduling fallbac
 is explicit. Failed builds, disproved hypotheses and fallback-only attempts remain
 private and separately retained.
 
-The root `justfile` and `provenance.json` are themselves hash-pinned by earlier
-virtual-pedal proof; neither was rehashed, exempted or modified. Additive workflow:
-`just --justfile handbrake.just check`, `docs-build` and
-`verify-handbrake EXPLICIT_REPOSITORY_ROOT`. Root `just test` additionally runs the
-new source/authority regressions through CTest. The separate verifier checks every
-private artifact/tree member, actual source/build/ELF/ISO/v3 identity, exact live
-CPU/dump/capture/steering/repeat equivalence and original shift-interface decision,
-then invokes unchanged inherited strict suites. Missing/changed evidence fails.
-No raw analysis, game material or new input adapter is published.
+The earlier root `justfile` and `provenance.json` were hash-pinned by virtual-pedal
+proof; the historical handbrake workflow did not rehash, exempt or modify them.
+Those exact workflow versions remain historical, not active build instructions.
+Use root `just verify-handbrake EXPLICIT_ROOT` for explicit historical verification:
+it checks every private artifact/tree member, actual source/build/ELF/ISO/v3
+identity, exact live CPU/dump/capture/steering/repeat equivalence and original
+shift-interface decision, then invokes inherited strict suites. Missing/changed
+evidence fails. No raw analysis, game material or new input adapter is published.
 
 ## virtual-handbrake.json
 
@@ -214,8 +226,8 @@ writes are command bytes0/14/15 at001E4D5C, restored at001E4E68. Mode, other act
 bytes, calibration and processed car state are not adapter-owned. Original analog
 floor/history/coupling/brake/shift-interface behavior stays original/Frozen.
 
-Strict `just --justfile virtual-handbrake.just verify-virtual-handbrake EXPLICIT_ROOT`
-verifies every private file/tree member, both observed calibration oracle tables,
+Root `just verify-virtual-handbrake EXPLICIT_ROOT` explicitly verifies the historical
+context: every private file/tree member, both observed calibration oracle tables,
 49,170 actual Frozen oracle cases /98,340 full final CPU+32MiB comparisons,
 52 native runs /8,596 clean substitutions /all4,097 live Q12 codes, seven distinct
 v3 fixture identities,12 representative car/mode/AT/MT/control contexts, repeats,
@@ -228,9 +240,10 @@ uses exact binary64 integer-ratio rounding; changing analysis does not masquerad
 as a changed runtime or rewrite raw observations. Original ELF initial floor and
 initialized native floor differ by one bit; neither is blindly substituted for
 the other. Old Frozen lifecycle/coverage records retain their evaluated context.
-New source is compiled/tested through the additive workflow, not by altering the
-older proof-pinned CMake/justfiles. Generated registry page and knowledge JSON are
-metadata only, never raw game code/data/captures. Stop at virtual handbrake input.
+That evaluation used a separate workflow without altering older proof-pinned
+CMake/justfiles; it is not an active compilation recipe. Public knowledge JSON is
+metadata only, never raw game code/data/captures. Its scope stops at virtual
+handbrake input.
 
 ## transmission.json
 
@@ -250,20 +263,30 @@ canonical installation/all-car/physical proof. Isolated car/frame comparisons an
 1,008 wrappers and2,400 live shadows do compare full32MiB individually. Earlier
 Frozen records/CMake/root recipes remain byte-identical.
 
-Use additive `transmission.just` for source compilation/tests and explicit
-`verify-transmission EXPLICIT_REPOSITORY_ROOT`. Public checks need no game files;
+Use root `just verify-transmission EXPLICIT_ROOT` for explicit historical
+verification, not the retired companion workflow. Public checks need no game files;
 strict verification checks all required pinned members, actual executed identities,
 byte-identical archive-preflight rebuild bindings, v3 fixtures and five-way native
 parity, and re-executes original-dependent oracles. Missing/changed evidence fails.
 Rejected offset/link/guard/capture attempts remain immutable and excluded.
-`historical_public_versions` explicitly identifies three current documentation
-versions and their preserved edc65a1 predecessors, whose hashes must match the old
+`historical_public_versions` identifies three documentation versions evaluated
+then and their preserved edc65a1 predecessors, whose hashes must match the old
 deep-parent manifest. Version-qualified parent verification changes only those
 three historical documentation reads; no runtime/evidence read or old expectation
-changes. The raw parent rejection on current docs remains retained. Public checks
-pin current docs but never read private predecessor bytes. No clutch/Neutral/
-H-pattern command, calibration/timing change or next recovery follows.
+changes. The raw parent rejection remains retained. These pins are historical,
+not instructions to freeze today's maintained prose. No clutch/Neutral/H-pattern
+command, calibration/timing change or next recovery follows.
 
 ## Generated views
 
-`just docs-generate` regenerates status/symbol/type pages and mirrors five baseline Markdown narratives into the site, touching no original evidence. `just lookup QUERY` returns full maintained records. `just evidence ADDRESS` prints retained canonical batch pseudocode with citation, not fresh decompiler output. `just check` checks these authorities and compiles asserted layouts.
+The current `just docs-generate` writes exactly four views:
+`registry/current-products.md`, `registry/status.md`, `registry/symbols.md` and
+`registry/types.md`. It also copies public authority JSON to the site's knowledge
+assets, excluding the optional source manifest. It does **not** mirror baseline
+Markdown narratives or regenerate other historical registry pages.
+
+`just lookup QUERY` queries historical manifest functions and data-symbol records.
+`just evidence ADDRESS` emits matching historical manifest records as JSON with an
+explicit historical-evidence context, **not pseudocode** or raw private exports.
+`just check` validates declared consistency and compiles asserted layouts; private
+re-execution and product approval remain separate.

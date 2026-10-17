@@ -4,7 +4,10 @@ title: Current workflow and qualified evidence
 
 Use the root `justfile` as the single public front door. Old companion justfiles and
 bespoke native builders are retired, not maintained as competing integrations.
-Exact old recipe/verifier versions remain in Git/private preservation contexts.
+Exact old recipe/verifier versions remain in Git/private preservation contexts;
+they describe their evaluated sources, not commands to revive against this tree.
+Use [methodology](methodology.md) for the evidence ladder and
+[current authorities](reference/current-authorities.md) for record semantics.
 
 ```mermaid
 flowchart TD
@@ -70,10 +73,12 @@ authority inputs invalidate approval rather than silently repinning it.
 ## Change and rollback discipline
 
 Do not bulk add/reset/stash/clean, rewrite old hashes, weaken comparisons, conceal
-failed attempts, or overwrite source from an archive. Migrate one dependency-aware
-slice and retain its original Git context, exact evaluated overlays, logs and rollback
-identity. Preserve uncommitted/unreproducible private inputs and test restore samples.
-A same-filesystem independent copy is not off-device disaster recovery.
+failed attempts, or overwrite source from an archive. Make dependency-aware changes
+within the authorized scope. Preserve the evaluated context and unique private
+inputs needed for active verification; regenerate disposable outputs rather than
+creating new archives or preservation workflows. Donor patches restore changes
+against exact historical bases, not wholesale integrations; see
+[provenance](provenance.md). Git provides source history.
 
 Any new recovery, modernization, headless API, hardware adapter, FFB or enhancement
 integration requires separate bounded authorization. Queue entries are not permission.

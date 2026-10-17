@@ -24,6 +24,13 @@ and conservative dependency invalidation live in `project/gt3/`; use
 [current product ownership](registry/current-products.md), not old counts as a
 whole-game completion percentage.
 
+The sidebar separates technical references from **Historical research and
+checkpoints**. Archived reports remain published at their existing paths, with
+results qualified by their evaluated context. Redundant summaries and obsolete
+instructions are excluded from the site after their useful material has been
+consolidated; their source files remain in Git and at mapped repository paths.
+Publication retirement does not delete evidence or change historical authorities.
+
 Bring a legal ISO. No game source, assembly/decompiler dumps, tables, generated
 translations, states/cards, captures, credentials or game-containing executables
 are distributed. See [publication policy](development/PUBLICATION.md).

@@ -8,9 +8,9 @@ and [execution status](../../../development/restructuring.md) for maintained com
 
 :::
 
-> Historical experiment record. Not current-main validation; referenced artifacts remain private and services may no longer be running.
+> Historical contribution record, not current-main validation or a publication instruction. PR status, branches, account authentication and remote/audit checks below are assertions from that cycle; none was network-reverified for this documentation cleanup. Referenced local review artifacts are not assumed to exist beside this page.
 
-# Source-only GT3 upstream contributions
+# Historical source-only GT3 upstream contributions
 
 Prepared from a **fresh network clone** of
 https://github.com/snuri00/ps2-web-recomp.git at
@@ -29,7 +29,7 @@ zero-length serialization guards. Five CTest groups pass in Release and
 ASan/UBSan. Browser/title-level validation remains pending, hence draft status.
 Only explicitly named contribution branches were pushed, never private files.
 
-## Branches
+## Branches recorded at publication {#branches}
 
 | Worktree | Branch | Draft commit | Scope |
 |---|---|---|---|
@@ -49,7 +49,7 @@ fork, https://github.com/wardbryan3/gt3-recomp.git.
 
 ## Validation
 
-Both tests first failed against current upstream without the fixes, for the
+Both tests first failed against the upstream revision tested then without the fixes, for the
 intended reasons. Both then passed with their respective fixes:
 
 - Clang 23.1.1, Release.
@@ -69,12 +69,13 @@ GCC builds were attempted but blocked by pre-existing Clang-only vector
 builtins in `vu_ops.hpp`. The same error was reproduced in unmodified upstream;
 GCC support is not claimed or changed. Browser/title-level tests were not run
 for these clean-upstream commits. No save-state format or game patch changes
-are included.
+were included in the two small-fix commits; the later combined draft separately
+added version 3 as described above and below.
 
 Builds were serial, single-job and low-priority. The live game/stream and private
 experiment's source, staging area, binaries and launchers were left alone.
 
-## Files for review
+## Historical review files (original workspace paths) {#files-for-review}
 
 - `PR-GT3.md`: combined public draft description; `gt3-bringup/docs/gt3.md`
   records scope, snapshot compatibility, reproduction and validation limits.
@@ -91,7 +92,7 @@ decompilation/assembly reports, private configuration or unreviewed logs were
 added to either branch. The publication audit concerns our additions; upstream
 history itself is retained rather than rewritten.
 
-## Publication
+## Recorded publication outcome {#publication}
 
 The user approved **Bryan Ward <wardbryan3@gmail.com>** as the public commit
 identity. Both commits were amended to use it as author and committer; patches

@@ -13,7 +13,11 @@ and [execution status](../development/restructuring.md) for maintained commands 
 :::
 
 
-> Preserved experiment narrative, not validation of current main. Commands refer to the historical runtime. Raw exports and game artifacts are private.
+> Historical technical reference: this detailed byte-to-wheel trace and its
+> constructed fixtures remain educational, not current live or hardware proof.
+> Recipes refer to retired historical tooling. See [workflow](../workflow.md) and
+> [testing](../testing.md) for maintained root commands. Raw exports and game
+> artifacts remain private.
 
 # One complete GT3 steering path: DualShock 2 left-stick X
 
@@ -272,6 +276,10 @@ than stopping at a UI percentage or an input buffer. [E10–E11]
 
 ## Executed example and regression
 
+Current fixture locator: `validation/gt3/differential/gt3_steering_trace_test.cpp`,
+from `project/gt3/migration-map.json`. The following historical path and result
+refer to their exact evaluated version, not newly executed current source proof.
+
 `tests/gt3_steering_trace_test.cpp` loads the original ELF's data and executes
 these generated EE routines directly, in order:
 
@@ -303,7 +311,8 @@ All **256 raw bytes ×60 frames =15,360 frames passed**, checking decoded
 state, fixed-point command/flags, steering/rate, and all four wheel angles.
 Float checks use 2e-6 absolute tolerance; they are not bit-exact assertions
 against IEEE reconstruction. The existing controls, anisotropic GPU, and
-hardware regressions also pass. Run `tests/run_resolution_tests.sh`.
+hardware regressions also passed. The runner for this historical result was
+`tests/run_resolution_tests.sh`, not a maintained current recipe.
 
 ## Evidence ledger and remaining boundaries
 

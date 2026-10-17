@@ -50,6 +50,12 @@ simulation/rendering remain generated. No host value is written directly to
 
 ## Source, layout and arithmetic
 
+Current locators from `project/gt3/migration-map.json` are
+`src/gt3/gameplay/controls/gt3_clean_steering.{hpp,cpp}` and
+`validation/gt3/differential/gt3_clean_steering_test.cpp`. The historical `host/`
+and `tests/` spellings below identify the evaluated versions, not active recipes.
+Relocation does not establish source-version equivalence or product installation.
+
 `host/gt3_clean_steering.{hpp,cpp}` separates readable, typed state transformations
 from a small CPU/guest-memory bridge. `Command`, `InputPartial` and `CarPartial`
 have explicit opaque padding and `offsetof`/size assertions. Guest objects are
@@ -112,7 +118,13 @@ REA evidence and the original generated EE paths in `unit_0039.cpp`,
 See also [pad trace](gt3-steering-trace.md) and [wheel trace](gt3-wheel-steering-trace.md).
 Static evidence, generated fixtures and running-game observations are distinct.
 
-## Isolated installation and reproduction
+## Historical isolated installation and reproduction {#isolated-installation-and-reproduction}
+
+The bespoke builders/launchers in this recipe are retired. Keep the recipe in
+its original context; changing paths would not make it current. Maintained
+commands are in [workflow](../workflow.md) and [testing](../testing.md): public
+`just check`, `just test`, `just docs-build`; historical baseline verification is
+`just verify-historical baseline "$PWD"`, not current product qualification.
 
 CMake `PS2_GT3_CLEAN_STEERING` defaults **OFF**. The isolated build also enables the
 independent synthetic infrastructure for its guards/probes; synthetic **injection**
@@ -203,6 +215,39 @@ its existing semantic seams. Original downstream consumer probes actually execut
 Clean-call counters independently establish substitution occurred. The earlier
 `live-first` directory predates the separate live generated-oracle repetitions;
 use **`live-final`**.
+
+## Separate initialization repetition
+
+A later historical initialization check repeated the unchanged four boundaries
+in an isolated host, independently of the experiment's `live-final` population
+above. Its evidence was **`build/project-init/live/summary.json`**, not the later
+[native-v3 baseline](../current-baseline.md) evidence tree. Do not sum these
+repetitions into a new coverage claim.
+
+The unchanged suite again recorded **28,160** normalizations, **16,384** wheel
+builders, **16,000** filters and **20,000** envelope/full-original-tail cases.
+Relevant bytes, return PC/SP, callee-saved state and dynamic budget matched.
+The live repetition recorded **3,400 clean mode-4 updates / 13,600 original
+consumers**, maximum reconstruction error **5.96046448e-8**, tolerance **2e-6**.
+Seven values, `+.5 → 0 → -.5`, two accelerated race continuations and a clean pad
+path were repeated independently against the preserved original executable.
+Per-frame semantic traces, captures, final car and complete EE/IOP/SPU dumps
+matched; gates-off and trace-only remained byte-identical to baseline.
+
+The fresh isolated foundation clean executable's SHA-256 was
+**`f42be9562a0201e5d7c1618e05ca0c500bed3a80cd654ef8c2329763be3234c3`**,
+matching the frozen clean executable. Original and synthetic executables were not
+rebuilt in place. This used native offscreen WebGPU readback, one race snapshot
+and bounded continuations—not new desktop/audio, physical-device, all-car/mode
+or physical-PS2 proof. “Accelerated” denotes ordinary native race continuation,
+not a faster-than-real-time stepping API.
+
+Initialization retained the same guards: build **and** runtime opt-in, independent
+synthetic injection opt-in, unsupported vtable/adjustment/RAM/classification fallback
+and gates on copied bodies rather than protected generated outputs. Partial views
+retain explicit padding, `memcpy`, offset assertions, EE bit-pattern arithmetic,
+wrapping and exact dynamic cost. Neither this repetition nor subsequent bounded
+source proof authorizes current product integration.
 
 ## Preservation, limits and stopping point
 

@@ -8,9 +8,9 @@ and [execution status](../../../development/restructuring.md) for maintained com
 
 :::
 
-> Historical experiment record. Not current-main validation; referenced artifacts remain private and services may no longer be running.
+> Historical experiment record, not current-main validation. Measurements, environment and scripts below belong to the evaluated private build. “Current,” “retain” and suggested next experiments are cycle-specific, not maintained operating instructions or new authorization. No current service state is asserted.
 
-# GT3: full-size virtual presentation and audio validation
+# Historical GT3 full-size virtual presentation and audio validation
 
 ## Verdict
 
@@ -21,6 +21,26 @@ frame requests/sec with an actual SDL PulseAudio/PipeWire clocked stream.
 However, presentation feedback still shows occasional 33.33 ms gaps. **Strict,
 continuously smooth 60 FPS is not established. Physical-monitor presentation
 and audible output are unverified.** No default launcher was replaced.
+
+### Separate offscreen controls evidence
+
+The later controls-initialization validation used **1280×240 native offscreen
+WebGPU readback**, not this full-size virtual window. Its generated/clean
+visual and state equality checks are a different proof class: they do not
+establish desktop dimensions, a new headless simulator interface, real-time
+performance or audio correctness. Earlier synthetic native-window runs also
+remain separate evidence. Neither the offscreen comparison nor this
+**5760×1080** virtual-compositor report certifies three physical monitors,
+physical scanout, audible hardware output or simulator acceptance.
+
+Physical acceptance would require a separately authorized measurement cycle
+that identifies the workload, warmup and duration; distinguishes frame requests,
+submits and actual presentation/scanout; measures cadence and tail latency,
+audio underruns and audible output; and establishes actual drawable dimensions
+and triple-screen topology. This report is not permission to alter renderer,
+desktop, audio or streaming settings to obtain those measurements.
+
+### Recorded presentation experiment scope
 
 All changes/artifacts are under `presentation/`, a copy of the prior
 `performance/repo`. Original resolution/performance executables, launchers and
@@ -159,9 +179,18 @@ reported as a proven game-rendering regression. Final timing repeat runs use
 the corrected fence. VU still uses a detached worker and process `_Exit`;
 proper joinable worker teardown is **not** established.
 
-## Reproduction and retention
+## Historical reproduction and retention {#reproduction-and-retention}
+
+These are the original private-harness recipes, not maintained root commands.
+The referenced scene files, scripts and services are not installed by this page;
+paths such as “retained here” refer to the former experiment workspace, not this
+public documentation directory. Use the [current workflow](../../../workflow.md)
+and root `justfile` for maintained build/test commands. Reproducing any isolated
+compositor/audio setup requires separately scoped permission; old service
+approval does not carry forward.
 
 ```bash
+# HISTORICAL ONLY: original private experiment recipe.
 cd $GT3_LEGACY_ROOT
 presentation/build.sh
 presentation/start-session.sh
@@ -176,8 +205,8 @@ TMPDIR="$PWD/presentation/tmp" presentation/repo/tests/run_resolution_tests.sh \
 presentation/stop-session.sh
 ```
 
-Capture checks expect the saved `presentation/captures/window.state`, already
-retained here. To repeat the same save operation without overwriting it:
+Capture checks expected the saved `presentation/captures/window.state`, retained
+in that private workspace. The original alternative save recipe used a new path:
 
 ```bash
 presentation/start-session.sh
@@ -198,11 +227,11 @@ create new save paths rather than overwrite existing user saves. `start-session.
 validates and terminates only the owned process groups. Start/stop commands were
 smoke-tested after the measurements.
 
-**Retain:** isolated session scripts, instrumentation, corrected test fence and
+The checkpoint's retention recommendation was: isolated session scripts, instrumentation, corrected test fence and
 regression evidence. **FIFO: retain as an opt-in experiment only**, not a default
 recommendation yet. Mailbox average throughput is not smooth-presentation proof;
 FIFO's remaining gaps, queue-low observations and latency need investigation.
-Next useful experiment: reconcile audio-clock/quantum pacing with presentation
+The proposed next experiment was to reconcile audio-clock/quantum pacing with presentation
 backpressure and reduce buffered latency, changing one thing at a time.
 Physical scanout/real audio tests require an explicitly approved environment;
 do not alter the current desktop or streaming configuration to obtain them.

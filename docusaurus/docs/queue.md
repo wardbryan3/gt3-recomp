@@ -1,3 +1,7 @@
+---
+title: Historical queue and bounded-cycle proposals
+---
+
 :::note Historical source context
 
 This page preserves findings/instructions from the pre-restructuring context
@@ -8,13 +12,21 @@ and [execution status](development/restructuring.md) for maintained commands and
 
 :::
 
-> **Evidence context:** the proposal below is historical. Current native baseline and bounded validation-only pedal recovery now have separate authorities. Queue entries remain proposals, never permission.
+> **Historical proposal, not work authorization.** This accumulated queue records earlier priorities and separately scoped outcomes. “Latest,” “next,” “current,” Frozen labels and imperative instructions below belong to those cycles; they are not today's status, blockers or permission to execute.
 
----
-title: Prioritized queue and precise next-cycle proposal
----
+Use [current authorities](reference/current-authorities.md),
+[continuation](development/continuation.md) and the root `justfile` for maintained
+status and commands. The present products do not integrate recovered gameplay.
+Old `decomp/` paths and validation-host installation instructions identify their
+evaluated historical contexts, not active product features. Later pedal,
+handbrake and transmission findings do not reopen this proposal or authorize
+adjacent work.
 
-**Stop now.** This queue is a proposal, not authorization to execute it automatically.
+## Recorded priority graph
+
+The graph is the original proposed dependency order, not an approved current plan.
+Its “immutable evidence” wording is historical, not a requirement to create new
+preservation machinery.
 
 ```mermaid
 flowchart TD
@@ -33,7 +45,7 @@ flowchart TD
   K --> L[Checkpoint 2 implementation - separately authorized]
 ```
 
-## Latest: virtual throttle/brake input proven — stop
+## Historical virtual throttle/brake outcome — stop {#latest-virtual-throttlebrake-input-proven--stop}
 
 The separately authorized [virtual pedal experiment](virtual-pedals.md) proves
 constant/scheduled normalized commands through the unchanged GT3 pedal and original
@@ -66,7 +78,7 @@ obligations are not authorization to execute another cycle or any adjacent work.
 
 ## Earlier descriptor/profile characterization outcome
 
-The separately authorized [finite survey](pedal-profiles.md) **stopped** on
+The separately authorized finite survey, whose [matrix is retained with closure](pedal-closure.md), **stopped** on
 Time Trial: 299 original entries / 0 replacements / 299 protective fallbacks,
 command0049AF40 rather than the previously audited0049AF50 context. Four earlier
 pairs passed1,200 substitutions; remaining pairs and full native regressions were
@@ -113,7 +125,10 @@ work follows automatically.
 
 **Stop gate:** bounded evidence+tests+guarded live validation documented, manifests updated, handoff written; or stop earlier with explicit unknowns if contract/ABI proof is incomplete. No automatic next subsystem.
 
-## Following discovery cycles
+## Historical suggestions for following discovery cycles {#following-discovery-cycles}
+
+These were suggestions at that checkpoint, not a current work queue. Subsequent
+bounded results and permissions must be read from their separate authorities.
 
 - Transmission first: command shift → control-state → ratio/state/coupling, automatic/manual/neutral/reverse intent, then handbrake interactions.
 - Output-side original FFB trace runs independently of input math; verify virtual targets and packet transport before host mapping.

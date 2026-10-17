@@ -13,9 +13,17 @@ and [execution status](development/restructuring.md) for maintained commands and
 **Frozen, validation-only; not installed in canonical `ps2run`.** This is the
 separate recovery of USA v1.10 **001E4E80–001E4F0F**, followed by comparison of it
 and the already-Frozen MT selector **001E5458** together against original generated
-code. The existing selector source, authority, tests, tooling, documentation pins,
-root recipes and runtime files are **unchanged**. This companion authority is
+code. At that evaluated checkpoint, the existing selector source, authority, tests,
+tooling, documentation pins, root recipes and runtime files were **unchanged**.
+The historical companion authority is
 `decomp/gt3/transmission-speed.json`; it does not enlarge the historical inventory.
+The maintained `gt3_clean_transmission_speed.{hpp,cpp}` sources are now in
+`src/gt3/gameplay/transmission/`, with no current product installation implied.
+See [architecture](architecture.md) for present ownership, the
+[conceptual map](transmission-map-v1.md) for the wider chain, and
+[MT selector recovery](transmission-recovery-v1.md) for the earlier independent
+contract. Later [state recovery](transmission-state-v1.md) is a separate admission
+and decision-model boundary, not comprehensive gearbox recovery.
 
 ## In plain language
 
@@ -41,7 +49,7 @@ Original caller / policy routing
   │                └─ new clean search [independent runtime gate]
   └─ other original callers of001E4E80
 
-original001E77E0 orchestration → original001E4E78 index/state commit
+original001E77E0 orchestration/state decision → original001E4E78 ratio-only commit
 engine / driveline / wheel / contact work remains original
 ```
 
@@ -270,29 +278,23 @@ evidence as a new live run. Missing/changed required bytes fail; read-fault test
 do not mutate actual artifacts. Raw generated bodies, overlays, linked binaries,
 images, snapshots, dumps and REA evidence remain private.
 
-## Reproduce public and explicit private checks
+## Current checks and historical reproduction {#reproduce-public-and-explicit-private-checks}
 
 ```sh
 just check
 just test
 just docs-build
-just --justfile transmission-speed.just check
-just --justfile transmission-speed.just test
-just --justfile transmission-speed.just verify-speed /explicit/current/repository/root
+just verify-transmission-speed "$PWD" # explicit retained historical proof
 ```
 
-Fresh private builds require explicit original baseline and **new output paths**:
-
-```sh
-python3 scripts/validate_gt3_transmission_speed.py build BASELINE NEW_ISOLATED
-# Rechecks/replays the independent oracle before constructing any entry overlay:
-python3 scripts/validate_gt3_transmission_speed.py integrate BASELINE NEW_ISOLATED NEW_OFF
-python3 scripts/validate_gt3_transmission_speed.py integrate BASELINE NEW_ISOLATED NEW_ON --enable-clean
-```
-
-Public checks need no proprietary artifact. The separate authority is intentionally
-not inserted into the old pinned navigation/HANDOFF/source inventory. Follow this
-page and `decomp/gt3/transmission-speed.json` for this additive checkpoint.
+Public checks need no proprietary artifact. The private command requires retained
+inputs and checks the exact historical context; it is not current product acceptance
+or a gameplay relaunch. The former `transmission-speed.just` and
+`scripts/validate_gt3_transmission_speed.py` build/integrate workflow are retired.
+Their exact evaluated versions remain in historical Git/private contexts, with the
+original baseline, independent oracle and separate fresh OFF/ON outputs identified
+by that proof. Historical documentation/source pins are not repointed here.
+Use [workflow](workflow.md) and [testing](testing.md) for maintained guidance.
 
 ## Stop and remaining gates
 

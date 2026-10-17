@@ -28,7 +28,17 @@ to read current source as its predecessor. CI fetches full history explicitly.
 `just test` runs them and preserved historical reducer/authority negatives. Neither
 is live-game proof. `just status` distinguishes current integration from historical
 findings. `just lookup ADDRESS` / `just evidence ADDRESS` expose public knowledge,
-not raw assembly or dumps.
+not raw assembly or dumps. `just evidence ADDRESS` emits historical manifest
+records as JSON, not decompiler pseudocode.
+
+### Optional private analysis tooling
+
+REA is an optional private analysis tool, **not a public build/test dependency**.
+The tracked `scripts/project/rea-local.sh` launcher expects a separately installed,
+licensed REA/Ghidra/JDK stack under ignored `local/rea/`; a fresh public clone does
+not supply it. Review the launcher's prerequisites before use. Agent configuration,
+credentials, analysis databases and sessions stay private. None is needed for the
+public commands above or fresh ISO generation below.
 
 ## Fresh original generation and both products
 
@@ -64,6 +74,32 @@ Native defaults are original-equivalent. Readable GT3 libraries are compile/fixt
 checked but not installed. `ps2run` rejects GT3 enhancement options. The inherited
 native-only presentation path is not a newly qualified triple-screen simulator
 configuration; that milestone still requires separate approval and hardware proof.
+
+## Native runtime and build options
+
+Keep comparison settings explicit; these are existing host/build controls, not new
+simulator qualification:
+
+- Upstream parallel execution is the default; `PS2_ONE_THREAD=1` selects the
+  single-thread path for comparison.
+- `PS2_PRESENT_MODE=fifo` requests FIFO surface presentation. Leave it unset for
+  upstream selection. Measure cadence and input latency: FIFO may improve pacing
+  but add buffering, and is not a smooth-frame-rate guarantee.
+- CMake `-DPS2_NATIVE_SSE41=ON` requires SSE4.1 on native x86-64 graphics preparation.
+  There is **no runtime CPU dispatch**. Default OFF is the portable setting and
+  must remain OFF for ARM/browser builds; do not enable it on unsupported CPUs.
+- `--render-scale` / `--render-scale-y` increase internal sampling, not desktop
+  resolution. High sampling has a large GPU memory cost; adapter buffer-limit
+  checks reject oversized configurations. Inspect backend diagnostics: failed GPU
+  initialization can fall back to software rendering.
+- `--output-size WxH` requests a drawable size, but the window system/compositor
+  can constrain it. Check the actual drawable and active backend rather than
+  assuming the requested size or GPU sampling was granted.
+
+Native Linux evidence does not qualify GT3 browser execution. The inherited
+browser infrastructure remains, but browser regressions and presentation/UI
+integration require their own validation; do not publish generated WebAssembly,
+game data or an ISO through a web server. See [testing limits](testing.md).
 
 ## Inputs and evidence
 

@@ -18,6 +18,23 @@ current product integration or authorize further work.
 
 # Historical checkpoint status and evidence boundaries
 
+## How to read this history
+
+Each section retains its own result, population and source/fixture context;
+counts from different cycles must not be added together or substituted for one
+another. In particular, the earlier 20,480 control cases, later 25,600
+normalization cases, old race snapshot and normal-boot native-v3 fixture are
+separate evidence populations. A stopped attempt remains stopped even when a
+later authorized cycle resolves its blocker.
+
+Inline `decomp/`, `host/`, `tests/` paths and verifier invocations below describe
+their historical cycles. For maintained operation use the root `justfile`:
+`just status`, `just check`, `just test` and `just docs-build`. Explicit historical
+verification is `just verify-historical PROFILE EXPLICIT_ROOT`; see the
+[current workflow](../workflow.md) for profile and private-input boundaries.
+No result here installs recovered gameplay into either current product or
+certifies a physical device, headless API or new work authorization.
+
 ## Historical virtual throttle/brake checkpoint {#latest-bounded-virtual-throttlebrake-experiment}
 
 [Synthetic / Virtual Pedal v1](../virtual-pedals.md) is a separate opt-in
@@ -56,7 +73,7 @@ Authority: `decomp/gt3/pedal-admission-49af40.json`;
 
 ## Prior descriptor/profile characterization: stopped
 
-See [the report](../pedal-profiles.md) and
+See [the survey matrix retained with closure](../pedal-closure.md) and
 `decomp/gt3/pedal-profiles.json`: 4,199 original entries, one descriptor family,
 five processing configurations. Four paired cases pass 1,200 substitutions;
 Time Trial then records 0 replacements / 299 protective fallbacks with command
@@ -81,7 +98,7 @@ stays generated-only and byte-identical. No physical-pedal API or adjacent recov
 
 ## Selective-decompilation source checkpoint
 
-Current main preserves the later controls/mapping, clean steering and synthetic
+At that checkpoint, main preserved the later controls/mapping, clean steering and synthetic
 adapter source, partial layouts, original-dependent fixture source, inventories,
 curated site and legacy restoration patches. Root justfile is the workflow.
 Hardware/SIF and source consistency tests pass; documentation needs no private
@@ -89,9 +106,11 @@ artifacts. Strict optional verification checks eleven hashes and66 evidence IDs.
 
 **Clean/synthetic source is compile checked, not installed into current runtime.**
 Its exact original differentials/live results describe the preserved older build.
-Snapshot3 remains current; old v2 race states are not portable by changing a byte.
-See HANDOFF.md and experiments/legacy/README.md. No pedal/physical-wheel/FFB/AI API
-has been implemented by this checkpoint.
+Snapshot3 was the state version at that checkpoint; old v2 race states were not
+portable by changing a byte. The referenced HANDOFF.md and
+experiments/legacy/README.md were historical handoff locations, not maintained
+entry points. No pedal/physical-wheel/FFB/AI API had been implemented by this
+checkpoint.
 
 ## Historical native baseline (source base 82987de + validation-only overlay) {#current-main-native-baseline-source-base-82987de--validation-only-overlay}
 
@@ -113,7 +132,7 @@ trace-only cases also pass exact traces/captures/full-dump comparisons. These
 results use a **validation-only isolated host**, not canonical ps2run installation.
 No gameplay/control/render/state-format source changed. No physical proof added.
 
-Fresh authority: `decomp/gt3/current-validation.json`; historical lifecycle/evidence
+Authority for that cycle: `decomp/gt3/current-validation.json`; earlier lifecycle/evidence
 remains separate. See [reproduction and limitations](../current-baseline.md).
 Both strict private verifiers and `just check`, `just test`, `just docs-build` pass.
 Stop here; pedals remain unimplemented.
@@ -169,10 +188,15 @@ CI is configured for these source-only regressions. Fresh-clone native
 boot/discovery, local GPU tests, browser/GT4 regression coverage and portable build
 coverage must be established before a release. No release binaries are provided.
 
-## Known limits / follow-up
+## Limits / follow-up recorded at the earlier checkpoints {#known-limits--follow-up}
 
-- Not complete game-source recovery; selected controls/steering source only, with
-  newer-main runtime integration still requiring original-oracle/live validation.
+These limits and suggested priorities belong to the snapshots above, not a
+current subsystem inventory. See [execution status](restructuring.md) for present
+bounded proof and [current authorities](../reference/current-authorities.md) for
+source ownership and absent product integration approval.
+
+- Not complete game-source recovery; selected controls/steering source only at
+  that stage, with newer-main integration still awaiting its own validation.
 - Supported triple-profile fingerprint is specific to the tested USA revision.
 - Overlay/replay issues and full game-mode coverage remain.
 - i.Link initialization emulation does not implement network play.
@@ -181,5 +205,7 @@ coverage must be established before a release. No release binaries are provided.
 - SSE4.1 is optional, native x86-only, with no runtime dispatch.
 - Physical scanout, hardware audio timing and all-adapter performance are unproven.
 
-Priority upstream candidates remain SIF scratchpad reads and the final-thread
-idle transition, each with a focused synthetic regression.
+The recorded priority upstream candidates were SIF scratchpad reads and the
+final-thread idle transition, each with a focused synthetic regression. Their
+[contribution report](../history/legacy/contributions/README.md) retains the
+historical publication/validation context, not network-reverified PR status.

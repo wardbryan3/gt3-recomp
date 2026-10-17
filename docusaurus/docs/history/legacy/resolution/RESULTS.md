@@ -8,11 +8,11 @@ and [execution status](../../../development/restructuring.md) for maintained com
 
 :::
 
-> Historical experiment record. Not current-main validation; referenced artifacts remain private and services may no longer be running.
+> Historical experiment record, not current-main validation. Results, controls, paths and launch/rebuild recipes below describe only the evaluated private build. No current service state, installed harness or permission to run it is established. Referenced captures, saves and manifests remain private, not files beside this page.
 
-# GT3: 5760 × 1080 native rendering experiment
+# Historical GT3 5760 × 1080 native rendering experiment
 
-October 13, 2026. The resolution work is isolated at `$GT3_LEGACY_ROOT/resolution`. The previously validated build and its launcher remain preserved. No production service, desktop mode, streaming configuration, system package, ISO, or existing save was changed.
+Recorded October 13, 2026. The resolution work was isolated at `$GT3_LEGACY_ROOT/resolution`. The previously validated build and its launcher were preserved. No production service, desktop mode, streaming configuration, system package, ISO, or existing save was changed.
 
 ## Actual result
 
@@ -20,7 +20,13 @@ The native renderer produces **5760 × 1080 captures with a wider camera view**,
 
 A fresh boot progressed through proportional menus, selected a car, and reached a race. Super Speedway, Trial Mountain, and Midfield Raceway also reached racing through independent scene checks. Bumper, chase, look-behind, and an automatic replay angle were captured at the target output size. These are short scene checks, not comprehensive coverage of all cameras, tracks, effects, or a repeat of the previous 30-minute stability run.
 
-## Presentation limit
+## Presentation limit at this checkpoint {#presentation-limit}
+
+This earlier small-drawable result remains distinct from the later
+[full-size virtual-presentation experiment](../presentation/REPORT.md), which
+used a separate compositor environment. Neither report certifies physical
+scanout or audible hardware output. The historical “not yet verified” below
+belongs to this resolution checkpoint, not today's global proof status.
 
 The renderer and captures reach the target resolution. **Full-size desktop presentation is not yet verified.** A real native Wayland window requested 5760 × 1080, but the existing compositor supplied **1129 × 577**. The application presented through WebGPU and completed its window test. No display or streaming service was reconfigured to bypass that limit. A desktop session supporting the target dimensions is still needed for full-size triple-screen presentation. Monitor angles, bezel compensation, and separate per-monitor projections were not implemented.
 
@@ -71,9 +77,15 @@ The Midfield view is unusually restricted and is not representative of normal dr
 - Earlier hardware/runtime regressions against the new runtime: passed.
 - Native Wayland presentation: passed at the compositor's smaller drawable size.
 
-## Launch and rebuild
+## Historical launch and rebuild recipes {#launch-and-rebuild}
 
-From the Mac:
+The commands below are retained for experiment provenance, not current setup
+instructions. They depend on the former private host, scripts and inputs; exact
+old versions remain historical. Use the [current workflow](../../../workflow.md)
+and root `justfile` for maintained commands (including `just build-game ISO NEW_NAME`).
+No host, desktop or service operation is authorized by this record.
+
+The original Mac launch command was:
 
 ```bash
 ssh gpu-01 $GT3_LEGACY_ROOT/resolution/play-gt3-triple.sh
@@ -81,7 +93,7 @@ ssh gpu-01 $GT3_LEGACY_ROOT/resolution/play-gt3-triple.sh
 
 The launcher defaults to maximum horizontal detail. Append `--render-scale 6` or `--render-scale 3` for lower-cost detail settings; vertical scale remains 3. The output request stays 5760 × 1080. It starts with no memory card unless an experiment-only `--memcard` path is supplied.
 
-To rebuild on gpu-01:
+The original gpu-01 rebuild commands were:
 
 ```bash
 $GT3_LEGACY_ROOT/resolution/rebuild-triple.sh
@@ -90,7 +102,11 @@ $GT3_LEGACY_ROOT/resolution/repo/tests/run_resolution_tests.sh
 
 The rebuild script builds its own native translation tools, verifies and patches the extracted core, regenerates EE code and recorded VU code, and builds the native executable. It reuses the experiment's previously recorded entry points/VU programs and isolated toolchain. It does not perform a new full disc extraction or exploration pass and does not build browser/Emscripten targets.
 
-## Remaining work
+## Remaining work proposed at that checkpoint {#remaining-work}
+
+These findings and suggestions are retained, not a current work queue or
+permission to modify controls, rendering or a desktop/streaming environment.
+Later results must retain their own build and evidence context.
 
 - Move the position indicator from the far left into the center screen.
 - Correct stretched pause/confirmation lettering and validate more overlay/menu transitions.
@@ -101,7 +117,7 @@ The rebuild script builds its own native translation tools, verifies and patches
 
 The first widened countdown capture retained stale imagery; later captures after the transition cleared it. No claim is made that every rendering defect is fixed.
 
-## Saved evidence
+## Saved evidence in the original private workspace {#saved-evidence}
 
 - `super-speedway.png`, `trial-mountain.png`, `midfield.png`: actual target-size native captures.
 - `baseline-9x3.png`: original 4:3 camera within target-size output.

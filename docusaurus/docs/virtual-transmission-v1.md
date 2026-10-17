@@ -17,19 +17,29 @@ not an original clutch API, and not a clean transmission replacement. It deliber
 changes two transmission policies within a bounded original-execution profile.
 The original generated game remains the default behavioral authority.
 
-Canonical `ps2run`, root CMake/build authorities, root `ALL` behavior, original
-archives, Frozen systems, clean implementations and their expected evidence are
-unchanged. Nothing is installed into canonical `ps2run`. The new product is named
-`ps2run-extensions`, built only by an explicitly invoked additive builder.
-No generalized plugin framework, controller hardware backend or runtime source
-checkout was introduced. Build inclusion and startup activation are independent.
+At this historical checkpoint, canonical `ps2run`, root CMake/build authorities,
+root `ALL` behavior, original archives, Frozen systems, clean implementations and
+their expected evidence were unchanged. The separate experimental runner was named
+`ps2run-extensions`, built only by an explicitly invoked additive builder; it was
+not installed into canonical `ps2run`. No generalized plugin framework, controller
+hardware backend or runtime source checkout was introduced. Build inclusion and
+startup activation were independent.
 
 The earlier [architecture proposal](optional-extensions-architecture-proposal.md)
-and [stopped original-input boundary investigation](virtual-transmission-v1-boundary.md)
-remain historical records. Subsequent authorization allowed the new policies below;
-they do **not** become original-equivalent behavior by using original stores.
+and stopped original-input boundary investigation preceded this bounded extension.
+The latter's counterexamples are retained below. Subsequent authorization for this
+historical experiment allowed the new policies; using original stores does **not**
+make them original-equivalent. Neither that permission nor this proof is current
+product installation approval. [Current architecture](architecture.md) separates
+policy from PS2 binding, and neither current product links this extension.
 
 ## Separation and execution
+
+Maintained source ownership is now
+`src/gt3/gameplay/transmission/virtual/controller.{hpp,cpp}` for policy and
+`src/gt3/bindings/ps2/virtual-transmission/` for the concrete EE binding. The
+following paths and runner composition describe the **evaluated historical build**,
+not the current root build graph or a supported installation command:
 
 - `extensions/gt3/virtual_transmission/controller.{hpp,cpp}` owns typed host inputs,
   virtual Neutral, accepted H position, clutch and connection state. It has no
@@ -48,9 +58,63 @@ they do **not** become original-equivalent behavior by using original stores.
   `Controller::step`; enabling its absent feature is rejected. Its diagnostic binding
   is not claimed to be binary-identical to baseline or to contain no observer code.
 
-Root `ALL` still has the historical mixed `gt3_recovered` synthetic-input source.
-This checkpoint preserves that authority: **baseline product exclusion**, not a new
-claim that root build-all contains no historical synthetic code.
+The old mixed `gt3_recovered` root-ALL target was a property of that historical
+graph. It is not the current graph: current ownership separates recovered controls,
+transmission, input adaptations, virtual policy and binding compile checks. See
+[architecture](architecture.md) and [workflow](workflow.md). Compiling those source
+contracts or gate-OFF/ON binding checks does not enable the extension in a product.
+
+## Why original inputs cannot provide these guarantees
+
+The stopped feasibility audit (`bea85fcc9bf76f55b1c28b3997d3b438b72388cb`)
+established an **original-policy limitation at the inspected entry points**, not
+an impossibility of a deliberate extension or a whole-program absence theorem.
+Original [update order](transmission-state-v1.md) is candidate/control → admission
+→ drive → engine/synchronization → selection/ratio commit.
+
+| Original mechanism | Counterexample to unconditional clutch/Neutral guarantees |
+|---|---|
+| Candidate zero at `001E6D48` | State 1 enters 0, but states 2/3 retain state and prepare rates; no guaranteed pre-drive cancellation |
+| Candidate nonzero from state 0 | Directional-speed/accelerator or sampled-RPM tests can veto admission; release alone cannot guarantee synchronization |
+| Engine aborts | Conditional, after drive, with completion taking priority; not an unconditional disconnect |
+| Ratio-only `001E4E78` | Changes selected ratio without disengaging or starting synchronization |
+| Selection phase `001E77F8` | Accepted nonzero state becomes 2/3; accepted state 0 stays 0; no nonzero→0 disconnect |
+| Reset/moving initialization | Broad control/rate resets or setup, not a clutch API |
+
+**54 original-only synthetic probes**, each with a whole-32MiB mutation-surface
+check, comprised 18 whole admission calls, 4 engine interior semantic projections,
+16 ratio-leaf calls and 16 selection-phase projections. The engine/selection
+projections were **not whole-function ABI comparisons**. Key counterexamples:
+
+- State 2 + candidate 0 remains 2; state 3 + candidate 0 remains 3 in admission.
+- State 0, forward 1, candidate 1, speed 0, RPM 800, threshold 2500 remains 0 and
+  clears candidate even at accelerator 0, 0.25 **and 1**.
+- State 0, forward 1, candidate 1, speed 8 m/s, RPM 6000 remains 0 at accelerator
+  0 or 0.25. Accelerator **strictly above** 0.25 admits 2 on that route; RPM 2501
+  admits 2 on the low-speed route. Positive controls show the fixtures are active.
+
+The original-only executable reproduced byte-for-byte and all 54 outputs matched.
+The same audit rederived **77 retained state-2 drive stages with candidate zero
+and nonzero engine-directed effort** from the earlier 4,508-update engagement
+population described in [power transfer](transmission-power-transfer-v1.md).
+This includes engine braking, not necessarily positive acceleration. It launched
+**zero new native gameplay runs**: these are the same retained counterexamples,
+not 77 additional independent observations or feature-ON results.
+
+Overriding candidate alone therefore cannot meet the requested unconditional
+pre-drive free/release behavior. Soliciting a brake/handbrake abort adds unwanted
+braking and still cannot guarantee timing; state 3's zero transfer in observed
+zero-coefficient fixtures is not universal. Calibration or policy-byte forcing
+would not recover an original input interface either.
+
+The audit stopped with no controller or OFF/ON acceptance. Its private original-only
+proof remains `local/virtual-transmission-v1/`, separate from the later extension
+proof below. The later implementation deliberately adds pre-drive 2/3→0 cancellation
+and valid-gear 0→2 admission through guarded original continuations. Choosing an
+original state store with a new predicate is **new policy**, even without a host
+state-byte store. This resolves implementation feasibility only as an **Enhanced**
+experiment; it does not contradict the original-input limitation or approve current
+product integration.
 
 ## New policy, and what remains original
 
@@ -105,7 +169,8 @@ Feature-ON is not asserted to have the original selector's CPU output or cost.
 
 ## Activation, input contract and loss
 
-The executable must be built **with** the feature and receive
+The following CLI and lifecycle contract belongs to the historical experimental
+runner, not either current product. The executable must be built **with** the feature and receive
 `--virtual-transmission` at process startup. Default is OFF in both dimensions.
 There is no live enable/disable/rearm command. `--vt-at` changes inputs, not activation.
 
@@ -153,7 +218,7 @@ fixtures, plus a new original-only MT-cycle snapshot already in state 3. Fingerp
 are profile guards, not a claim of cryptographic anti-tamper protection. Private
 acceptance separately authenticates the originals and artifacts with SHA-256.
 
-The current player/car/configuration, owner 0, mode 0, stored policy 1, caller depth 3,
+The evaluated player/car/configuration, owner 0, mode 0, stored policy 1, caller depth 3,
 fixed observed SP/RA/GP and continuous racing update order are intentionally narrow.
 No AT, policies 2–6, alternate owners/callers/cars/configurations, initialized-from-menu
 session, arbitrary snapshot, pause/reset/mode-change, parallel-mode, windowed/device
@@ -240,56 +305,28 @@ remain ignored under `local/extensions/virtual-transmission-v1/`. Public audit c
 current-tree publication checks, not all history or a definitive provenance opinion.
 No physical hardware, full-game, all-car, whole-engine ABI or clean-composition proof.
 
-## Commands
+## Current checks and historical reproduction {#commands}
 
-Public, artifact-free:
-
-```sh
-just --justfile extensions.just check
-just --justfile extensions.just test
-```
-
-Explicit private build, using **new** output directories:
+Use the root commands, not the retired companion justfile or bespoke builder:
 
 ```sh
-python3 scripts/build_gt3_extensions.py contracts \
-  local/baseline-v3/final-build local/extensions/my-contracts
-python3 scripts/build_gt3_extensions.py build \
-  local/baseline-v3/final-build local/extensions/my-contracts \
-  local/extensions/my-build --with-virtual-transmission
+just check
+just test
+just docs-build
+just verify-extensions "$PWD" # explicit retained historical OFF/ON proof
 ```
 
-Without `--with-virtual-transmission`, the separate observer-control build rejects
-feature activation; neither command changes canonical targets. The `baseline-control`
-subcommand builds an unchanged canonical-host control for exclusion/parity testing.
+Public checks need no game artifacts. Historical verification includes the unchanged
+inherited proof and independent original oracle reexecution; it does **not** relaunch
+gameplay or approve current product integration. Missing/changed required artifacts
+fail rather than silently skipping. See [workflow](workflow.md) and [testing](testing.md)
+for current-source proof and product qualification as separate claims.
 
-Example virtual input sequence from the qualified original MT-cycle fixture
-(initial guest frame 4501; paths remain private):
-
-```sh
-mkdir -p local/extensions/my-run
-PS2_ONE_THREAD=1 SDL_AUDIODRIVER=dummy \
-LD_PRELOAD="$PWD/local/baseline-v3/final-build/fixed-clock.so" \
-GT3_BASELINE_UTC_EPOCH=1791964800 \
-local/extensions/my-build/ps2run-extensions \
-  local/legacy/resolution-repo/games/gt3-usa-v110/core.elf \
-  --disc local/game-input/gt3-usa-v1.10.iso --ntsc \
-  --load-state local/pedal-profiles-v1/altezza-mt-capture/capture.state \
-  --frames 5101 --memcard local/extensions/my-run/card.ps2 \
-  --virtual-transmission --vt-initial 1:1 \
-  --vt-at 4600:1:3 --vt-at 4620:0:3 --vt-at 4800:0:N \
-  --vt-disconnect 4900 --extensions-shadow \
-  --extensions-trace local/extensions/my-run/trace.jsonl
-```
-
-Native acceptance used the exact retained per-run commands, not this illustrative
-sequence. Full strict retained-proof verification, including unchanged inherited
-proof and original oracle reexecution (not fresh gameplay relaunch):
-
-```sh
-just --justfile extensions.just verify-extensions "$PWD"
-```
-
-Missing/changed required artifacts are failures, never silent skips. No commit, push,
-canonical installation, broader subsystem recovery or physical-controller work is
-part of this checkpoint.
+The exact `extensions.just`, `scripts/build_gt3_extensions.py` contracts/build/
+baseline-control recipes and accepted per-run commands remain in their historical
+Git/private contexts. Their `--with-virtual-transmission` inclusion gate and separate
+startup activation belong to that evaluated runner, not a current product option.
+An illustrative old schedule started at frame 4501 with `1:1`, requested `4600:1:3`,
+`4620:0:3`, `4800:0:N`, and disconnected at 4900; it was not the native acceptance
+matrix. No current installation, broader recovery or physical-controller work is
+authorized by this checkpoint.

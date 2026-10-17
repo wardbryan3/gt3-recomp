@@ -13,7 +13,11 @@ and [execution status](../development/restructuring.md) for maintained commands 
 :::
 
 
-> Preserved experiment narrative, not validation of current main. Commands refer to the historical runtime. Raw exports and game artifacts are private.
+> Historical technical reference: wheel override, policies and shared consumers
+> remain educational; synthetic fixtures do not qualify physical hardware.
+> Recipes refer to retired historical tooling. See [workflow](../workflow.md) and
+> [testing](../testing.md) for maintained root commands. Raw exports and game
+> artifacts remain private.
 
 # GT3 wheel steering: input override and shared driving consumer
 
@@ -169,7 +173,12 @@ described in the stick trace. [W2, W4]
 
 ## Reconstruction and executed verification
 
-`host/gt3_controls.hpp` now exposes the two bounded-domain arithmetic helpers
+Current locators from `project/gt3/migration-map.json` are
+`src/gt3/gameplay/controls/gt3_controls.hpp` and
+`validation/gt3/differential/gt3_steering_trace_test.cpp`. The historical paths and
+counts below describe their evaluated versions, not current product installation.
+
+At this checkpoint, `host/gt3_controls.hpp` exposed the two bounded-domain arithmetic helpers
 `wheel_steering_command` and `wheel_pedal_input`. They are standalone
 reconstructions, not guest replacements or host wheel-device integration.
 
@@ -189,8 +198,9 @@ and the 0–1023 axis range are synthetic fixtures, not measured stock-car or
 physical-wheel values. Virtual reads use the shipped vtable, not host stubs.
 The fixture does not boot the game, execute the full race wrapper or optional
 command hook, or poll a real USB device. Float tolerance is 2e-6.
-Run `tests/run_resolution_tests.sh`; the original **15,360** stick frames,
-controls, GPU, and hardware regressions also pass.
+The historical runner was `tests/run_resolution_tests.sh`; the original
+**15,360** stick frames, controls, GPU and hardware regressions also passed.
+That recipe is not a maintained current command.
 
 ## Evidence ledger and remaining boundaries
 

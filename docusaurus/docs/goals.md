@@ -25,6 +25,33 @@ Correctness comes before acceleration; transitional original PS2 execution is
 permitted. Selective recovery follows concrete milestone dependencies, not a plan
 to decompile every routine before useful play.
 
+## Acceptance boundaries and unresolved contracts
+
+Simulator acceptance requires actual device calibration and reports: wheel/pedal
+ranges, enumeration/device matching, clutch and shifter intent and original output
+transport. Software injection is useful bounded
+contract evidence, not physical calibration. Original output bytes may mix wheel
+effects with pad vibration; biased byte encoding alone does not establish torque
+units or certify FFB. Test real three-monitor scanout, pacing/latency and audible,
+underrun-free synchronized audio rather than inferring them from virtual windows
+or captures. Long-session and car/mode coverage need explicit qualification too.
+
+AI acceptance requires trustworthy telemetry units, coordinate frames, ownership,
+lifetime and atomic sampling, plus proven lap/finish/failure transitions. Candidate
+field names and UI labels are investigation seeds, not APIs; the broad vehicle
+post-update candidate `001EB218` is not a proven lap-count routine. Snapshot
+continuation does not establish a complete deterministic reset of host/runtime,
+input/audio/render state. Frame counting does not establish physics-tick boundaries,
+a resumable atomic step or faster-than-real-time correctness. Replay/reset/step
+must prove those contracts before training can rely on them.
+
+These are acceptance requirements and limits, not a duplicate recovery-status
+inventory. Consult [current products](registry/current-products.md) for integration,
+[testing](testing.md) for evidence classes, and the existing
+[telemetry](telemetry.md) and [reset/step](reset-step.md) reports for bounded findings.
+New probes, device adapters and headless interfaces require scoped authorization;
+no framework or API is implied by these milestones.
+
 ## Four classifications, not four copies
 
 | Class | Contract |

@@ -33,7 +33,9 @@ active projects. Do not develop in compatibility symlinks or copied runtime tree
 Technical restructuring and all four current proof layers pass: 178 original-default
 product runs, 13 source/original-oracle runs, a fresh public-source/ISO build and both
 normal boots inside an OS filesystem sandbox, and combined public development gates.
-The exact current reports are referenced by `project/gt3/proofs.json`.
+The reports for that evaluated restructuring context are referenced by
+`project/gt3/proofs.json`. Subsequent documentation or tooling changes do not renew
+those private proofs; public checks must not be reported as a rerun of the matrix.
 
 **Human acceptance is pending.** `approvals.json` remains empty; phase 7 is blocked
 on the owner's decision, not a remaining implementation task. Do not turn passing

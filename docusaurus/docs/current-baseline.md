@@ -31,7 +31,12 @@ Canonical `host/`, `runtime/`, `recomp/` and root CMake gameplay/build targets a
 unchanged. The previous pedal audit remains a historical stopped-cycle report.
 
 Results for this historical checkpoint were recorded separately in
-`decomp/gt3/current-validation.json` and its [generated view](registry/current-validation.md).
+`decomp/gt3/current-validation.json`, now located at
+`project/gt3/current-validation.json`; the [public authority](pathname:///knowledge/current-validation.json)
+retains the checkpoint's gate results and limitations.
+`project/gt3/migration-map.json` also locates the host, clock shim and layout probe
+at `validation/gt3/live/gt3_baseline_{host,clock,layout}.cpp`. These are current
+locators, not replacements for the exact evaluated historical source versions.
 The older per-function lifecycle/differential/live fields still describe the
 preserved private experiment. New baseline evidence does not automatically promote
 pedals or establish all-game compatibility.
@@ -87,6 +92,12 @@ VU translations are regenerated using **current-main eerecomp/vurecomp**, origin
 fingerprint-verified USA v1.10 ELF, retained discovery entry seeds and retained VU
 recordings. No old generated source or compiled game/runtime library is linked.
 This is not a claim of fresh-from-ISO discovery coverage for every scene.
+
+The following recipe is historical; its bespoke baseline builders are retired.
+Do not change old paths to suggest it runs on today's tree. Maintained public
+checks are `just check`, `just test`, `just docs-build`; root
+`just verify-historical baseline "$PWD"` (also `just verify-current "$PWD"`) verifies
+this **historical** checkpoint, not current product qualification.
 
 ```bash
 just test
@@ -177,6 +188,18 @@ object. The read-only `tests/gt3_baseline_layout.cpp` includes the authoritative
 source type and compiles exact offset/size assertions. It does not implement a
 new loader or writer.
 
+:::caution Unresolved historical padding count
+
+The prose above reports **23 differing bytes**, whereas the unchanged authority
+`project/gt3/current-validation.json` reports **22**. This discrepancy is
+**UNRESOLVED**: the available public account does not establish whether these
+refer to different attempts or a reporting error. Both original assertions are
+preserved; no count is selected or recomputed here, and no authority, hash,
+fixture or expected result is changed. Resolving it requires the pinned historical
+comparison reports, not an editorial inference from padding layout.
+
+:::
+
 The new validator's initial raw-file-equality assumption was therefore too broad.
 It now asserts that **every defined serialized byte is equal**, any raw difference
 lies exclusively in those compiled padding slots, and all complete EE/IOP/SPU dumps
@@ -199,8 +222,9 @@ original downstream consumer probes. Reconstruction tolerance remains **2e-6**.
 Clean semantic seams are bridge observations, not claims that skipped EE
 instructions executed.
 
-Actual acceptance status and artifact fingerprints are in the machine-readable
-current-validation registry. Do not infer a pass from the recipe alone.
+This historical checkpoint's acceptance status and artifact fingerprints are in
+the machine-readable current-validation registry. Its name does not make it the
+present product baseline. Do not infer a pass from the recipe alone.
 
 All applicable native tests are run unchanged: hardware/SIF, controls/mapping,
 pad/wheel steering, clean differential, synthetic adapter, original-only pedal

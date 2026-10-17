@@ -17,7 +17,7 @@ and [execution status](development/restructuring.md) for maintained commands and
 
 After the separate prerequisite baseline was committed/pushed as `46a32c7`, an
 explicit user request resumed only the bounded pedal tail. See [Pedal v1](pedal-v1.md)
-and [join audit](pedal-join-contract.md) for its new source, exact ABI/cost,
+and its consolidated join-contract explanation for the new source, exact ABI/cost,
 wrapper/consumer and native-v3 live proof. The stopped cycle below remains a
 historical report; it does not describe the present implementation status.
 

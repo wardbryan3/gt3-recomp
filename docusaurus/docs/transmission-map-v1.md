@@ -18,8 +18,9 @@ and [execution status](development/restructuring.md) for maintained commands and
 **Read-only investigation, not recovery or an input-controller implementation.**
 GT3 USA v1.10, original ELF SHA-256
 `b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763`.
-Source context: `ff31b22`. All transmission, engine, coupling and neighboring
-routines remain generated-original. No canonical runtime installation changed.
+Source context: `ff31b22`. At this investigation checkpoint, all transmission,
+engine, coupling and neighboring routines were generated-original. No canonical
+runtime installation changed.
 
 **Established** below means a bounded original-code relationship, with native
 corroboration explicitly identified where available. **Inferred** names summarize
@@ -27,10 +28,26 @@ a mechanism but are not recovered original names. **Unresolved** means the
 investigation does not establish the proposed interpretation. Static tracing,
 original-only native observations and physical hardware proof are different claims.
 
-A subsequent read-only [moving-forward Reverse / neutral-like investigation](transmission-reverse-v1.md)
-reproduces free-engine behavior through original input, including a forward-selected
-coast, and distinguishes the state-dependent role of coupling from a dedicated
-Neutral ratio/API. This report retains its original evidence and coverage below.
+## Reading the transmission reports
+
+Start here for **command → policy → accepted selection → immediate commit**.
+The reports below describe different boundaries, not successive claims that the
+whole gearbox has been replaced:
+
+| Report | Boundary and purpose |
+|---|---|
+| [Power transfer](transmission-power-transfer-v1.md) | Original mechanism, Reverse reproduction and controls, coupling, effort and calibration limits |
+| [MT selector](transmission-recovery-v1.md) | Whole `001E5458–001E553B`; its original proof retains generated speed helper `001E4E80` |
+| [Speed search](transmission-speed-v1.md) | Separate whole-helper recovery and later selector/helper composition proof |
+| [State transitions](transmission-state-v1.md) | Whole admission `001E6D48–001E6EC7` ABI recovery, but **partial engine/commit decision models**, not whole-engine/commit replacements |
+| [Virtual clutch/H-pattern](virtual-transmission-v1.md) | Deliberate extension of original transition policy, not recovered original inputs |
+
+The [original-input reproduction](transmission-power-transfer-v1.md#original-input-reproduction-and-controls)
+reaches free-engine behavior, including a forward-selected coast, without finding
+a dedicated Neutral ratio/API. This map retains its separate original evidence
+and coverage below. For current source ownership and product exclusion, use
+[architecture](architecture.md); historical validation admission is not current
+product approval.
 
 ## Main conclusions
 

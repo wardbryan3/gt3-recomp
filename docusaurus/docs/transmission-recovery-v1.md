@@ -13,10 +13,12 @@ and [execution status](development/restructuring.md) for maintained commands and
 ## Verdict and authority
 
 **One whole function, bounded validation-only recovery:** `001E5458–001E553B`,
-entry `001E5458`. The implementation is
+entry `001E5458`. The evaluated implementation was
 `host/gt3_clean_transmission.cpp`,
 with partial layout assertions in `host/gt3_clean_transmission.hpp`.
-`decomp/gt3/transmission.json` is its separate, source-pinned authority.
+`decomp/gt3/transmission.json` is its historical source-pinned authority.
+The maintained sources now live in `src/gt3/gameplay/transmission/`; see
+[current architecture](architecture.md) for ownership and product exclusion.
 
 The cycle is **Identify → Trace → Recover → Differential Validate → Opt-In
 Integrate → Live Validate → Freeze**, for this boundary only. Frozen means the
@@ -26,14 +28,20 @@ complete transmission recovery, or a physical-controller claim. Canonical
 Both new build and runtime gates default **OFF**. Unsupported contexts execute
 original generated code. There is no transmission input adapter.
 
-Starting HEAD is `edc65a105ba682449391a2d62c513af8b9005e53`; this iteration is an
+At the evaluated checkpoint, starting HEAD was
+`edc65a105ba682449391a2d62c513af8b9005e53`; the iteration was an
 **uncommitted additive source overlay**, identified by individual hashes, not a
-claim that HEAD already contains the recovery. No commit or push was made.
+claim that that HEAD already contained the recovery. No commit or push was made.
 
 The [power-transfer investigation](transmission-power-transfer-v1.md) remains the
 broader model and its comprehensive recovery gates remain open. This deliberately
 smaller selection decision neither depends on inventing those missing mechanisms
-nor closes them.
+nor closes them. Start with the [conceptual map](transmission-map-v1.md) for the
+producer/consumer chain. The later [speed-helper recovery](transmission-speed-v1.md)
+has its **own** selector/helper composition proof: it does not rewrite this
+checkpoint's generated-helper dependency or its counts. The later
+[state report](transmission-state-v1.md) separately distinguishes whole-admission
+recovery from partial engine/commit models.
 
 ## 1. Identify and trace before coding
 
@@ -274,23 +282,23 @@ Think of this function as a tiny clerk, not the gearbox:
 Calling this a clutch or a whole manual transmission would be misleading. It is
 one small decision inside a much larger original system.
 
-## 6. Reproduce, preserve, stop
+## 6. Current checks and historical reproduction {#6-reproduce-preserve-stop}
 
-Public, artifact-free companion workflow (older pinned CMake/justfiles unchanged):
+Use the root workflow for public, artifact-free checks:
 
 ```bash
 just check
 just test
 just docs-build
-just --justfile transmission.just check
-just --justfile transmission.just test
-python3 scripts/audit_public.py
+just verify-transmission "$PWD" # explicit retained historical proof, not current integration
 ```
 
-Explicit private verification:
-`just --justfile transmission.just verify-transmission EXPLICIT_REPOSITORY_ROOT`.
-Missing/changed required proof fails; it re-executes the independent isolated and
-wrapper oracles. This is distinct from launching the native matrix again.
+The private command requires the retained evidence root and fails on missing/changed
+required proof; it re-executes the independent isolated and wrapper oracles. It does
+not launch the native matrix again. The former `transmission.just` and bespoke
+builders are retired; exact evaluated versions remain in historical Git/private
+contexts. See [workflow](workflow.md) and [testing](testing.md) for maintained
+commands and the distinction between historical proof and current qualification.
 The ignored `local/transmission-recovery-v1/` retains the pre-code plan, static
 bundles, rejected attempts, complete builds, native runs, summary, manifests and
 fail-closed read-fault tests. No assembly, decompiler output, original tables,
@@ -300,11 +308,12 @@ Fresh root/additive source tests, documentation/public audit, inherited immutabl
 proof verification and new strict proof are recorded separately. Earlier native
 matrices are **not** claimed rerun merely because their verifiers passed.
 
-**Next recommendation, not implementation:** bound `001E4E80` independently if a
-second recovery is later authorized. It is the remaining generated dependency of
-this helper and needs its own EE FP/table/loop/budget/preemption contract, original
-oracles and actual-context proof. AT, owner policies2–6, clutch-parts/config205,
-engagement and wheel-force work remain separate, open scopes. Do not start them.
+**Historical next recommendation:** independently bound `001E4E80`, the generated
+dependency in this proof. The later [speed-search report](transmission-speed-v1.md)
+records that separate EE FP/table/loop/budget/preemption contract, original oracles
+and bounded actual-context proof. It is not implicit in this selector result.
+AT, owner policies2–6, clutch-parts/config205 and comprehensive engagement/wheel-force
+recovery remain separate scopes, not work authorized by this page.
 
 **Stop after this iteration.** No canonical installation, physical integration,
 new shifter/clutch/Neutral API, adjacent Frozen modification or commit/push.

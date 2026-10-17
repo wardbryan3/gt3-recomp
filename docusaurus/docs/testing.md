@@ -76,6 +76,22 @@ The clock fixture is not linked or installed into either product. A pilot report
 cannot satisfy `just verify-checkpoint REPORT`; all declared default rows/products,
 receipt identities, source closure, outputs and current verifier recipes are required.
 
+## State, renderer and platform qualification
+
+This fork uses native `PS2STATE` **version 3** snapshots. Retained upstream/private
+version-2 states are not imported by changing their headers. A snapshot captures
+runtime continuation state; a memory card is separate persistent save data, not a
+substitute for that snapshot. Use disposable cards and new local snapshot/output
+paths for tests; never overwrite a user's save or retained fixture.
+
+For renderer comparisons, record the actual backend, internal sampling, drawable
+size and presentation mode. GPU buffer limits can reject requested scales and
+initialization can fall back to software rendering. Compositor constraints can
+reduce the requested window size. FIFO presentation is a measurement option, not
+proof of smooth 60 FPS or low latency. Frame-limit exits and screenshots alone do
+not demonstrate joinable worker teardown, physical scanout or synchronized,
+audible, underrun-free audio. Native tests do not qualify the browser path.
+
 ## Still separate gates
 
 Fresh ISO discovery/build without any old workspace is a different demonstration

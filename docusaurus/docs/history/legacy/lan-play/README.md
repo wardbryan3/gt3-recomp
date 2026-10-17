@@ -8,21 +8,29 @@ and [execution status](../../../development/restructuring.md) for maintained com
 
 :::
 
-> Historical experiment record. Not current-main validation; referenced artifacts remain private and services may no longer be running.
+> Historical experiment record, not current-main validation or a service runbook. No service state, reachable endpoint or current firewall consent is established here. The old IPs, ports, connection directions and lifecycle commands below document only that private environment; do not use them to connect, restart services or change firewall rules. No services were inspected or operated during this cleanup.
 
-# GT3 LAN driving test
+# Historical GT3 LAN driving test
 
-Running on gpu-01, **0.0.0.0:8765**, in a new experiment-owned session. Open
-`http://10.6.65.10:8765/#<access-token>`; token is stored in `run/access-token`
-(mode 0600). Share the link only with trusted LAN clients. Nothing is installed
-as a system service; no active desktop/streaming/audio services were changed.
-Python dependencies are project-local. After explicit user approval, two UFW
-exceptions were added: TCP 8765 and UDP 8766, restricted to 10.6.65.0/24. Existing
-firewall/streaming allowances remain unchanged.
+## Session recorded then
 
-## MacBook
+The report described an experiment-owned session on gpu-01 bound to
+**0.0.0.0:8765**, with the private URL
+`http://10.6.65.10:8765/#<access-token>` and token file `run/access-token`
+(mode 0600). This was a trusted-LAN-only link, not a public deployment. Nothing
+was installed as a system service; no active desktop/streaming/audio services
+were changed in that experiment. Python dependencies were project-local. After
+explicit approval for that session, two UFW exceptions were added: TCP 8765 and
+UDP 8766, restricted to 10.6.65.0/24. The report stated that existing
+firewall/streaming allowances were unchanged. That approval does not carry
+forward to any new session.
 
-Chrome recommended; current Safari should also support VP8 WebRTC. Click
+## Historical MacBook client instructions {#macbook}
+
+The original client instructions and control table follow for context only;
+they are not current compatibility or endpoint guidance.
+
+Chrome was recommended; Safari VP8 WebRTC support was expected, not certified. Click
 **Connect**, **Enable sound**, and optionally **Fullscreen**. Keep the tab
 focused. **Restart race** restores the initial Super Speedway snapshot if the
 race has progressed while waiting. One active driver; a new authorized
@@ -49,7 +57,7 @@ changes camera, left shoulder looks behind, Start pauses. Plain HTTP can block
 gamepad access; keyboard works independently. No rumble. Lost focus/connection
 releases controls through a heartbeat watchdog.
 
-## What is being tested
+## What the experiment tested {#what-is-being-tested}
 
 - Parallel execution and opt-in SSE4.1 graphics preparation; FIFO presentation.
 - Original full-width **5760×1080 window / 5760×1344 internal / 9×3** rendering.
@@ -76,32 +84,36 @@ extra streaming CPU load confound direct comparison with local-monitor timing.
 
 The first stream incorrectly interpreted the actual RGBA8 swapchain as BGRA,
 swapping red/blue. The earlier compositor screenshots bypassed this streaming
-path and were unaffected. Native capture now publishes its WebGPU format in
+path and were unaffected. The corrected native capture published its WebGPU format in
 shared-memory metadata; the video track selects RGBA/BGRA accordingly. Offline
 red/green/blue/white tests pass for both byte orders and their sRGB variants.
-A live corrected frame shows blue sky/red taillights. A post-fix loopback test
+A live corrected frame showed blue sky/red taillights. A post-fix loopback test
 was interrupted by the user's reconnect; no further takeover tests were run
 while the user was driving. This fix does not change game/render algorithms.
 
 No ISO/ELF/save/code directories are served. HTTP page and signaling are intended
 only for a trusted LAN (not an internet deployment). WebRTC media/control use
-DTLS/SRTP; the HTTP bootstrap itself is not TLS. Router settings were not changed. The two approved LAN-only UFW exceptions
-are managed by `firewall.sh`; stopping the server removes them. If the page opens but video does not connect, report its error;
-WebRTC also needs direct LAN UDP connectivity. Browser keyboard input reaches
+DTLS/SRTP; the HTTP bootstrap itself is not TLS. Router settings were not changed. In that session, `firewall.sh` managed the two approved LAN-only UFW exceptions
+and was designed to remove them when stopping the server. The old troubleshooting
+note required direct LAN UDP connectivity; it is not permission to open ports now. Browser keyboard input reaches
 only the isolated game, not the host desktop.
 
-## Lifecycle
+## Historical lifecycle transcript — not current commands {#lifecycle}
 
-All files remain under `$GT3_LEGACY_ROOT`.
-Original builds/default launchers, original ISO and existing saves are untouched.
+The experiment used `$GT3_LEGACY_ROOT` and reported original builds/default
+launchers, ISO and existing saves untouched. The following old commands are
+retained solely to explain process ownership, not to assert that anything is
+running or installed. Maintained repository commands are in the
+[current workflow](../../../workflow.md), not these private harnesses.
 
 ```bash
+# HISTORICAL ONLY: commands from the former private LAN session.
 cd $GT3_LEGACY_ROOT
-# Currently running. To stop only this stream and its private display/audio:
+# Former stop command for that stream and its private display/audio:
 lan-play/stop-server.sh
-# Later restart (no rebuilding needed):
+# Former restart command (no rebuild was needed then):
 lan-play/start-server.sh
-# Rebuild isolated copy, with stream stopped:
+# Former isolated-copy rebuild command, used with the stream stopped:
 lan-play/build.sh
 ```
 
@@ -109,8 +121,9 @@ lan-play/build.sh
 owns the native child, and SIGTERM performs window drain/cleanup. Native VU
 still terminates via process exit rather than a fully joinable worker teardown.
 `stop-server.sh` validates the server PID/command/group before signaling it;
-private display/audio shutdown validates its own groups as well. Start re-adds
-the approved firewall allowances; stop removes exactly those two allowances.
+private display/audio shutdown validates its own groups as well. The old start script re-added
+that session's firewall allowances; stop removed exactly those two allowances.
+This records script behavior, not current firewall state or reusable consent.
 The project-local aioice patch reads `GT3_ICE_PORT` (set only in this server),
 leaving the loopback client and system Python packages on normal ephemeral ports. Never use
 blanket process-name kills. Logs: `logs/server.log`, `logs/game.log`,

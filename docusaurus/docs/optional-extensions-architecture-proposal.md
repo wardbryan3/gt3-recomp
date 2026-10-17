@@ -30,10 +30,16 @@ architecture inspection, not fresh binary recovery or gameplay validation.
 
 ## 1. Three categories, independent authorities
 
-| Category | Contract | Default game use |
+The categories remain useful; the default-use column describes the inspected
+historical context. For the current two-product graph and separate integration
+approval, use [architecture](architecture.md) and
+[current authorities](reference/current-authorities.md), not the proposed builder
+below.
+
+| Category | Contract | Default game use at this proposal |
 | --- | --- | --- |
 | Original generated GT3 | Behavioral authority within the supported ELF/runtime profile | Yes |
-| Clean recovery | Independently demonstrated original behavior at a specified boundary, including ABI/cost/guards where claimed | Currently validation-only; never silently substituted |
+| Clean recovery | Independently demonstrated original behavior at a specified boundary, including ABI/cost/guards where claimed | Validation-only; never silently substituted |
 | Extensions | Deliberate new inputs, policies or gameplay behavior | Absent from baseline product; explicit build inclusion AND runtime enable required |
 
 Clean recovery is not a prerequisite for an extension: an extension may bind to
@@ -44,26 +50,34 @@ Neither category claims universal original-console equivalence from native tests
 
 Virtual pedals, virtual handbrake and synthetic-wheel input are logically
 extensions/input adaptations, despite their historical locations under `host/`.
-Their existing source and proof remain untouched; new code follows the separation
-below. Directory/target names alone are not behavioral evidence.
+The proposal left their source and proof untouched and proposed the separation
+below for new code. Maintained source ownership now lives under `src/gt3/`, as
+explained in [architecture](architecture.md); directory/target names alone are not
+behavioral evidence.
 
-## 2. Existing mechanisms and gaps
+## 2. Historical mechanisms and gaps {#2-existing-mechanisms-and-gaps}
 
-- **Canonical linkage:** `CMakeLists.txt:125–156` builds `ps2game` from
- `PS2_GENERATED` and links `ps2run` to `ps2game`/`ps2runtime`, not `gt3_recovered`.
- `scripts/port.sh:110–115` explicitly builds the `ps2run` target. Standard
- `scripts/build_gt3.sh` uses this path; triple projection is a separate explicit
- option/output.
-- **Not a pristine build-all graph:** `CMakeLists.txt:74–89` unconditionally defines
- native `gt3_recovered`, mixing clean steering/pedals/handbrake with
- `gt3_synthetic_wheel.cpp`. Developer all-target/test builds can compile extension
- source even though canonical `ps2run` does not link it. Transmission recovery is
- separately built by additive validators, not automatically installed by CMake.
-- **Existing opt-in examples:** `scripts/build_gt3_virtual_{pedals,handbrake}.sh`
- create private, fresh-output validation hosts/units and compile-time gates;
- their `Options.enabled` defaults false and runtime CLI opt-ins are separate.
- Their off executables can still link adapter objects: these are useful
- validation controls, not proof of complete binary exclusion.
+This inventory is specific to `bea85fc`, **not the current root graph**. The old
+mixed library and additive scripts are no longer maintained build instructions;
+exact evaluated versions remain in Git/private contexts. Current products share
+original generated execution, exclude these gameplay libraries, and use the
+[root workflow](workflow.md) with separate [validation layers](testing.md).
+
+- **Historical canonical linkage:** root CMake built `ps2game` from `PS2_GENERATED`
+ and linked `ps2run` to `ps2game`/`ps2runtime`, not `gt3_recovered`.
+ `scripts/port.sh` explicitly built `ps2run`; `scripts/build_gt3.sh` used that path,
+ with triple projection a separate explicit option/output.
+- **Historical mixed build-all graph:** root CMake unconditionally defined
+ `gt3_recovered`, mixing clean steering/pedals/handbrake with synthetic-wheel input.
+ Developer all-target/test builds could compile extension source even though
+ canonical `ps2run` did not link it. Transmission validators built recovery
+ separately. This motivated the proposal; it does not describe today's separated
+ controls/transmission/adaptation/policy/binding-check targets.
+- **Historical opt-in examples:** `scripts/build_gt3_virtual_{pedals,handbrake}.sh`
+ created private fresh-output validation hosts/units and compile-time gates;
+ `Options.enabled` defaulted false, independently of runtime CLI opt-in.
+ Their OFF executables could still link adapter objects: useful validation
+ controls, not proof of complete binary exclusion.
 - **Existing bounded integration:** transmission validators insert gates at
  generated labels, reuse original helpers, record identities, and run independent
  original oracles and real-entry shadows. Admission is whole-function recovered;
@@ -77,16 +91,22 @@ below. Directory/target names alone are not behavioral evidence.
  patching is not an approved future gameplay-extension API. Strict parity runs
  must reject these options. Removing/reclassifying their compiled support would
  be a separate change to a protected host, not something this proposal performs.
-- **Frozen build boundary:** current authorities, including
- `decomp/gt3/{transmission,transmission-state,virtual-handbrake,handbrake}.json`, pin
- root CMake/host/build files. Moving existing source, editing those files or
- rewriting pins would violate the present preservation requirement.
+- **Historical Frozen build boundary:** authorities including
+ `decomp/gt3/{transmission,transmission-state,virtual-handbrake,handbrake}.json` pinned
+ root CMake/host/build files. That proposal did not permit moving source or editing
+ those files/pins. Later restructuring preserves the exact old proof contexts;
+ these pins are not a description of current source ownership.
 
-## 3. Build separation: additive first, no root refactor
+## 3. Historical build proposal: additive first, no root refactor {#3-build-separation-additive-first-no-root-refactor}
 
-### Baseline product
+The requirements in this section describe the proposed isolated experiment. They
+are not an instruction to recreate a parallel product or undo current architecture.
+The later [implementation](virtual-transmission-v1.md) records the bounded experiment;
+[current architecture](architecture.md) owns today's product graph.
 
-Keep current canonical `ps2run`, original generated directory, runtime and
+### Proposed baseline product {#baseline-product}
+
+The proposal would keep canonical `ps2run`, original generated directory, runtime and
 `--target ps2run` build path unchanged. New extension directories are not added
 to root source lists, includes, generated-code globs or linkage. No extension
 initializer, parser, input backend, state or seam binding is compiled into that
@@ -99,14 +119,13 @@ Prove exclusion from compile commands, dependency/link maps and source manifests
 symbol inspection is supplementary, not sufficient under optimization/LTO.
 Do not rely on a false runtime boolean, archive dead stripping, or weak no-op hooks.
 
-**Definition needing approval:** this is the default *game product/target*, not
-an assertion that bare `cmake --build` compiles no legacy extension source. If
-strict exclusion must also apply to root ALL/developer builds, the existing mixed
-library requires a separately reviewed, versioned build-authority migration (or a
-new explicit-source product build). Do not quietly edit pinned CMake or claim
-this stricter property already holds.
+**Historical approval question:** the proposal distinguished the default *game
+product/target* from bare `cmake --build`, which could compile legacy extension
+source. Root-ALL exclusion would have required a separately reviewed build-authority
+change; the proposal did not authorize editing pinned CMake. The mixed-library
+observation must not be repeated as a claim about the restructured current graph.
 
-### Extended product
+### Proposed extended product {#extended-product}
 
 Propose a new additive builder, e.g. `scripts/build_gt3_extensions.py`, that
 requires an explicit feature selection and creates a distinct
@@ -121,7 +140,9 @@ source lists replace directory discovery. Exactly one active definition of each
 replaced generated unit/entry table is allowed; independently named oracle units
 must remain unhooked. Check the link map rather than permit duplicate symbols.
 Unselected extensions are not compiled or linked. An optional additive `extensions.just` can expose the workflow without
-changing the root recipes. All names here are proposed, not existing commands.
+changing the root recipes. These names were proposals at that stage. The later
+historical experiment used them; those builders/companion recipes are now retired,
+not maintained alternatives to root commands.
 
 Build inclusion only makes a feature available. Each runtime enable defaults false;
 inputs/schedules do not enable it implicitly. Absent/not-built, malformed or
@@ -129,9 +150,14 @@ conflicting requests fail before gameplay. No environment, saved preference,
 card or loaded snapshot automatically activates an extension. Help/logs identify
 the selected build features, actually enabled features and independent clean gates.
 
-## 4. Code/state ownership and execution boundary
+## 4. Historical code/state ownership and execution-boundary proposal {#4-codestate-ownership-and-execution-boundary}
 
-Suggested new layout; no relocation of historical sources:
+The following was a suggested layout, without relocating source at that stage.
+Maintained virtual policy is now in `src/gt3/gameplay/transmission/virtual/` and
+its concrete binding in `src/gt3/bindings/ps2/virtual-transmission/`;
+[architecture](architecture.md) is the current ownership reference.
+
+Historical proposed layout:
 
 ```text
 extensions/gt3/virtual_transmission/   typed inputs, host state, policy, acceptance metadata
@@ -183,13 +209,15 @@ old ratio/state bytes. Input-loss and unsupported-runtime-context behavior requi
 an approved policy; silent fallback must not be advertised as a held-clutch safety
 guarantee. Original snapshot format and originals remain unchanged.
 
-## 5. Concrete clutch/H-pattern example — still NOT approved
+## 5. Historical clutch/H-pattern example — not approved by this proposal {#5-concrete-clutchh-pattern-example--still-not-approved}
 
 Original order is admission -> drive -> engine/synchronization -> selection/commit.
-The [boundary audit](virtual-transmission-v1-boundary.md) established why candidate
-zero/one alone cannot implement the requested guarantees.
+The [retained boundary counterexamples](virtual-transmission-v1.md#why-original-inputs-cannot-provide-these-guarantees)
+explain why candidate zero/one alone cannot implement the unconditional guarantees.
+The later historical extension was deliberately different from original policy;
+that result is not current product installation approval.
 
-Proposed actions, pending permission and bounded proof:
+The following actions awaited permission and bounded proof **at proposal time**:
 
 | Need | Extension-owned decision | Original behavior to retain |
 | --- | --- | --- |
@@ -200,16 +228,19 @@ Proposed actions, pending permission and bounded proof:
 | Active H-authority | Suppress conflicting original selection results at a validated selection boundary | Original commit machinery and downstream processing |
 
 These are deliberate **extension policies**, not recovered-original semantics.
-Pre-drive2/3→0 cancellation and unconditional0→2 admission remain unapproved.
-Selecting an original state-store path is not by itself sufficient justification
+This proposal did not approve pre-drive2/3→0 cancellation or unconditional0→2
+admission. Selecting an original state-store path is not by itself sufficient justification
 under the no-state-forcing constraint. No forced1, target/wheel-rate patch, fake
 policy/configuration, new torque calculation, changed calibration or processed
 candidate-as-clutch shortcut is proposed.
 
-The precise ratio-commit/admission ordering still needs proof: synchronize only
-against the newly committed ratio, not briefly against the old one. Unclutched
-gear requests, Neutral entry/exit, activation, loss/handoff and simultaneous input
-policies need deterministic acceptance tests and owner agreement where ambiguous.
+At proposal time, precise ratio-commit/admission ordering still needed proof:
+synchronize only against the newly committed ratio, not briefly against the old
+one. Unclutched requests, Neutral entry/exit, activation, loss/handoff and simultaneous
+inputs also needed deterministic tests and owner agreement. The later
+[implementation contract](virtual-transmission-v1.md#new-policy-and-what-remains-original)
+records its accepted-position ordering and terminal-loss policy; it does not
+establish a general runtime handoff or physical-device contract.
 
 ## 6. Parity and validation plan — not results
 
@@ -252,9 +283,13 @@ handbrake/selector regressions. Public tests need no game artifacts; explicit
 private verification must fail on missing/changed required evidence. Root check,
 test, docs and audit remain required, not substitutes for native proof.
 
-## 7. Smallest changes and approval gates
+## 7. Historical minimum change and approval gates {#7-smallest-changes-and-approval-gates}
 
-If approved later, add only feature-owned source/input/state/policy, one guarded
+These were the proposal's gates, not outstanding permission to implement or install
+anything now. Current approval boundaries are recorded separately in
+[current authorities](reference/current-authorities.md).
+
+If approved at that stage, add only feature-owned source/input/state/policy, one guarded
 binding for each necessary seam, one explicit isolated product builder, and its
 additive tests/docs/acceptance authority. Reuse profile/hash preflight, reversible
 source overlays, renamed independent oracles, original helpers, real-entry
@@ -266,7 +301,7 @@ Decisions requiring approval:
 
 1. Product separation and the meaning of strict default exclusion: baseline
  target/artifact versus root ALL, plus disposition of legacy RAM-patch/presentation
- diagnostics. Literal root ALL purity cannot be claimed under current pinned files.
+ diagnostics. Literal root ALL purity was not established by the then-pinned files.
 2. The explicit virtual transition-policy overrides, separately from architecture.
  Approval of this proposal alone does **not** approve them or the controller.
 3. Supported initial profile/owner/policy contexts and incompatible clean/extension
@@ -274,7 +309,10 @@ Decisions requiring approval:
 4. Activation, unclutched requests, disconnection/unsupported-context and snapshot/
  handoff policies, plus the accounting contract for any new execution path.
 
-**Recommendation:** preserve the baseline product and Frozen infrastructure;
-introduce extensions additively as a separate opt-in product with no plugin system.
-Resolve the above decisions, then prove the original-boundary bindings before
-controller implementation. Stop here and await approval.
+**Historical recommendation:** preserve the baseline and Frozen infrastructure,
+introduce an additive opt-in experiment without a plugin system, resolve policy
+decisions and prove original-boundary bindings before implementation. The later
+[extension checkpoint](virtual-transmission-v1.md) records that bounded result.
+Neither page authorizes current product integration, new hardware work or a new
+builder; maintained commands and gates are in [workflow](workflow.md) and
+[testing](testing.md).

@@ -13,7 +13,11 @@ and [execution status](../development/restructuring.md) for maintained commands 
 :::
 
 
-> Preserved experiment narrative, not validation of current main. Commands refer to the historical runtime. Raw exports and game artifacts are private.
+> Historical technical reference: the mapping equations and fixture limits below
+> remain educational, not a report of current product installation. Recipes refer
+> to retired historical tooling. Use [workflow](../workflow.md) and
+> [testing](../testing.md) for maintained root commands. Raw exports and game
+> artifacts remain private.
 
 # GT3 controls: selective decompilation
 
@@ -23,9 +27,13 @@ Target: `games/gt3-usa-v110/core.elf`, extracted PBPX-95503 USA v1.10 core,
 SHA-256 `b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763`.
 Static analysis uses Ghidra 12.1.4 with `r5900:LE:32:default`.
 
-Readable code: `host/gt3_controls.hpp`. Differential harness:
-`tests/gt3_controls_test.cpp`. These are standalone reconstructions, **not yet
-installed as guest routine replacements or host controller mappings**.
+Historical source spellings: `host/gt3_controls.hpp` and
+`tests/gt3_controls_test.cpp`. Current locators, from `project/gt3/migration-map.json`,
+are `src/gt3/gameplay/controls/gt3_controls.hpp` and
+`validation/gt3/differential/gt3_controls_test.cpp`; moved paths do not identify the
+exact old source versions. These were standalone reconstructions, not installed
+guest replacements or host controller mappings in this checkpoint. Neither current
+product integrates recovered gameplay; see [controls orientation](../controls.md).
 
 Focused, source-bound pseudocode/assembly and Evidence IDs are retained in
 `docs/gt3-controls-evidence.json`; it is an excerpt collection, not a complete
@@ -117,8 +125,8 @@ dispatcher `ev_1b6c14638b4821f607d91c46386620cfa9549707afda12753967f234d328e11d`
 
 ## Validation
 
-Run `tests/run_resolution_tests.sh` (defaults to `build/resolution-triple`).
-On this pass:
+The historical runner was `tests/run_resolution_tests.sh` (default
+`build/resolution-triple`), not a maintained current command. On this pass:
 
 - Normalization: **25,600 cases passed**, adding secondary sensitivity 20.
 - Mapped actions: **57,344 cases passed** against generated EE routines,

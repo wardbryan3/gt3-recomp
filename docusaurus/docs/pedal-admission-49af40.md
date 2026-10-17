@@ -38,7 +38,8 @@ not edited under this read-only authorization. Whether the underlying stack
 reservation is BSS-backed is a separate, unresolved allocation question.
 
 Authority: `decomp/gt3/pedal-admission-49af40.json`, separately linked by provenance.
-The prior [profile survey](pedal-profiles.md) remains a stopped historical result;
+The prior profile survey, whose [matrix is retained with closure](pedal-closure.md),
+remains a stopped historical result;
 this audit does not turn protective fallback into clean execution.
 
 ## Provenance, layout and lifetime

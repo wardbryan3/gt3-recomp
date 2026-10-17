@@ -19,16 +19,24 @@ and [execution status](development/restructuring.md) for maintained commands and
 public/native regression and strict evidence gates pass; the bounded live and
 fixture limitations below remain part of that status.
 
-**Current-source, validation-only recovery of USA PBPX-95503 v1.10.**
+**Historical evaluated-source, validation-only recovery of USA PBPX-95503 v1.10.**
 The replacement is the interior region **001E4BB8–001E4C5F**, joining original
 processing at **001E4C60**, inside canonical function **001E4478**. It is not a
 new whole function, a controller adapter, a wheel-brake rewrite or canonical
 runtime installation. Lifecycle and exact evaluated source are authoritative in
-[`handbrake.json`](registry/handbrake.md). No proprietary inputs are needed for
-public checks; `just --justfile handbrake.just verify-handbrake EXPLICIT_REPOSITORY_ROOT` strictly checks
-private proof and inherited Frozen evidence.
+[`handbrake.json`](pathname:///knowledge/handbrake.json). No proprietary inputs are needed for
+public checks. Maintained root `just verify-handbrake EXPLICIT_REPOSITORY_ROOT`
+checks retained **historical** proof and inherited Frozen evidence; the companion
+`handbrake.just` mentioned in the failure history is retired. Use
+[workflow](workflow.md) and [testing](testing.md) for current commands and proof layers.
 
-Implementation: `host/gt3_clean_handbrake.{hpp,cpp}`. Build and runtime gates both
+Current locators from `project/gt3/migration-map.json`:
+`src/gt3/gameplay/controls/gt3_clean_handbrake.{hpp,cpp}` and
+`project/gt3/handbrake.json`. Moved paths are not exact historical source-version
+identities. The following installation describes the evaluated historical host,
+not either current product.
+
+Historical implementation: `host/gt3_clean_handbrake.{hpp,cpp}`. Build and runtime gates both
 default **OFF**. `gt3_recovered` only compile-checks this source; **ps2run does not
 link it**. A disposable translated-unit overlay is the only installation.
 Frozen pedals, steering, wheel compatibility, virtual pedals, runtime/recompiler,
@@ -100,9 +108,17 @@ ordering, not host double arithmetic, `std::clamp`, or a new normalized API.
 
 Let `q` be the **signed** input halfword, `h` the previous processed value,
 `rise`/`fall` the dynamic words at002D4940/002D4944, and `floor` the shared word at
-00352990 (GP−5060 for the pinned GP). Stock rise/fall are each1; stock floor is the
-binary32 representation of0.1. These are observed calibration values, not embedded
-replacement tables or physical-device units.
+00352990 (GP−5060 for the pinned GP). The original evaluated fixture description
+was: stock rise/fall are each1; stock floor is the binary32 representation of0.1.
+These are observed calibration values, not embedded replacement tables or
+physical-device units.
+
+The later [virtual-handbrake calibration audit](virtual-handbrake.md#failed-and-revised-attempts-retained)
+distinguishes **ELF initial floor 3DCCCCCD** from **initialized native-state floor
+3DCCCCCC**, and runs independent original oracles for both. Thus the earlier
+“stock floor” wording is context-qualified, not a universal exact-bit claim for
+all initialized scenes. Neither the original assertions nor processor semantics
+were changed; the initialization writer remains unrecovered.
 
 | Mode | Exact behavior |
 |---|---|
@@ -166,12 +182,16 @@ has no recursion-depth dependency; generated exact-entry tests include at/beyond
   wrapper fixtures cross the nearby Q12 codes3185/3186 and state gates; the
   original threshold effect is asserted. This does **not** prove the candidate is
   a clutch and it is not renamed.
-- **Shift interface:**001E3A68, after original001E3360, passes an enable operand to
+- **Adjacent interface (historically called “shift interface”):**001E3A68, after
+  original001E3360, passes an enable operand to
   original001E3068:1 iff processed handbrake is **strictly below** GP−75F8
   (stock0.1), otherwise0. Equality disables it. Live entry/decision/return probes
   show exact generated/clean CPU parity through this original processing. This
-  records the observed interaction; it does not implement transmission, establish
-  all downstream shift policy, or infer new field names.
+  records the observed interaction; it does not establish transmission ownership,
+  implement transmission, establish all downstream policy or infer new field
+  names. The later [transmission map](transmission-map-v1.md) rejects
+  001E3A68/001E3708 as the gear-selector lead; the historical probe labels below
+  are not proof of that attribution.
 - **Other reads:**001EB360 returns whether processed handbrake is strictly above
   0.25. Configuration-dependent reads in001E5B98 compare against additional
   thresholds. Their broader mechanics remain static-only/unclassified here;

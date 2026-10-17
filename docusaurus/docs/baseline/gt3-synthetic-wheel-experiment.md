@@ -24,7 +24,21 @@ visibly turns the car in a race. Negative input turns the opposite way;
 centering produces zero steering. This is an integration experiment, not
 physical-wheel support.
 
-## Isolation and launch
+## Historical isolation and launch {#isolation-and-launch}
+
+The independent adapter was not redesigned around the clean steering API during
+initialization. Its current locator is
+`src/gt3/gameplay/controls/gt3_synthetic_wheel.{hpp,cpp}`, mapped from historical
+`host/gt3_synthetic_wheel.*` by `project/gt3/migration-map.json`; the focused fixture
+is now `validation/gt3/differential/gt3_synthetic_wheel_test.cpp`. These locators do
+not replace the exact historical versions or imply current product installation.
+
+The bespoke build/run/validate scripts below are retired historical recipes.
+For maintained commands use [workflow](../workflow.md) and
+[testing](../testing.md): `just check`, `just test`, `just docs-build`, or explicit
+`just verify-historical baseline "$PWD"` for retained historical baseline proof.
+Neither a clean-enabled validation build nor the current source build implicitly
+enables synthetic injection.
 
 The preserved `build/resolution-triple/ps2run`, original/triple ELFs, original
 ISO, existing saves, and default `resolution/play-gt3-triple.sh` are not
@@ -58,7 +72,8 @@ The interactive launcher opens an ordinary window; it does not change desktop
 modes. `--gt3-wheel-at FRAME:VALUE` events use **absolute guest frames**, must
 be strictly increasing, and hold their value until the next event. With no
 initial value, scheduled-wheel mode starts centered. `--gt3-wheel-trace NEWFILE`
-adds JSONL observations; used alone, it is **read-only**. Neither injection nor
+adds JSONL observations; used alone, it is **read-only**. Trace files are
+**exclusive-created**: an existing output is not overwritten. Neither injection nor
 tracing is installed when both are absent. These switches are unavailable in
 a normal build. The dedicated build recipe is required: it generates the
 matching probe profile and checks the original/triple ELF SHA-256s.
@@ -216,6 +231,13 @@ with original data and synthetic objects.
 **Live evidence:** separate full-game processes, dynamic game-owned objects,
 exclusive branch observations, numeric consumers, rendered races and baseline
 comparisons establish actual integration.
+
+Initialization separately retained **8,193 quantizations / 42 generated
+integrations**, parser/profile/scope/restoration/scheduling guards and the adapter's
+own CLI/probes. The earlier independent live evidence remained
+`build/synthetic-wheel/live-final/summary.json`; the preserved original executable
+was the independent oracle for the separate clean-steering repetitions. These
+counts are repetitions of the adapter checks, not additional live coverage.
 
 Limitations: GT3 v1.10/profile-specific, one manual-player race snapshot, short
 continuations, no physical input device, no full-track test, no USB enumeration,

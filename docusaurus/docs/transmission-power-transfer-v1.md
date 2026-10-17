@@ -14,8 +14,9 @@ and [execution status](development/restructuring.md) for maintained commands and
 
 **Read-only reconnaissance; not transmission recovery or recovery authorization.**
 This report consolidates [Map v1](transmission-map-v1.md),
-[the moving-forward Reverse investigation](transmission-reverse-v1.md), and the
-subsequent engagement investigation for **GT3 USA v1.10**. It explains the bounded
+the historical moving-forward Reverse investigation, and the subsequent engagement
+investigation for **GT3 USA v1.10**. The Reverse reproduction and search boundary
+are retained below. It explains the bounded
 original mechanisms rather than imposing a clutch pedal, a Neutral ratio, or a
 modern gearbox model.
 
@@ -42,6 +43,9 @@ No clean transmission code, input adapter, direct state write, parts installatio
 calibration/save/credits edit, or runtime/Frozen change was made. This continuation
 launched **no new game runs** and introduced no new instrumentation. Its new
 execution findings are reductions of previously accepted, immutable original traces.
+Later [state recovery](transmission-state-v1.md) adds whole-admission ABI proof,
+partial engine/commit decision models and independently reached post-drive aborts;
+it does not turn this broader mechanism report into comprehensive recovery.
 
 ## Evidence and reconciliation
 
@@ -250,8 +254,127 @@ coast does not itself re-engage; that continuation admits only after accelerator
 
 Handbrake/brake-held continuations delay admission until release. These are
 original control/threshold interactions—not an implemented Neutral command.
-The finite coverage contains no late engine-stage state-0 abort write; the static
-abort branches above still exist and are not claimed unreachable.
+The **earlier 4,508-update engagement population** contains no late engine-stage
+state-0 abort write. This is a finite-population result, not an unreachable-branch
+claim. The later [state-recovery native matrix](transmission-state-v1.md#fresh-original-native-evidence)
+independently reaches both the state-3 low-target and state-2 brake aborts **after
+drive**; its 49 runs are a separate evidence population.
+
+### Original-input reproduction and controls
+
+The earlier Reverse checkpoint (`6c82588`) used the native-v3 ALTEZZA Single Race
+MT fixture at frame 4501. The historical runner supplies its existing native pad
+`--press` schedule; original command construction and processing execute, with no
+virtual-input adapter or transmission/state/calibration patch. In this fixture Cross is
+accelerator, R2 shift-up, Square brake, and Triangle auxiliary/Reverse. These
+bindings and frame numbers are fixture-specific, not universal controls or timing.
+
+| Original pad schedule | Purpose / observation |
+|---|---|
+| Cross at 4502 for 400 updates | Accelerate from the pinned start |
+| R2 at 4700, 4760 and 4820, each for 4 updates | Accepted selections at 4701/4761/4821 reach indices 2/3/4 and settle |
+| Triangle at 4902, replacing Cross | Auxiliary request arrives at processing frame 4903: index 4, sampled RPM 3154, positive longitudinal quantity about 20.11 |
+| Keep Triangle held | Reverse commits immediately; free-engine interval later occurs at 5106–5121 |
+| Alternatively, release Triangle after processing at 5108 | From 5109, no accelerator/brake/auxiliary input; free-engine coast persists through 5402 |
+| Cross at 5402 in the released case | Forward selection accepted at 5403; settled state 1 at 5411 |
+
+The qualitative recipe is **accelerate in a settled higher forward gear, request
+Reverse through the original auxiliary path, then release it during the free-engine
+interval**. The lower-gear control did not enter that interval. It is not an instant
+Neutral button or guaranteed disengagement at arbitrary speed.
+
+While Triangle is held, command auxiliary halfword `+12 = 4096` produces processed
+request `car+0x1304 = 1`. Original arbitration also supplies accelerator from that
+request: releasing Cross does not make held Reverse zero engine input. Relative
+shift intent remains separate at command `+2` / car `+0x1305`.
+
+The stage-qualified timeline explains why accepting Reverse is not the same as
+settling it or interrupting drive:
+
+| Frame / stage, higher-gear MT run | Selected index / state | Observation |
+|---|---|---|
+| 4903, selector return `001E77F8` | Stored 4 / state 1; accepted 0 | Reverse accepted, not returned as no-change |
+| 4903, commit return `001E7838` | 0 / state 2 | Immediate Reverse commit while moving forward |
+| 4904, history then drive | 0 / state 2 | Saved rate `+0x1310 ≈ 330.339`, target `+0x1314 = 0`; nonzero reverse-directed term |
+| 5038, after command and at drive | 0 / state 2; candidate 0 | Sampled RPM 799 below idle 800, but contribution still nonzero |
+| 5105, engine return | 0 / state 1; candidate 0 | Crossing completes **after** this update's nonzero drive |
+| 5106, admission then drive | 0 / state 0; candidate 0 | State-1/zero-candidate exit; zero magnitude and negative-zero rear term |
+| 5107, command then admission | 0 / state 0 | Command writes candidate 1; admission clears it to 0 |
+| 5122, held-Reverse variant, drive | 0 / state 2; candidate 1 | RPM re-entry threshold passed; transition resumes |
+| 5253, held-Reverse variant, engine return | 0 / state 1 | Settled Reverse tracking; subsequent backward motion |
+
+At 5106 the positive longitudinal quantity is **7.92244**, HUD about 17 mph.
+The held case later goes below −17 with HUD `R`. The free interval is genuine
+while moving forward, not evidence that Reverse was rejected. In that held run,
+**68 state-2 drive updates** have candidate zero and nonzero contribution. These
+are this Reverse population's observations, not additional independent cases to
+add to the engagement population's 77.
+
+Held Triangle raises the free engine past the RPM admission threshold (2500 here),
+so the 16-update free interval ends. It is not the shared 12-count inhibition timer.
+In the released case, state 0/Reverse persists for **298 drive updates, 5106–5403**;
+post-command candidate 1 is repeatedly vetoed, and the engine settles at free idle.
+Saved engine/target samples are refreshed each preparation update, not latched for
+the entire shift. Target may be recomputed after drive, and sampled halfword RPM
+799 need not equal the raw engine rate.
+
+A separate release-then-shift-up schedule requests R2 at 5202 without accelerator.
+Index **1 is accepted at 5203** while state 0 is retained. At **5204–5402**, forward
+index 1, state 0 and candidate 1 coexist with zero engine magnitude/rear term and
+forward coasting. Cross then admits 2 at 5403 and reaches 1 at 5410. This contrasts
+with the released-Reverse/accelerator schedule's settlement at 5411 above.
+
+| Contrasting original-only schedule | Result in the observed continuation |
+|---|---|
+| Higher-gear MT, Reverse held | State-2 drive, 16 free-engine updates, resumed Reverse transition |
+| Same entry, release during free interval | Longer coast with index 0; later accelerator returns forward |
+| Same release, shift-up without accelerator | Forward index 1 with state 0 and candidate 1 |
+| Lower-gear MT, Reverse held | Immediate index 0 and prolonged state 2; **no later state 0** observed |
+| Higher-gear MT coast, no Reverse/brake | Retains index 4 / state 1; no later state 0 |
+| Higher-gear MT brake, no Reverse | State 0 while retaining index 4: not Reverse-specific |
+| Higher-gear MT Reverse plus brake | Separate conditional state-2 brake/speed exit; subsequent drive bypass |
+| Low-speed MT Reverse/forward | Normal Reverse, negative motion and return forward; startup/braking state 0 remains distinct |
+| AT policy 0, moving-forward Reverse | Immediate index 0; 16 free updates at 5743–5758, forward quantity near 9.52 |
+
+Ordinary forward MT shifts in these prefixes use state 3 and candidate 1, with
+commit before settlement. Entry conditions change whether and when free running
+occurs; these controls do not establish a universal speed/RPM threshold surface.
+
+**Separate Reverse evidence population:** nine observer/original/observer-repeat
+trios, **27 accepted runs, 11,500 observed / 34,500 total updates**, **33
+owner-qualified accepted selections**, and **14 new static records**. Exact trio
+snapshots, full EE/IOP/SPU dumps, captures and repeated traces match. Coverage is
+two pinned ALTEZZA states, MT and AT—not physical hardware or all cars. The SLK
+attempt with undelivered Triangle input is excluded, not negative Reverse proof.
+A reducer's initial host-rounding mismatch was retained and corrected to original
+EE truncating multiplication without relaxing comparisons. These counts do not
+augment Map v1's or the engagement investigation's populations.
+
+### Bounded Neutral negative search
+
+The Reverse search inspected these specific paths, without establishing a dedicated
+Neutral action, ratio index or state-selection API:
+
+- Original auxiliary/relative commands and digital helper `00210EF8`: separate
+  accelerator/brake/handbrake/auxiliary actions and signed relative shift.
+- Policies 0–6 and selector helpers, including `001E5540/001E5600`. A decrement
+  from 1 to 0 still selects **Reverse**; −1 is no change and is not committed.
+- Setter `001DD0D8` and constructor `001DDAD0`: owner/control-kind restrictions
+  and original policy initialization, not every menu/device route to each policy.
+- Policy-3/6 coupling interactions: static alternatives, not identified player
+  clutch/Neutral inputs or demonstrated reachability.
+- Defined ELF strings for neutral/clutch/shift/reverse and adjacent action-name
+  references: no established Neutral string/action. Clutch-parts names identify
+  no controller axis, and provider-defined strings do not cover every byte or
+  encoded/localized resource.
+- Native Reverse/release/shift-up/accelerator/brake gestures in MT and AT: reachable
+  neutral-like state 0, including forward-selected coast, **not a Neutral API**.
+
+The later configuration/owner/string tracing in sections C–E adds bounded context,
+not whole-game absence proof. All device mappings, indirect paths, aliases,
+cars/calibrations, reset/alternate owners and indefinite coasting remain outside
+this negative-search claim. Neither “no neutral-like behavior exists” nor “a
+native Neutral gear was recovered” follows.
 
 ## C. Coupling candidate, policies, and ownership
 
@@ -426,6 +549,13 @@ not mean those historical native runs were executed again. No physical-controlle
 physical-console, or modern clean replacement equivalence proof is added here.
 
 ### Reproducible private references
+
+Current public and historical verification entry points are documented in
+[workflow](workflow.md) and [testing](testing.md). The private verifier paths below
+identify exact historical evidence contexts, not current builders or product gates.
+The Reverse proof remains under ignored `local/reverse-shift-v1/`, with its separate
+fail-closed `python3 local/reverse-shift-v1/verify.py`; its original manifest and
+expected results are unchanged.
 
 Raw evidence, original tables, instructions, traces and snapshots remain ignored
 under `local/transmission-deep-v1/` and its immutable parent workspaces. The private

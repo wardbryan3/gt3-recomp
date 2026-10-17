@@ -25,16 +25,27 @@ scratch registers and complete whole-function cost are deliberately not claimed
 recovered. Engine production, target derivation, drivetrain force mathematics,
 AT selection and initialization remain original. No candidate-to-clutch rename,
 Neutral ratio, H-pattern API, calibration or canonical gameplay change is added.
-Existing Frozen sources, authorities, tests, build recipes and documentation
-remain byte-identical. No commit/push is part of this task.
+At that evaluated checkpoint, existing Frozen sources, authorities, tests, build
+recipes and documentation remained byte-identical. No commit/push was part of that
+recovery task.
 
-- Models: `host/gt3_transmission_state.{hpp,cpp}`.
-- Whole admission: `host/gt3_clean_transmission_admission.{hpp,cpp}`.
-- Authority: `decomp/gt3/transmission-state.json`; workflow: `transmission-state.just`.
+- Evaluated models: `host/gt3_transmission_state.{hpp,cpp}`.
+- Evaluated whole admission: `host/gt3_clean_transmission_admission.{hpp,cpp}`.
+- Historical authority: `decomp/gt3/transmission-state.json`; former companion
+  workflow: `transmission-state.just` (retired).
 - Evaluated source base: `511f8575325e8d585ead26e92f56d109780d5635` plus separately
   hashed additive sources. Original generated baseline remains
   `82987dec7a71d76414adfff8663da5494a280938`; no fresh whole-game translation.
 - ELF SHA-256: `b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763`.
+
+The maintained admission and model sources are now in
+`src/gt3/gameplay/transmission/`; [architecture](architecture.md) explains their
+current validation-only ownership and product exclusion. For the surrounding
+mechanism, use the [conceptual map](transmission-map-v1.md) and
+[power-transfer report](transmission-power-transfer-v1.md). The
+[selector](transmission-recovery-v1.md) and [speed helper](transmission-speed-v1.md)
+have independent boundaries and proof populations. **Whole admission ABI proof
+must not be extended to the partial engine/commit models.**
 
 ## 1. Three decisions, not one clutch state
 
@@ -276,9 +287,12 @@ counted as an actual substitution. Canonical original runs perform neither.
 Native negative and positive helper entries are real; native multi-candidate
 helper traversal remains the prior differential-only limitation.
 
-These runs extend the earlier engagement fixture population: its statement that
-no post-drive abort was observed was true for that finite set, **not a proof that
-aborts cannot happen**. Both are now independently reached without forcing state.
+These runs add coverage beyond the earlier
+[engagement investigation](transmission-power-transfer-v1.md#entry-persistence-and-exit-of-forward-selected-state-0):
+its statement that no post-drive abort was observed was true for that finite set,
+**not a proof that aborts cannot happen**. Both are now independently reached
+without forcing state. The earlier engagement counts and this 49-run matrix
+remain separate evidence populations.
 Private side-by-side captures were reviewed; exact comparison is the primary gate.
 
 ## 5. Reproduction, evidence and honest stop
@@ -287,19 +301,20 @@ Private side-by-side captures were reviewed; exact comparison is the primary gat
 just check
 just test
 just docs-build
-just --justfile transmission-state.just check
-just --justfile transmission-state.just test
-just --justfile transmission-state.just verify-state /explicit/repository/root
-# Only explicitly requested disposable builds; fresh output directories required:
-python3 scripts/validate_gt3_transmission_state.py build BASELINE NEW_ORACLE
-python3 scripts/validate_gt3_transmission_state.py native BASELINE NEW_ORACLE NEW_OFF
-python3 scripts/validate_gt3_transmission_state.py native BASELINE NEW_ORACLE NEW_ON --enable-clean
+just verify-transmission-state "$PWD" # explicit retained historical proof
 ```
 
-`--gt3-clean-admission` is independent and defaultOFF; buildOFF rejects it before
-gameplay. Only the whole admission entry is hooked, including direct generated
-calls. Original interior continuations stay original. No canonical source or
-build file is modified. Models have **no mutation/install API**.
+These are the maintained root entry points; see [workflow](workflow.md) and
+[testing](testing.md). The former `transmission-state.just` and
+`scripts/validate_gt3_transmission_state.py` build/native workflow are retired;
+exact evaluated versions and separate new-output oracle/OFF/ON builds remain in
+the historical context, not a current installation recipe.
+
+In that evaluated overlay, `--gt3-clean-admission` is independent and defaultOFF;
+buildOFF rejects it before gameplay. Only the whole admission entry is hooked,
+including direct generated calls. Original interior continuations stay original.
+No canonical source or build file was modified by that checkpoint. Models have
+**no mutation/install API**.
 
 Fresh builds reproduce the executed oracle/admission/model/Frozen/native objects
 and ON/OFF hosts byte-for-byte. The later partial-layout declaration changes no

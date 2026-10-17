@@ -13,7 +13,7 @@ and [execution status](development/restructuring.md) for maintained commands and
 :::
 
 
-## Decision and boundary
+## Historical decision and boundary {#decision-and-boundary}
 
 **Re-frozen, validation-only; stop here.** The unchanged pedal body is equivalent
 at every entry in the retained representative player-driving survey, including
@@ -21,10 +21,14 @@ Time Trial, Free Run and License B-1 with command `0049AF40`. The old
 `0049AF50` exception was an overly specific address assumption, not a semantic
 difference. It has been replaced by bounded manual-activation frame checks.
 
-Authority: [`decomp/gt3/pedal-closure.json`](pathname:///knowledge/pedal-closure.json).
-The original [Frozen checkpoint](pedal-v1.md), [stopped survey](pedal-profiles.md)
-and [read-only admission audit](pedal-admission-49af40.md) remain separate,
-immutable historical authorities. Their failures, source hashes and zero-replacement
+Authority: [`pedal-closure.json`](pathname:///knowledge/pedal-closure.json), now
+located at `project/gt3/pedal-closure.json` by `project/gt3/migration-map.json`.
+Current implementation and observer locators are
+`src/gt3/gameplay/controls/gt3_clean_pedals.{hpp,cpp}` and
+`validation/gt3/live/gt3_pedal_closure_observer.cpp`; relocation is not historical
+source-version equivalence. The original [Frozen checkpoint](pedal-v1.md), stopped
+survey (`project/gt3/pedal-profiles.json`) and read-only admission audit
+(`project/gt3/pedal-admission-49af40.json`) remain separate historical authorities. Their failures, source hashes and zero-replacement
 runs were **not rewritten as successes**. Explicit historical source artifacts
 preserve the original CPP and original audit analyzer; current hashes are pinned
 separately. Missing/changed historical artifacts fail private verification.
@@ -37,6 +41,9 @@ Canonical `ps2run` remains generated-only, byte-identical to the trusted baselin
 Both substitution gates remain default **OFF**, in disposable validation builds only.
 
 ## What actually owns the command
+
+This corrects Pedal v1's historical “BSS command buffer” assumption, not its
+processing semantics or the result of any earlier failed admission.
 
 Original `001E4D38` reserves a 64-byte activation; its first 16 bytes are the
 command, initialized by the existing producer. It is an activation-local object,
@@ -80,6 +87,80 @@ CPU, RAM and budget at the original join. Any retained alias therefore sees the
 same bytes and pointer values. These compositional invariants, followed by exact
 original continuation and guarded live replay, close the lifetime/alias issue for
 the observed executions without inventing a whole-game no-retention theorem.
+
+## Finite original survey and its stopped comparisons
+
+The preceding original-only survey observed **4,199 entries**: **12 selected
+cases / 3,599 entries**, plus **two duplicate exploratory axis0 cases / 600 entries**.
+The table preserves the survey's results **before closure**, not closure's later
+substitution totals. Four earlier pairs passed **1,200 actual substitutions**,
+zero fallback. Time Trial then stopped with **0 replacements / 299 protective
+fallbacks**; remaining clean comparisons and fresh full native regressions were
+not performed after that stop. Fallback means original execution, not an output
+mismatch and **not successful substitution**.
+
+For those four survey comparisons, complete raw traces were retained; semantic
+trace equality excluded only the previously documented stale `transport_pc`
+observation. Guest budget and defined CPU remained exact, with no FP tolerance
+change. **No independent uninstrumented live comparator was newly run in that
+survey.** Its observer build reused verified Frozen generated/runtime/recovered
+archives rather than rebuilding a whole-game translation. These survey limits do
+not describe or replace the subsequent closure proof below.
+
+| Selected original case | Gameplay / UI identity | Input selection | Original entries | Earlier survey clean comparison |
+|---|---|---|---:|---|
+| ALTEZZA AT | Arcade Single Race | Pedal buttons | 300 | Exact, 300 replacements |
+| ALTEZZA MT | Arcade Single Race | Pedal buttons | 300 | Exact, 300 replacements |
+| Alfa Romeo 156 2.5 V6 24V AT | Arcade Single Race | Pedal buttons | 300 | Exact, 300 replacements |
+| Toyota MR-S S Edition AT | Arcade Single Race | Pedal buttons | 300 | Exact, 300 replacements |
+| Time Trial No.1 preset, MT | Arcade Time Trial, Mid-Field Raceway | Pedal buttons | 299 | **Stopped: 0 replacements / 299 fallbacks** |
+| Mercedes-Benz SLK230 Kompressor MT | Arcade Free Run | Pedal buttons | 300 | Not attempted after stop |
+| Volkswagen New Beetle 2.0 | Simulation License B-1, start/acceleration/braking 1000 m | Preset; no gearbox selection claimed | 300 | Not attempted after stop |
+| ALTEZZA AT | Arcade Single Race | Left stick (axis2) + pedal buttons | 300 | Not attempted after stop |
+| ALTEZZA MT | Arcade Single Race | Left stick (axis2) + pedal buttons | 300 | Not attempted after stop |
+| ALTEZZA AT | Arcade Single Race | D-pad + pedal buttons | 300 | Not attempted after stop |
+| ALTEZZA AT | Arcade Single Race | Existing synthetic steering compatibility selector | 300 | Not attempted after stop |
+| ALTEZZA MT | Arcade Single Race | Existing synthetic steering compatibility selector | 300 | Not attempted after stop |
+
+Five named cars and one Time Trial preset were sampled; the preset's exact model
+was not independently identified. Free Run and B-1 names follow reviewed original
+UI, not numeric policy guesses. The two exploratory **axis0** attempts did not move
+steering and are **not left-stick coverage**; axis2 cases are separate. Menu-only
+runs are not pedal observations. An initial observer-host menu run returned status 1
+without entries, followed by canonical navigation captures; neither is evidence
+of a game-profile mismatch.
+
+### Descriptor presence is not response execution
+
+- **One exact 16-byte descriptor bit-pattern family** appeared at accelerator
+  **0049D060** and brake **0049D070**, observed descriptor mode **1**. Its fingerprint
+  is `331b91ef5e1f42f3b4754157e0ea75cace5d14e1d40b02edc6b268bcd82d3b83`.
+  No native-pad response call was observed. Configured descriptor identity does
+  **not** establish execution of that descriptor.
+- **Five effective processing classes** were observed: command-mode/policy pairs
+  **(2,0), (2,1), (3,0), (4,0), (4,1)**. Classification, blocking and auxiliary
+  suppression were zero; representation-mask bits **0x0e** were set. Rate/floor
+  bits were constant across this finite matrix. Modes **2 and 3 remain distinct**:
+  native left stick stayed mode2; D-pad reached mode3 with its initial mode2 entry.
+- Same-car AT/MT correlated with policies **0/1**, without naming other policies.
+  Selection also depends on incoming kind, **+14B8** blocking and **+13E5** stored
+  policy; unvisited values are not covered by this reachability survey.
+- Mode4 and **1,200 original response calls** came **only** from the two existing
+  synthetic steering compatibility cases: **600 per descriptor**, derivative null.
+  These are not native/physical-wheel or analog-pedal reachability and add no
+  synthetic-pedal facility.
+- Time Trial, Free Run and B-1 used **0049AF40**, Single Race **0049AF50**.
+  Descriptor/policy identity alone did not prove admission or interchangeable
+  pointers. Free Run/B-1 were original-only at the stop, not inferred clean passes
+  or failures; their later actual-context proof is separately described below.
+
+Static analysis connects bytes **002D4654/55** and **002D4658/59** to descriptor
+initialization in `001E3EA0` through original `001D91D8`; other configuration bytes
+feed rate/floor globals. These are construction selectors, **not established UI
+writers, all calibrations or universal reachability**. Selector `001E4004` resolved
+to containing function `001E3EA0`, not a new entry. No initializer/evaluator or
+calibration table was recovered. Exact static citations and the stopped population
+remain in `project/gt3/pedal-profiles.json` and its historical evidence.
 
 ## Independent actual-context proof, before changing admission
 
@@ -152,7 +233,14 @@ Vehicles/modes include ALTEZZA AT/MT, Alfa 156 AT, MR-S AT, Time Trial preset MT
 (exact model unverified), SLK230 Kompressor MT Free Run and New Beetle 2.0 B-1.
 Native left stick/D-pad and compatibility steering remain distinct.
 
-## Reproduction and stopping rule
+## Historical reproduction and stopping rule {#reproduction-and-stopping-rule}
+
+The following recipe records the evaluated historical build, not a maintained
+launch path. Its bespoke builders are retired; exact versions resolve through
+historical contexts, not path substitution. Current public guidance is
+[workflow](workflow.md) / [testing](testing.md); root
+`just verify-pedal-closure "$PWD"` checks retained historical proof, not product
+integration. Neither product currently installs this recovered gate.
 
 ```bash
 # All output roots must be new; explicit private originals required.

@@ -20,8 +20,12 @@ title: Repository layout and source ownership
 
 There are no parallel active gameplay trees or maintained runtime checkouts.
 Historical Git revisions and immutable private overlays are independent evidence,
-not competing active source. The complete mechanical path map is
-`project/gt3/migration-map.json`; retired front doors/recipes are recorded in
+not competing active source. Donor restoration patches describe changes against
+exact old bases, not wholesale integrations or additional runnable profiles; see
+[provenance](provenance.md). Readable control bodies, synthetic adapters and partial
+transmission models have separate ownership and evidence scopes; compile/fixture
+availability does not mean either product installs them. The complete mechanical
+path map is `project/gt3/migration-map.json`; retired front doors/recipes are recorded in
 `project/gt3/retirements.json`, not silently kept working against stale active paths.
 
 The concise root `README.md` and `AGENTS.md`, licenses/notices and necessary tooling

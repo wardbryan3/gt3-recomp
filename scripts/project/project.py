@@ -140,7 +140,7 @@ def docs():
     dest = ROOT / "docusaurus/docs/registry"
     dest.mkdir(parents=True, exist_ok=True)
     def page(name, title, body):
-        (dest / (name + ".md")).write_text(f"---\ntitle: {title}\n---\n\n<!-- Generated; edit project/gt3 authorities, not this view. -->\n\n" + body + "\n")
+        (dest / (name + ".md")).write_text(f"---\ntitle: {title}\n---\n\n<!-- Generated; edit project/gt3 authorities, not this view. -->\n\n" + body.rstrip() + "\n")
     modules = load("implementations")["modules"]
     text = "These are **current source identities**, not runtime promotion. Both products initially use original generated execution.\n\n| Module | Classification | Current product integration |\n|---|---|---|\n"
     text += "\n".join(f'| {m["id"]} | {m["classification"]} | {m["product_integration"]} |' for m in modules)

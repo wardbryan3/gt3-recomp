@@ -13,7 +13,7 @@ and [execution status](development/restructuring.md) for maintained commands and
 :::
 
 
-## Bounded result
+## Historical bounded result {#bounded-result}
 
 Deterministic virtual throttle and brake are **validated end-to-end in an isolated
 native USA v1.10 harness**. This is a separate experiment, not a pedal replacement,
@@ -22,9 +22,15 @@ gates default **OFF**. Canonical `ps2run` is unmodified and retains its baseline
 executable hash. Frozen pedal/closure, steering and synthetic-wheel source and
 existing assertions remain unchanged; no Frozen authority is promoted or rewritten.
 
-Authority: [`virtual-pedals.json`](pathname:///knowledge/virtual-pedals.json),
-[generated status](registry/virtual-pedals.md). Original evidence, linked executables,
+Authority and checkpoint status: [`virtual-pedals.json`](pathname:///knowledge/virtual-pedals.json).
+Original evidence, linked executables,
 states, captures and raw traces remain private under `local/virtual-pedals-v1/`.
+Current source locators from `project/gt3/migration-map.json` are
+`src/gt3/gameplay/controls/gt3_virtual_pedals.{hpp,cpp}` and
+`validation/gt3/differential/gt3_virtual_pedals_oracle.cpp`; authority is at
+`project/gt3/virtual-pedals.json`. These locators are not historical version
+identities or evidence of current product integration. Maintained guidance lives
+in [workflow](workflow.md) and [testing](testing.md).
 
 ## Exact virtual protocol, not calibration
 
@@ -84,7 +90,13 @@ Trace-only and default-OFF do not write guest memory. This is an EE-thread-only,
 known-profile experiment, not a security boundary for arbitrary forged states or
 an exhaustive scene/thread/virtual-hook guarantee.
 
-## CLI and isolation
+## Historical CLI and isolation {#cli-and-isolation}
+
+This recipe documents the evaluated isolated host; the bespoke builder is retired,
+not a maintained launch command. Keep exact historical versions in their original
+context rather than substituting current paths. Root public checks are
+`just check`, `just test`, `just docs-build`; root `just verify-virtual-pedals "$PWD"`
+checks retained historical evidence, not current product installation.
 
 ```bash
 # Existing verified generated pedal build; every output directory must be new.

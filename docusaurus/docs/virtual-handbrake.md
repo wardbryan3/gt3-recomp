@@ -15,12 +15,20 @@ and [execution status](development/restructuring.md) for maintained commands and
 
 # Virtual analog handbrake controller
 
-**Validated bounded virtual input; all named gates pass.** Acceptance is the
-separate [`virtual-handbrake.json`](registry/virtual-handbrake.md) authority, not
+**Historical validated bounded virtual input; all named checkpoint gates passed.**
+Acceptance for that evaluated checkpoint is the
+separate [`virtual-handbrake.json`](pathname:///knowledge/virtual-handbrake.json) authority, not
 an inference from the earlier Frozen checkpoint. This is a new **virtual input
 adapter**, not new handbrake behavior or a recovered adjacent function.
 
-Source: `host/gt3_virtual_handbrake.{hpp,cpp}`. Both build and runtime gates default
+Current source locators from `project/gt3/migration-map.json` are
+`src/gt3/gameplay/controls/gt3_virtual_handbrake.{hpp,cpp}` and
+`validation/gt3/differential/gt3_virtual_handbrake_oracle.cpp`; authority is at
+`project/gt3/virtual-handbrake.json`. Relocation does not equate current bytes with
+the exact evaluated historical versions. Neither current product integrates this
+adapter; see [workflow](workflow.md) and [testing](testing.md) for present gates.
+
+Historical source: `host/gt3_virtual_handbrake.{hpp,cpp}`. Both build and runtime gates default
 **OFF**. Canonical `ps2run`, runtime/recompiler, all Frozen source/authorities and
 prior proof-pinned CMake/justfiles remain byte-identical. No physical device,
 calibration, generalized DriverInput, transmission, coupling, clutch or FFB API
@@ -103,10 +111,12 @@ The source and exact evaluated overlay are pinned separately from the unchanged
 [Frozen processor](handbrake-v1.md). Its guard/semantics/history/CPU/cost code was
 not expanded or re-frozen by this work.
 
-## Using the isolated native controller
+## Historical isolated native controller {#using-the-isolated-native-controller}
 
-The only installation is a newly compiled disposable unit/host overlay over the
-verified Frozen build, not a copied runtime checkout or canonical-host hook:
+The only installation in this checkpoint was a newly compiled disposable unit/host
+overlay over the verified Frozen build, not a copied runtime checkout or canonical
+host hook. The following bespoke builder is retired; this preserves the historical
+recipe, not a maintained launch command:
 
 ```bash
 bash scripts/build_gt3_virtual_handbrake.sh VERIFIED_HANDBRAKE_BUILD NEW_OUTPUT \
@@ -232,15 +242,20 @@ all300 original packets were restored exactly afterward.
 
 ## Regression and stop rules
 
-Use the additive workflow because earlier CMake/justfiles/checkers are themselves
-proof-pinned; they are not exempted, modified or blindly rehashed:
+Maintained public commands use the root `justfile`; the retained proof verifier
+is explicitly historical:
 
 ```bash
-just --justfile virtual-handbrake.just check
-just --justfile virtual-handbrake.just test
-just --justfile virtual-handbrake.just docs-build
-just --justfile virtual-handbrake.just verify-virtual-handbrake EXPLICIT_ROOT
+just check
+just test
+just docs-build
+just verify-virtual-handbrake EXPLICIT_ROOT
 ```
+
+The original checkpoint instead used additive `virtual-handbrake.just` recipes
+because earlier CMake/justfiles/checkers were proof-pinned. That companion file is
+now retired, not an alternate maintained workflow. Its exact historical version
+remains in the original context; no old hash or checker is repinned here.
 
 Public tests compile the new adapter/protocol and validate synthetic reducer,
 range/boundary/schedule and authority negatives without game artifacts. They are
