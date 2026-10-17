@@ -137,7 +137,7 @@ def type_assertions():
 
 def docs():
     check()
-    dest = ROOT / "docusaurus/docs/registry"
+    dest = ROOT / "docusaurus/docs/reference/generated"
     dest.mkdir(parents=True, exist_ok=True)
     def page(name, title, body):
         (dest / (name + ".md")).write_text(f"---\ntitle: {title}\n---\n\n<!-- Generated; edit project/gt3 authorities, not this view. -->\n\n" + body.rstrip() + "\n")
@@ -156,12 +156,23 @@ def docs():
     page("status", "Historical selected recovery inventory",
          f"Source context: `{BASE}` and explicitly versioned predecessors. **Not current integration approval or whole-game coverage.**\n\n" +
          "\n".join(f"- {name}: {count}" for name, count in counts.items()) +
-         "\n\nSee [current products](current-products.md) for active ownership and integration status.")
+         "\n\nThis selected inventory is not whole-game coverage and does not include every later "
+         "separate transmission/extension authority. See [current products](current-products.md) "
+         "for active ownership and integration status and [research](../../research/index.md) for bounded reports.")
     symbols = load("symbols")
-    text = "Historical original-profile findings; names with `candidate` remain uncertain.\n\n| Address | Name |\n|---|---|\n"
+    text = ("Historical original-profile findings; names with `candidate` remain uncertain.\n\n"
+            "This retained table is not a latest-interpretation index. In particular, early "
+            "transmission candidates `001E3A68/001E3360/001E3068` were rejected as the "
+            "gear-selector lead by the later [transmission map](../../research/transmission/producer-consumer-map.md). "
+            "The [bounded recoveries](../../research/transmission/index.md) have separate authorities; "
+            "an unclassified entry here does not negate their findings. Historical names/hashes are not rewritten.\n\n"
+            "| Address | Name |\n|---|---|\n")
     text += "\n".join(f'| `{s["address"]}` | `{s["name"]}` |' for s in symbols["functions"] + symbols["data"])
     page("symbols", "Original symbol knowledge", text)
-    text = "Partial guest layouts are compiled against **current relocated headers**. This is layout consistency, not gameplay proof.\n"
+    text = ("Partial guest layouts are compiled against **current relocated headers**. This is layout consistency, not gameplay proof.\n\n"
+            "This historical layout inventory is not exhaustive. Transmission layouts also have "
+            "source-local assertions; see the [selector contract](../../developer-guide/worked-example-mt-selector/trace-and-contract.md). "
+            "Opaque padding is unknown storage, not permission to bulk-write a car.\n")
     for layout in load("types")["layouts"]:
         text += f'\n## {layout["name"]}\n\n`{current_path(layout["source"]).relative_to(ROOT)}`; size `{layout["size"]}`.\n\n| Offset | Field | Meaning |\n|---|---|---|\n'
         text += "\n".join(f'| `{f["offset"]}` | `{f["name"]}` | {f["meaning"]} |' for f in layout["fields"]) + "\n"

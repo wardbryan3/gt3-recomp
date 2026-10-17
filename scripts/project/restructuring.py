@@ -134,20 +134,22 @@ def source_pins(value, pointer=""):
 
 
 def target_path(path):
-    """Mechanical destination candidates; not permission to split mixed files."""
+    """Mechanical destinations; not permission to split mixed files.
+
+    Recorded moves take precedence over initial relocation heuristics. Historical
+    source retrieval remains version-qualified and never reads moved prose.
+    """
+    mapping = json.loads((ROOT / "project/gt3/migration-map.json").read_text())["paths"]
+    if path in mapping:
+        return mapping[path]
+    if path.startswith(("docs/site/docs/", "docs/gt3/")):
+        # Documentation now has semantic destinations across five pillars. An
+        # unknown page needs classification, not a guessed obsolete flat path.
+        return None
     if path.startswith("docs/site/"):
         return "docusaurus/" + path.removeprefix("docs/site/")
-    if path.startswith("docs/gt3/"):
-        return "docusaurus/docs/development/" + path.removeprefix("docs/gt3/")
-    if path == "decomp/gt3/schema.md":
-        return "docusaurus/docs/reference/knowledge-schema.md"
     if path.startswith("decomp/gt3/") and path.endswith(".json"):
         return "project/gt3/" + path.removeprefix("decomp/gt3/")
-    prose = {"HANDOFF.md": "docusaurus/docs/development/continuation.md",
-             "CONTRIBUTING.md": "docusaurus/docs/development/contributing.md",
-             "decomp/README.md": "docusaurus/docs/reference/recovery.md"}
-    if path in prose:
-        return prose[path]
     if path.startswith("host/gt3_"):
         domain = "transmission" if "transmission" in path else "controls"
         return "src/gt3/gameplay/" + domain + "/" + Path(path).name

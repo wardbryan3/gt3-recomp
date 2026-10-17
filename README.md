@@ -41,11 +41,14 @@ Restructuring does not implement those milestones or authorize another recovery.
 - [`docusaurus/docs/`](docusaurus/docs/): **all maintained project documentation**.
 - `recomp/`, `runtime/`, `host/`: inherited execution/tooling; notices and reviewed fixes retained.
 
-Start with [build and discovery](docusaurus/docs/getting-started.md),
-[architecture](docusaurus/docs/architecture.md),
-[restructuring status](docusaurus/docs/development/restructuring.md),
-[continuation](docusaurus/docs/development/continuation.md), and
-[publication rules](docusaurus/docs/development/PUBLICATION.md).
+Start with [Start Here](docusaurus/docs/start-here/index.md) and the
+[Developer Guide](docusaurus/docs/developer-guide/index.md), including the
+[worked MT selector recovery](docusaurus/docs/developer-guide/worked-example-mt-selector/index.md).
+Use [current continuation](docusaurus/docs/developer-guide/continuation.md) for
+handoffs, [Architecture](docusaurus/docs/architecture/index.md) for execution boundaries,
+[Reference](docusaurus/docs/reference/index.md) for exact contracts and
+[Research & Evidence](docusaurus/docs/research/index.md) for evaluated findings.
+[Publication rules](docusaurus/docs/developer-guide/publication.md) apply throughout.
 
 Historical evidence verification is explicit:
 

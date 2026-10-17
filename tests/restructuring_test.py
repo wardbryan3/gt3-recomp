@@ -28,10 +28,12 @@ class RestructuringTests(unittest.TestCase):
 
     def test_corrected_documentation_destination(self):
         self.assertEqual(m.target_path("docs/site/docs/architecture.md"),
-                         "docusaurus/docs/architecture.md")
+                         "docusaurus/docs/architecture/index.md")
         self.assertEqual(m.target_path("decomp/gt3/schema.md"),
-                         "docusaurus/docs/reference/knowledge-schema.md")
+                         "docusaurus/docs/reference/historical-knowledge-schema.md")
         self.assertEqual(m.target_path("runtime/src/system.cpp"), "runtime/src/system.cpp")
+        self.assertIsNone(m.target_path("docs/site/docs/unclassified.md"))
+        self.assertIsNone(m.target_path("docs/gt3/unclassified.md"))
 
     def test_historical_git_source_never_uses_active_bytes(self):
         with tempfile.TemporaryDirectory() as d:
