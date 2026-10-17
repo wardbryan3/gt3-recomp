@@ -1,0 +1,62 @@
+# Opt-in, game-dependent original oracles. Never linked into either product.
+# Explicit request requires both inputs: missing protected artifacts are errors.
+if(NOT PS2_GENERATED OR NOT EXISTS "${GT3_ORIGINAL_ELF}")
+    message(FATAL_ERROR "GT3_ORIGINAL_ELF requires an existing original ELF and PS2_GENERATED")
+endif()
+file(SHA256 "${GT3_ORIGINAL_ELF}" original_elf_sha)
+if(NOT original_elf_sha STREQUAL "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763")
+    message(FATAL_ERROR "Unsupported original ELF profile")
+endif()
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(oracle_dir "${CMAKE_CURRENT_BINARY_DIR}/private-oracles")
+set(oracle_outputs)
+foreach(unit oracle_unit_0039 state_oracle_unit_0039 pedal_original_unit handbrake_original_unit adapter_fixture_unit)
+    list(APPEND oracle_outputs "${oracle_dir}/${unit}.cpp")
+endforeach()
+add_custom_command(OUTPUT ${oracle_outputs}
+    COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/scripts/project/oracle_units.py"
+        "${PS2_GENERATED}/unit_0039.cpp" "${oracle_dir}"
+    DEPENDS "${PS2_GENERATED}/unit_0039.cpp" "${PROJECT_SOURCE_DIR}/scripts/project/oracle_units.py"
+    VERBATIM)
+add_library(gt3_original_oracle STATIC
+    "${oracle_dir}/oracle_unit_0039.cpp" "${oracle_dir}/state_oracle_unit_0039.cpp")
+target_include_directories(gt3_original_oracle PRIVATE "${PS2_GENERATED}")
+target_link_libraries(gt3_original_oracle PUBLIC ps2runtime)
+add_library(gt3_pedal_original_oracle STATIC "${oracle_dir}/pedal_original_unit.cpp")
+add_library(gt3_handbrake_original_oracle STATIC "${oracle_dir}/handbrake_original_unit.cpp")
+foreach(target gt3_pedal_original_oracle gt3_handbrake_original_oracle)
+    target_include_directories(${target} PRIVATE "${PS2_GENERATED}")
+    target_link_libraries(${target} PUBLIC ps2runtime)
+endforeach()
+add_library(gt3_adapter_fixture OBJECT "${oracle_dir}/adapter_fixture_unit.cpp")
+target_include_directories(gt3_adapter_fixture PRIVATE "${PS2_GENERATED}")
+target_link_libraries(gt3_adapter_fixture PRIVATE gt3_controls_recovered ps2runtime)
+target_compile_definitions(gt3_adapter_fixture PRIVATE GT3_PEDAL_VALIDATION_GATES=1 GT3_HANDBRAKE_VALIDATION_GATES=1)
+add_custom_target(gt3_original_differentials)
+function(gt3_original_test name source)
+    add_executable(${name} "${PROJECT_SOURCE_DIR}/validation/gt3/differential/${source}")
+    target_compile_options(${name} PRIVATE -UNDEBUG)
+    target_include_directories(${name} PRIVATE "${PROJECT_SOURCE_DIR}/src/gt3/gameplay/controls"
+        "${PROJECT_SOURCE_DIR}/src/gt3/gameplay/transmission" "${PROJECT_SOURCE_DIR}/validation/gt3/live" "${PROJECT_SOURCE_DIR}/src/gt3/gameplay/controls/tests")
+    # Ordered archives: exact-entry fixture unit must resolve before game's
+    # original dispatcher. Shared source libraries are the SAME current owners.
+    target_link_libraries(${name} PRIVATE ${ARGN} gt3_controls_recovered gt3_transmission_recovered
+        gt3_control_adapters ps2game ps2runtime)
+    add_dependencies(gt3_original_differentials ${name})
+    add_test(NAME ${name} COMMAND ${name} "${GT3_ORIGINAL_ELF}")
+    set_tests_properties(${name} PROPERTIES LABELS "original-differential" TIMEOUT 1200)
+endfunction()
+gt3_original_test(gt3_original_controls gt3_controls_test.cpp)
+gt3_original_test(gt3_original_steering_trace gt3_steering_trace_test.cpp)
+gt3_original_test(gt3_original_steering gt3_clean_steering_test.cpp)
+gt3_original_test(gt3_original_synthetic_wheel gt3_synthetic_wheel_test.cpp)
+gt3_original_test(gt3_original_pedal_discovery gt3_pedal_discovery.cpp)
+gt3_original_test(gt3_original_pedal_abi gt3_pedal_abi_audit.cpp gt3_pedal_original_oracle)
+target_compile_definitions(gt3_original_pedal_abi PRIVATE GT3_PEDAL_DIFFERENTIAL=1)
+gt3_original_test(gt3_original_handbrake gt3_handbrake_oracle.cpp gt3_handbrake_original_oracle)
+gt3_original_test(gt3_original_virtual_pedals gt3_virtual_pedals_oracle.cpp gt3_adapter_fixture)
+gt3_original_test(gt3_original_virtual_handbrake gt3_virtual_handbrake_oracle.cpp gt3_adapter_fixture)
+gt3_original_test(gt3_original_transmission gt3_transmission_oracle.cpp gt3_original_oracle)
+gt3_original_test(gt3_original_speed gt3_transmission_speed_oracle.cpp gt3_original_oracle)
+target_link_options(gt3_original_speed PRIVATE "-Wl,--wrap=_ZN3ps27preemptERNS_3CpuE")
+gt3_original_test(gt3_original_state gt3_transmission_state_oracle.cpp gt3_original_oracle)

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gt3:current-authorities:1",
+  "title": "Current GT3 ownership/proof/approval contracts",
+  "description": "Preserved historical knowledge retains its own original schema and exact Git context. These definitions describe current policy, not raw evidence or automatic integration permission.",
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dependencies": {"type": "object", "additionalProperties": {"$ref": "#/$defs/sha256"}},
+    "classification": {"enum": ["Original", "Recovered", "Modernized", "Enhanced / Extended"]},
+    "module": {
+      "type": "object",
+      "required": ["id", "classification", "sources", "contract_kind", "product_integration", "current_proof", "historical_source_context"],
+      "properties": {
+        "id": {"type": "string"},
+        "classification": {"$ref": "#/$defs/classification"},
+        "sources": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^src/gt3/"}},
+        "contract_kind": {"type": "string"},
+        "product_integration": {"const": "not-approved"},
+        "current_proof": {"type": "string"},
+        "historical_source_context": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      },
+      "additionalProperties": false
+    },
+    "candidate": {
+      "type": "object",
+      "required": ["schema_version", "status", "files", "integration_approval"],
+      "properties": {
+        "schema_version": {"const": 1}, "status": {"const": "candidate"},
+        "files": {"$ref": "#/$defs/dependencies"}, "integration_approval": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "proof": {
+      "type": "object",
+      "required": ["id", "kind", "status", "historical_only", "dependencies", "report_sha256", "report", "limitations"],
+      "properties": {
+        "id": {"type": "string"},
+        "kind": {"enum": ["current-original-product-matrix", "current-original-source-fixtures", "fresh-public-source-iso-build", "public-development-gates"]},
+        "status": {"const": "passed-bounded"},
+        "historical_only": {"const": false},
+        "dependencies": {"$ref": "#/$defs/dependencies"},
+        "report_sha256": {"$ref": "#/$defs/sha256"},
+        "report": {"type": "string", "pattern": "^local/restructuring/"},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "approval": {
+      "type": "object",
+      "required": ["id", "scope", "status", "products", "proofs", "dependencies", "authorization", "limitations"],
+      "properties": {
+        "id": {"type": "string"},
+        "scope": {"const": "original-default-products"},
+        "status": {"enum": ["approved-bounded", "superseded"]},
+        "products": {"const": ["ps2run", "gt3-native"]},
+        "proofs": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+        "dependencies": {"$ref": "#/$defs/dependencies"},
+        "authorization": {"type": "string"},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "policy_authority": "project/gt3/restructuring.json",
+  "integration_approval": false,
+  "phases": [
+    {
+      "id": 0,
+      "name": "Exact migration baseline",
+      "status": "accepted"
+    },
+    {
+      "id": 1,
+      "name": "Historical verification independent of active paths",
+      "status": "accepted",
+      "evidence": "Full inherited verification and negative tests pass after relocation and retirement; original hashes/private reads unchanged"
+    },
+    {
+      "id": 2,
+      "name": "Build front door and explicit products",
+      "status": "accepted"
+    },
+    {
+      "id": 3,
+      "name": "Source and validation slices",
+      "status": "accepted",
+      "evidence": "Final qualified report verified: 13 current-source original-oracle runs, including both observed handbrake calibrations. Four current bounded proof layers recorded separately; no gameplay integration approval."
+    },
+    {
+      "id": 4,
+      "name": "First runnable restructuring checkpoint",
+      "status": "accepted",
+      "evidence": "Complete matrix and independent verification pass: 89 original-product rows on both products, 178 fresh runs. Exact guest dumps/captures and declared serialized-state contracts; no recovery/enhancement integration approval."
+    },
+    {
+      "id": 5,
+      "name": "GT3-owned relocation",
+      "status": "accepted"
+    },
+    {
+      "id": 6,
+      "name": "Documentation consolidation",
+      "status": "accepted",
+      "evidence": "One docusaurus installation; historical pages contextualized; current workflow/sidebar/links updated; recursive diagram validation and strict production build pass. Private service relocation verified on unchanged port."
+    },
+    {
+      "id": 7,
+      "name": "Final architecture and acceptance",
+      "status": "blocked",
+      "evidence": "Technical restructuring and all current verification layers complete. Awaiting explicit human checkpoint acceptance; approvals.json remains empty. No recovered/enhanced gameplay integration, commit or push is authorized."
+    }
+  ],
+  "limitations": [
+    "Progress is reporting only; proof and product approval remain separate authorities.",
+    "Same-filesystem independent preservation is not off-device disaster recovery."
+  ]
+}

@@ -27,7 +27,11 @@ int usage() {
                  "              [--disc image.iso] [--memcard card.ps2] [--pal | --ntsc] [--trace-syscalls] [--trace-io] [--trace-threads]\n"
                  "              [--trace-iop] [--trace-iop-hle] [--frames-dir dir] [--frame-every n]\n"
                  "              [--press frame:button[+button][:frames]]... [--window] [--fullscreen]\n"
-                 "              [--save-state frame:file] [--load-state file] [--output-size WxH] [--aspect W:H] [--render-scale 1..9] [--render-scale-y 1..9] [--ram-word address:expected:value] [--gt3-triple] [--axis frame:axis:value:duration]\n");
+                 "              [--save-state frame:file] [--load-state file] [--output-size WxH] [--aspect W:H] [--render-scale 1..9] [--render-scale-y 1..9] [--ram-word address:expected:value] [--axis frame:axis:value:duration]\n"
+#ifdef GT3_HOST_PRESENTATION
+                 "              [--gt3-triple] (inherited opt-in presentation; default OFF)\n"
+#endif
+    );
     return 2;
 }
 
@@ -37,7 +41,9 @@ int main(int argc, char **argv) {
     if (argc < 2) return usage();
     std::vector<std::string> args{argv[1]};
     [[maybe_unused]] bool window = false, fullscreen = false;
+#ifdef GT3_HOST_PRESENTATION
     bool gt3_triple = false;
+#endif
     std::string load_path;
     std::vector<std::array<unsigned, 3>> ram_words;
     for (int i = 2; i < argc; ++i) {
@@ -56,7 +62,9 @@ int main(int argc, char **argv) {
         else if (a == "--memcard" && i + 1 < argc) ps2::g_options.memcard_path = argv[++i];
         else if (a == "--trace-iop") ps2::g_options.trace_iop_modules = true;
         else if (a == "--trace-iop-hle") ps2::g_options.trace_iop_hle = true;
+#ifdef GT3_HOST_PRESENTATION
         else if (a == "--gt3-triple") gt3_triple = true;
+#endif
         else if (a == "--ram-word" && i + 1 < argc) {
             std::array<unsigned, 3> patch{}; char extra = 0;
             if (std::sscanf(argv[++i], "%x:%x:%x%c", &patch[0], &patch[1], &patch[2], &extra) != 3 || (patch[0] & 3) || patch[0] > ps2::kRamSize - 4) return usage();
@@ -111,6 +119,7 @@ int main(int argc, char **argv) {
         else return usage();
     }
 
+#ifdef GT3_HOST_PRESENTATION
     if (gt3_triple) {
         // Address map is pinned to the fingerprint-checked GT3 PBPX-95503 v1.10 profile.
         ps2::g_options.on_probe = [](ps2::Cpu &, std::uint32_t pc) {
@@ -128,6 +137,7 @@ int main(int argc, char **argv) {
             {0x34ffccu, 0x443a9baeu, 0x44c70000u},
         });
     }
+#endif
 
 #ifdef PS2_WINDOW
     if (window && !open_window(fullscreen)) return 1;

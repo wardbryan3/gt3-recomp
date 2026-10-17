@@ -1,4 +1,4 @@
-name: Source-only tests
+name: Public source and documentation
 on: [push, pull_request]
 permissions:
   contents: read
@@ -8,36 +8,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: false
-      - name: Publication guard and synthetic patch tests
+      - name: Public build prerequisites
         run: |
-          python3 scripts/audit_public.py
-          python3 tests/gt3_patch_test.py
-          python3 scripts/project/project.py check
-          python3 -m unittest discover -s tests -p project_metadata_test.py
-          python3 -m unittest discover -s tests -p publication_test.py
-          scripts/project/check-types.sh
-          bash -n scripts/build_gt3.sh scripts/port.sh tests/run_resolution_tests.sh
-      - name: Configure software runtime (no game or downloaded GPU SDK)
-        run: cmake -S . -B build/tests -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=ON -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
-      - name: Compile synthetic regressions
-        run: cmake --build build/tests --target gt3_hardware_test sif_scratchpad_test gt3_recovered_source_test --parallel 2
-      - name: Test
-        run: ctest --test-dir build/tests --output-on-failure
+          sudo apt-get update
+          sudo apt-get install -y just clang cmake ninja-build
+      - name: Current authority, historical negatives and publication
+        run: just check
+      - name: Public source contracts and software runtime
+        run: just test
   documentation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: docs/site/package-lock.json
-      - name: Curated public documentation (no game/private exports)
+          cache-dependency-path: docusaurus/package-lock.json
+      - name: Documentation entry point
         run: |
-          python3 scripts/project/project.py docs
-          npm --prefix docs/site ci --no-audit --no-fund
-          npm --prefix docs/site run diagrams
-          npm --prefix docs/site run build
+          sudo apt-get update
+          sudo apt-get install -y just
+          just setup
+          just docs-build

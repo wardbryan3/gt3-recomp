@@ -1,180 +1,76 @@
 # GT3 Recomp
 
-An experimental **Gran Turismo 3 recompilation and reverse-engineering project**,
-based on [snuri00/ps2-web-recomp](https://github.com/snuri00/ps2-web-recomp).
-The scope of this fork is GT3: compatibility, readable reconstructions, native
-rendering, controls, and repeatable validation—not a new general-purpose PS2
-emulator or a claim to have recovered the original game source.
+Experimental Gran Turismo 3 recovery and native reconstruction, based on
+[snuri00/ps2-web-recomp](https://github.com/snuri00/ps2-web-recomp).
+**Recover original behavior first; modernize or enhance only with separate approval.**
 
-**Bring your own legally obtained GT3 disc image. No game executable, assets,
-generated game translations, or game-containing builds are distributed.**
+Bring your own legally obtained disc image. No ISO, executable, original tables,
+generated game translations, saves or game-containing binaries are distributed.
 
-## Selective-decompilation checkpoint
+## One workflow, two products
 
-The project now has one source-of-truth workflow: root `justfile`, `AGENTS.md`,
-[HANDOFF.md](HANDOFF.md), `decomp/gt3` inventories and the curated Docusaurus site.
-
-```bash
-just check                 # source/schema/types/publication; no game needed
-just test                  # source-only regressions; NOT a live-game oracle
+```sh
+just check                 # public source/ownership/authority/publication checks
+just test                  # public source and historical reducer negatives; no ISO
 just setup && just docs-build
 just status
 just lookup 0x001e4478
+just build-game /absolute/path/to/GT3.iso my-gt3-build
 ```
 
-Readable mapping, clean steering and independent synthetic-wheel source are
-preserved with original-dependent fixture source. **The recovered library is
-compile checked, not linked into ps2run or installed into generated bodies.**
-Historical exact/live results are explicitly contextualized. Fresh current-main
-baseline evidence is tracked [separately](docs/site/docs/current-baseline.md), using
-an isolated validation host rather than installing hooks into canonical ps2run.
-[Pedal Recovery v1](docs/site/docs/pedal-v1.md) now has a separately pinned bounded
-validation-only replacement; canonical ps2run remains generated-only. No physical
-pedal/FFB/AI API is implemented here. The later bounded
-[descriptor/profile characterization](docs/site/docs/pedal-profiles.md) and
-read-only [admission audit](docs/site/docs/pedal-admission-49af40.md) retain their
-historical stopped results. A separately authorized
-[observed-context closure](docs/site/docs/pedal-closure.md) now proves the unchanged
-body at all 4,199 retained representative entries, including Time Trial’s alternate
-stack position. Structural caller-frame admission passes 4,199 actual guarded
-substitutions with zero fallback. This bounded validation-only checkpoint is
-re-frozen; no universal reachability, physical-device or canonical integration
-claim, and no adjacent work follows automatically.
+- **`ps2run`**: permanent, enhancement-free original generated reference. Runtime,
+  recompiler and platform updates are reviewed and version-qualified, not frozen forever.
+- **`gt3-native`**: evolving playable product, eventually the default. Initially
+  original generated execution, with **no recovered or enhanced gameplay linked**.
+  Default gameplay remains original-equivalent. Existing inherited opt-in presentation
+  code is not a new simulator/hardware qualification.
 
-A separate [Synthetic / Virtual Pedal Controller v1](docs/site/docs/virtual-pedals.md)
-provides opt-in, frame-scheduled normalized throttle/brake at the original command
-boundary. It preserves Frozen semantics and original downstream simulation, has no
-canonical installation, and does not claim physical pedals or calibration. See its
-separate bounded proof and `just verify-virtual-pedals EXPLICIT_REPOSITORY_ROOT`.
+Playable and future headless execution share authoritative gameplay sources/settings;
+there is no training physics fork. The three six-month project milestones remain
+**real simulator play**, **correct headless AI training**, and **complete playable
+native GT3 without PS2 execution/translation machinery**. ISO assets remain required.
+Restructuring does not implement those milestones or authorize another recovery.
 
-[Handbrake Recovery v1](docs/site/docs/handbrake-v1.md) adds a separately pinned,
-default-OFF, validation-only handbrake processor. The command signed halfword,
-analog floor, digital history/ramp and original rear-brake/coupling/shift-interface
-effects are verified without replacing downstream vehicle processing. Its exact
-fixture coverage and bounded native-v3 live coverage are distinguished explicitly.
-Canonical ps2run and earlier Frozen systems remain unchanged. Additive tasks use
-`just --justfile handbrake.just check` and `verify-handbrake EXPLICIT_REPOSITORY_ROOT`;
-the earlier proof-pinned root justfile is preserved byte-for-byte.
+## Repository
 
-[Virtual Handbrake v1](docs/site/docs/virtual-handbrake.md) supplies finite normalized
-[0,1] input to the existing analog command boundary, not directly to car state.
-It preserves the Frozen processor and original downstream behavior, rejects
-out-of-range values, and has separate multi-car/mode/AT/MT native evidence.
-Its additive tasks use `just --justfile virtual-handbrake.just check`, `test`,
-`docs-build` and `verify-virtual-handbrake EXPLICIT_ROOT`; earlier proof-pinned
-build/check files remain unchanged. Both build/runtime gates default OFF.
+- [`src/gt3/`](src/gt3/): domain-owned gameplay, with separate concrete PS2 bindings.
+- [`project/gt3/`](project/gt3/): current authorities, historical knowledge, proof and
+  product approval records. Historical source hashes are preserved, not repinned.
+- [`validation/gt3/`](validation/gt3/): differential/integration/live support;
+  domain-local contracts live beside their sources.
+- [`docusaurus/docs/`](docusaurus/docs/): **all maintained project documentation**.
+- `recomp/`, `runtime/`, `host/`: inherited execution/tooling; notices and reviewed fixes retained.
 
-[MT selector recovery v1](docs/site/docs/transmission-recovery-v1.md) recovers one
-small original selection/rearm function, with its speed search and all downstream
-transmission behavior still generated. Independent exact CPU/RAM/cost tests and
-bounded native substitutions apply only to an isolated default-OFF validation
-overlay, not canonical gameplay. Additive tasks use `transmission.just`; earlier
-Frozen source/build authorities are unchanged. No clutch/Neutral/shifter API is
-added, and comprehensive transmission recovery remains gated.
+Start with [build and discovery](docusaurus/docs/getting-started.md),
+[architecture](docusaurus/docs/architecture.md),
+[restructuring status](docusaurus/docs/development/restructuring.md),
+[continuation](docusaurus/docs/development/continuation.md), and
+[publication rules](docusaurus/docs/development/PUBLICATION.md).
 
-[Legacy source ledger](experiments/legacy/README.md) preserves unique old source
-variants as restoration patches, not copied active runtime repositories. Raw
-exports and game artifacts remain private; public docs build without them.
+Historical evidence verification is explicit:
 
-## What comes from upstream
-
-The EE static recompiler, VU translation infrastructure, emulated PS2 runtime,
-WebGPU GS renderer, browser frontend, and existing parallel execution architecture
-originate upstream. Its Git history, MIT license, copyright and third-party
-notices are retained. This fork does not claim that architecture or the large
-parallel-versus-single speed difference as a new invention.
-
-## GT3 work in this fork
-
-- `CORE.GT3` extraction/porting support alongside the inherited CORE format tooling.
-- SIF descriptor reads through EE address decoding, including scratchpad.
-- Correct transition to idle when the final running guest thread is deleted.
-- Limited i.Link register initialization/PHY behavior, **not network play**.
-- Independent horizontal/vertical GS sampling and adapter allocation-limit checks.
-- Native output dimensions, aspect control, scripted analog input, and a
-  fingerprint-checked **USA PBPX-95503 v1.10** triple-width projection profile.
-- A readable input-normalization reference and local differential-test harness.
-- Optional native FIFO comparison and opt-in x86 SSE4.1 graphics preparation.
-- Synthetic hardware regressions plus local GPU and game-dependent tests.
-
-Upstream now has an interrupt latch fix equivalent to a local experiment;
-this fork keeps the upstream implementation rather than duplicating it.
-
-## Build locally
-
-Linux/native is the currently validated experiment path. You need Git, CMake,
-Ninja, Python 3, Clang with C++20 support, and SDL2 development files for a window.
-The inherited VU implementation uses Clang vector builtins; GCC is not supported.
-Setup downloads wgpu-native into ignored local storage. No system package or
-firewall changes are made by these build scripts.
-
-```bash
-# Native GT3 extraction, discovery, and compilation (ISO stays local):
-scripts/build_gt3.sh /absolute/path/to/your/GT3.iso
-
-# Optional fingerprint-pinned triple-width profile:
-scripts/build_gt3.sh /absolute/path/to/your/GT3.iso --triple
+```sh
+just verify-private /absolute/path/to/retained-original-evidence-root
+just verify-historical extensions "$PWD"
+just verify-checkpoint /absolute/path/to/NEW-current-report.json
 ```
 
-These use the inherited exploring/entry-discovery pipeline. Discovery depends
-on the scenes exercised; it is not proof that every game mode has been covered.
-The original ELF/ISO are not modified. Triple output is a separate local ELF.
-See [build instructions](docs/gt3/BUILD.md) before enabling the triple profile.
+These are different claims. Historical verification never approves current source
+integration. Missing/changed private inputs fail; public checks need no private files.
+Do not confuse bounded fixtures or software-native observations with full-game,
+physical wheel/FFB, headless correctness, or PS2-independent native completion.
 
-## Status and limits
+## Requirements and provenance
 
-The private experiment reached menus and races, exercised bumper/chase and
-look-behind, and validated save/reload and full 9×3 sampling. An isolated native
-5760×1080 window and a center-cropped 1080p browser stream were exercised.
-These are **observations on one setup**, not a promise of smooth 60 FPS on every
-machine. Physical scanout, complete game compatibility, and joinable native VU
-shutdown are not established. Some overlays/replays remain incorrect.
+Linux is the qualified development path: Git with required history, Python 3,
+CMake, Ninja, Clang/C++20, Node 22+, npm and `just`; SDL2 development files for a
+window. Native GPU execution also needs Vulkan and the locally fetched wgpu SDK.
+Clang is required by inherited VU builtins. Public source tests use software runtime.
+See the build guide for explicit dependencies, shallow-clone history and discovery.
 
-This source tree is rebased onto upstream commit
-`a02cdd56a8ab5077724da2b5ff8ca683024d7cf4`. The experiment's full validation
-results must not be confused with validation of this newly rebased tree.
-[Status](docs/gt3/STATUS.md) distinguishes those cases. Browser GT3 parity and
-fresh-clone end-to-end discovery need additional validation.
-
-## Tests
-
-```bash
-# No ISO or generated game code required; software runtime:
-cmake -S . -B build/tests -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=ON \
-  -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
-cmake --build build/tests --target gt3_hardware_test sif_scratchpad_test
-ctest --test-dir build/tests --output-on-failure
-python3 tests/gt3_patch_test.py
-python3 scripts/audit_public.py
-```
-
-With a locally generated GT3 library and GPU SDK, the additional sampling and
-translated-routine differential tests are described in the build guide.
-
-## Recompilation and decompilation
-
-Recompilation translates the original executable **locally**; that generated
-code is not public project source. Readable reference implementations and
-future reconstructed modules belong in the project after provenance review.
-The [decompilation roadmap](decomp/README.md) tracks that work without claiming
-complete source recovery. Assembly/decompiler dumps stay private by default.
-
-## Controls (native)
-
-Z accelerates/confirms; A brakes; arrow keys steer/navigate; W is R1 (bumper/chase);
-hold Q for L1 (look behind); Enter pauses. X is Circle, S is Triangle, 1/2 are
-L2/R2, and Backspace is Select. Exact in-game actions depend on mode/bindings.
-
-## Contributing, provenance and legal
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and [publication policy](docs/gt3/PUBLICATION.md).
-Generic fixes should be proposed upstream as focused PRs; GT3-specific work
-remains this project's focus. Patch address leads retain their attribution in
-`scripts/gt3_triple.py`; candidate roles are not recovered original symbols.
-
-Original project code is under [MIT](LICENSE); preserve all existing notices,
-including the BSD notice in `runtime/src/ipu/NOTICE`. The license does **not**
-license GT3's executable, data, or generated translations. Gran Turismo and
-PlayStation are their owners' trademarks. This project is not affiliated with
-Sony, Polyphony Digital, or the upstream maintainer. Do not upload game files,
-private dumps, or game-containing release binaries.
+Upstream supplies the static EE/VU recompilers, PS2 runtime, WebGPU GS renderer,
+browser frontend and parallel architecture. Its Git history, [MIT license](LICENSE)
+and third-party notices, including `runtime/src/ipu/NOTICE`, are preserved.
+This license does not cover GT3 or generated game translations. Gran Turismo and
+PlayStation are their owners' trademarks; this project is unaffiliated with Sony,
+Polyphony Digital or the upstream maintainer.

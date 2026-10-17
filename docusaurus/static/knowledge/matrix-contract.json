@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "scope": "Existing defined serialized-state ABI contract for explicitly identified independent ORIGINAL fixture recaptures",
+  "default_state_comparison": "all bytes exact",
+  "recaptures": [
+    {
+      "source": "local/baseline-v3/accepted-live/summary.json",
+      "key": "capture",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/baseline-v3/accepted-live/summary.json",
+      "key": "recapture",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/extensions/virtual-transmission-v1/state3-preparation-attempt-1/original/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/extensions/virtual-transmission-v1/state3-preparation-attempt-1/repeat/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/alfa-at-capture/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/altezza-mt-capture/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/arcade-menu/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/car-selection/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/free-run-capture/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/free-run-menu/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/license-capture-attempt/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/license-map-choice/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/menu-root-original/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/mrs-at-capture/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/simulation-home/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/simulation-map/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/simulation-menu/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/time-trial-capture/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/pedal-profiles-v1/time-trial-menu/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/transmission-speed-v1/positive-attempt-1/prepare-original/command.json",
+      "key": "",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/virtual-pedals-v1/unchanged-current-live-accepted/summary.json",
+      "key": "capture",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    },
+    {
+      "source": "local/virtual-pedals-v1/unchanged-current-live-accepted/summary.json",
+      "key": "recapture",
+      "contract": "defined-ABI-fixture-recapture",
+      "reason": "Independent original fixture-creation/recapture, not an accepted driving continuation comparison"
+    }
+  ],
+  "padding_layout": {
+    "thread_size": 768,
+    "padding": [
+      [
+        60,
+        64
+      ],
+      [
+        72,
+        80
+      ]
+    ]
+  },
+  "original_control": {
+    "manifest": "local/restructuring/phase-3/original-padding-control/control-manifest.json",
+    "sha256": "9f9cca58965817d7b9d201d88f2a6587159a5e5a040dc042bc891b4743958a2e",
+    "canonical_sha256": "b22b692a3bf8dbcce7c3defb57605a96b8763efae10685cc7a082e1d77410d4a",
+    "finding": "Unchanged original executable itself reproduces raw host-padding differences after menu fixture creation; all defined serialized fields, 36MiB guest dump and captures are exact."
+  },
+  "constraints": [
+    "No original expected hash or protected artifact is rewritten.",
+    "No guest bytes or defined serialized state fields are excluded.",
+    "Only the exact existing independently compiled kernel thread ABI holes are permitted.",
+    "All ordinary live driving continuation states remain all-byte exact.",
+    "No numerical tolerance, physics, runtime timing, source behavior or integration permission changes."
+  ]
+}

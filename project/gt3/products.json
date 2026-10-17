@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "ps2run": {
+    "role": "permanent original generated reference",
+    "enhancements": "excluded",
+    "execution": "original generated code and PS2 runtime",
+    "host_owner": "ps2_native_host",
+    "build_targets": ["ps2run"],
+    "updates": "reviewed rolling versions with qualified identities and evidence"
+  },
+  "gt3-native": {
+    "role": "evolving playable product, eventual default",
+    "default_behavior": "original-equivalent",
+    "execution": "original generated code and PS2 runtime, transitional",
+    "host_owner": "gt3_native_host",
+    "host_source": "host/main.cpp (same maintained launcher as reference)",
+    "inherited_presentation": "GT3_HOST_PRESENTATION compiled only here; --gt3-triple remains explicit opt-in and default OFF",
+    "build_targets": ["gt3-native"],
+    "recovered_integration": [],
+    "enhanced_integration": [],
+    "future_enhancement_policy": "May be compiled in, explicitly activated and inactive-neutral",
+    "existing_virtual_transmission_gates": "unchanged; separate approval required",
+    "milestone_3_complete": false
+  },
+  "headless": {
+    "status": "future consumer, not implemented",
+    "gameplay_owner": "same authoritative sources and settings as playable",
+    "initial_configuration": "original-equivalent",
+    "replay": "version/configuration/numerical-contract qualified; format undecided"
+  }
+}

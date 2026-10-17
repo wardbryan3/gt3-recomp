@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "pre-restructuring-aee79fb-source-context",
+  "source_revision": "aee79fba37937e4dc99dac4263589d005112c504",
+  "scope": "Explicit historical PUBLIC SOURCE resolution and registered private source predecessors only. Does not replace artifact, ABI, differential or native verification.",
+  "private_sources_authority": "decomp/gt3/pedal-closure.json",
+  "private_sources": {
+    "host/gt3_clean_pedals.cpp": {
+      "path": "local/pedal-closure-v1/frozen-before.cpp",
+      "sha256": "1dff127d6dc0fd0f7a6ae260ac6668b522daa11f1b1b0f8c572d79ce81eec057"
+    },
+    "scripts/audit_gt3_pedal_admission.py": {
+      "path": "local/pedal-closure-v1/admission-analyzer-before.py",
+      "sha256": "4bd31b6cf0d8274adf94eea35a5993c3b98de63782d0cff4e96ca71c91f71e17"
+    }
+  },
+  "limitations": [
+    "Existing verifiers still require explicit adaptation before protected active paths move.",
+    "No private/runtime/evidence read is redirected by this record.",
+    "No copied runtime checkout, permissive hash fallback, current-source substitution or integration approval.",
+    "Earlier deep-parent documentation versions remain governed by their separate immutable historical_public_versions records."
+  ]
+}

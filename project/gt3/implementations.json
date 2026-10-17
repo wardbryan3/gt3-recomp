@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "modules": [
+    {
+      "id": "controls-reference",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_controls.hpp"
+      ],
+      "contract_kind": "standalone reference, not replacement",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "steering",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_clean_steering.cpp",
+        "src/gt3/gameplay/controls/gt3_clean_steering.hpp"
+      ],
+      "contract_kind": "bounded interior/entry recovery; mixed EE bridge retained intact",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "pedals",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_clean_pedals.cpp",
+        "src/gt3/gameplay/controls/gt3_clean_pedals.hpp"
+      ],
+      "contract_kind": "bounded interior recovery; mixed EE bridge retained intact",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "handbrake",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_clean_handbrake.cpp",
+        "src/gt3/gameplay/controls/gt3_clean_handbrake.hpp"
+      ],
+      "contract_kind": "bounded interior recovery",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "synthetic-wheel",
+      "classification": "Enhanced / Extended",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_synthetic_wheel.cpp",
+        "src/gt3/gameplay/controls/gt3_synthetic_wheel.hpp"
+      ],
+      "contract_kind": "input adaptation",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "virtual-pedals",
+      "classification": "Enhanced / Extended",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_virtual_pedals.cpp",
+        "src/gt3/gameplay/controls/gt3_virtual_pedals.hpp"
+      ],
+      "contract_kind": "input adaptation",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "virtual-handbrake",
+      "classification": "Enhanced / Extended",
+      "sources": [
+        "src/gt3/gameplay/controls/gt3_virtual_handbrake.cpp",
+        "src/gt3/gameplay/controls/gt3_virtual_handbrake.hpp"
+      ],
+      "contract_kind": "input adaptation",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "mt-selector",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/transmission/gt3_clean_transmission.cpp",
+        "src/gt3/gameplay/transmission/gt3_clean_transmission.hpp"
+      ],
+      "contract_kind": "whole function",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "speed-search",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/transmission/gt3_clean_transmission_speed.cpp",
+        "src/gt3/gameplay/transmission/gt3_clean_transmission_speed.hpp"
+      ],
+      "contract_kind": "whole bounded helper",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "transmission-admission",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/transmission/gt3_clean_transmission_admission.cpp",
+        "src/gt3/gameplay/transmission/gt3_clean_transmission_admission.hpp"
+      ],
+      "contract_kind": "whole admission only",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "transmission-state-model",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/transmission/gt3_transmission_state.cpp",
+        "src/gt3/gameplay/transmission/gt3_transmission_state.hpp"
+      ],
+      "contract_kind": "decision models, NOT whole engine/commit ABI replacements",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "virtual-transmission",
+      "classification": "Enhanced / Extended",
+      "sources": [
+        "src/gt3/gameplay/transmission/virtual/controller.cpp",
+        "src/gt3/gameplay/transmission/virtual/controller.hpp",
+        "src/gt3/bindings/ps2/virtual-transmission/host.inc",
+        "src/gt3/bindings/ps2/virtual-transmission/profile.hpp",
+        "src/gt3/bindings/ps2/virtual-transmission/virtual_transmission.cpp",
+        "src/gt3/bindings/ps2/virtual-transmission/virtual_transmission.hpp"
+      ],
+      "contract_kind": "deliberate policy; separate concrete PS2 binding; existing build/runtime gates remain OFF",
+      "product_integration": "not-approved",
+      "current_proof": "Independent current proof is recorded separately; classification is not product approval",
+      "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    }
+  ]
+}

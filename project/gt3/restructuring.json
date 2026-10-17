@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "id": "repository-restructuring-v1",
+  "baseline_revision": "aee79fba37937e4dc99dac4263589d005112c504",
+  "scope": "Repository restructuring only; no recovery promotion, modernization, enhancement integration, hardware or headless implementation",
+  "deadline": "Six-month project goal across all three milestones; dependency-ordered acceptance, not speculative week estimates",
+  "milestones": [
+    {
+      "id": 1,
+      "goal": "Reliable native GT3 on the actual simulator",
+      "requirements": [
+        "physical wheel/pedal/clutch/H-pattern controls",
+        "recovered original-intent FFB",
+        "correct triple-screen presentation",
+        "stable gameplay performance and frame pacing",
+        "functional synchronized audio"
+      ],
+      "acceptance": "Actual hardware and defined representative gameplay matrix; not every car, track, mode or peripheral",
+      "configurations": [
+        "default original-equivalent",
+        "explicitly enabled named simulator-enhanced"
+      ],
+      "deferred": [
+        "advanced FFB tuning",
+        "broad hardware compatibility",
+        "elaborate graphics configuration",
+        "audio enhancements",
+        "nonessential polish"
+      ]
+    },
+    {
+      "id": 2,
+      "goal": "Correct headless AI training using shared authoritative gameplay",
+      "requirements": [
+        "trusted actions and observations",
+        "qualified guest/host timing and lifecycle",
+        "reset",
+        "controlled stepping",
+        "recorded headless races playable in the actual 3D environment"
+      ],
+      "initial_configuration": "original-equivalent",
+      "transitional_ps2_execution_allowed": true,
+      "replay": "Matching simulation version, configuration and numerical contract; incompatible versions may reject; format undecided",
+      "deferred": [
+        "acceleration",
+        "simulator-enhanced training",
+        "permanent cross-version playback"
+      ]
+    },
+    {
+      "id": 3,
+      "goal": "Complete playable GT3 engine without PS2 execution or equivalent instruction translation machinery in gameplay",
+      "iso_assets_required": true,
+      "priority": "Lowest; current selective recovery does not redefine the complete-game destination"
+    }
+  ],
+  "classifications": {
+    "Original": "Original GT3 behavior through generated code and PS2 runtime; permanent reference",
+    "Recovered": "Readable reconstruction independently validated against original, including applicable ABI/mutation/numerical/cost contracts",
+    "Modernized": "Native replacement of PS2-specific mechanisms after recovery; approved observable original gameplay behavior",
+    "Enhanced / Extended": "Explicit intentional additions or changes beyond original behavior"
+  },
+  "products": {
+    "ps2run": {
+      "role": "Permanent generated-only reference",
+      "enhancement_implementations_and_bindings": "Excluded from compile/link inputs",
+      "updates": "Reviewed rolling infrastructure updates with qualified identities and evidence"
+    },
+    "gt3-native": {
+      "role": "Evolving playable product; eventual default",
+      "default": "original-equivalent gameplay",
+      "enhancement_policy": "May eventually compile/link enhancements, disabled by default with demonstrated inactive neutrality",
+      "existing_virtual_transmission": "Preserve current build/runtime gates until separate validated integration",
+      "initial_execution": "Same accepted original execution; no implicit recovered substitutions"
+    },
+    "headless": {
+      "role": "Future separate host, not implemented by restructuring",
+      "gameplay": "Same authoritative implementations and gameplay build settings as playable"
+    }
+  },
+  "ownership": {
+    "layout": "Hybrid; gameplay domains together; hosts, PS2 bindings and platform infrastructure separate",
+    "source_root": "src/gt3/",
+    "authority_root": "project/gt3/",
+    "site_root": "docusaurus/",
+    "documentation_root": "docusaurus/docs/",
+    "root_documentation_exceptions": [
+      "README.md",
+      "AGENTS.md"
+    ],
+    "other_documentation_exceptions": "Only explicitly necessary exceptions, including legally required license/notices",
+    "inherited": "Preserve recomp/runtime internal organization; shared infrastructure, no duplicate runtime checkouts",
+    "duplicate_maintained_implementations": "Forbidden",
+    "temporary_parallel_execution": "Bounded migration/validation only; observable tested fallback with explicit scope and exit criteria",
+    "promotion": "Case-by-case explicit boundary; implementation proof distinct from product approval",
+    "replacement": "Remove superseded execution within promoted scope and ultimately its link inputs; retain normal playable coverage before fallback retirement",
+    "unsupported_contexts": "Safe explicit product-level response; no silent superseded execution within promoted scope"
+  },
+  "modification_policy": {
+    "order": "Recover first, modify second",
+    "modernization": "Separate approval may replace guest accounting/scheduling with native timing/ordering/outcome contract",
+    "numerics": "Explicitly approved per-component differences require stateful race-level evidence; existing tolerances unchanged",
+    "mechanical_relocation": "Separate from behavior changes and structural extraction of mixed files"
+  },
+  "workflow": {
+    "entry_point": "just",
+    "target": "Coordinated graph with explicit authoritative source/dependency ownership",
+    "migration": "Existing isolated builders migrate in validated phases",
+    "infrastructure": "Explicit targets and lightweight checks; no plugin system, universal simulation API or speculative framework",
+    "tests": "Domain-local unit/contracts; central independent original differentials, cross-domain integration and live support",
+    "authorities": "Central multiple records; implementation proof separate from product approval; conservative dependency-aware stale invalidation",
+    "documentation": "Site-centered maintained prose; generated structured status views"
+  },
+  "preservation": {
+    "public_source": "Exact Git revisions where sufficient",
+    "private_context": "Hashed immutable bundles for evaluated overlays, unavailable generated artifacts, private fixtures and required toolchain material",
+    "requirements": "Complete explicit source/build/dependency/validation context; independent backup and restore verification",
+    "missing_or_mismatched": "Fail explicitly; never skip, rewrite historical hashes or substitute active versions",
+    "current_builds": "Fresh public clone plus legal ISO and documented discovery/regeneration; no dependence on historical workspace"
+  },
+  "validation": {
+    "ordinary_changes": "Applicable public build, unit/contracts, authority consistency, boundaries, publication and docs",
+    "product_changes": "Invalidate stale approvals; relevant private differentials and native matrices",
+    "uncertain_or_shared_impact": "Broader validation or fail closed for approval; not directory-only selection",
+    "first_runnable_checkpoint": "Both products fresh-clone regenerate/build and reproduce complete retained bounded matrix; not full-game compatibility or recovery promotion",
+    "explicit_private_verification": "Required unavailable or changed evidence fails clearly",
+    "public_development": "No proprietary fixtures required; ordinary passing gates do not authorize integration"
+  },
+  "integration_approvals_issued_by_restructuring": [],
+  "limitations": [
+    "This approved policy is not proof or product integration approval.",
+    "Mutable execution progress is separate derived reporting; it cannot approve source or change preserved expectations.",
+    "Historical pin extraction alone is not a complete audit of arbitrary verifier code."
+  ],
+  "progress_authority": "project/gt3/progress.json"
+}

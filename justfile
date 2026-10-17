@@ -1,96 +1,112 @@
-# GT3 selective-decompilation checkpoint. No game files needed for default checks.
+# One public entry point. Public development needs no game/private fixtures.
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
 default:
-    @"{{just_executable()}}" --list
+    @just --list
 
-# Locked project-local documentation dependencies; no system installation.
 setup:
-    npm --prefix docs/site ci --no-audit --no-fund
+    npm --prefix docusaurus ci --no-audit --no-fund
 
-# Source-only compiler/runtime and reviewed recovered-source library; no game SDK.
 build:
-    cmake -S . -B build/source -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=ON -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
-    cmake --build build/source --parallel 4
+    cmake -S . -B build/gt3-public-source -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=ON -DPS2_WGPU_DIR="$PWD/build/no-gpu-sdk"
+    cmake --build build/gt3-public-source --parallel 6
 
-# Hardware, SIF, synthetic patch, metadata and recovered-source consistency.
 test: build
-    ctest --test-dir build/source --output-on-failure
-    python3 -m unittest discover -s tests -p gt3_virtual_pedals_test.py
-    python3 tests/gt3_patch_test.py
-    python3 -m unittest discover -s tests -p gt3_baseline_validation_test.py
-    python3 -m unittest discover -s tests -p gt3_pedal_profiles_test.py
-    python3 -m unittest discover -s tests -p gt3_pedal_admission_test.py
-    python3 -m unittest discover -s tests -p gt3_pedal_closure_test.py
-    python3 -m unittest discover -s tests -p project_metadata_test.py
-    python3 -m unittest discover -s tests -p publication_test.py
+    ctest --test-dir build/gt3-public-source --output-on-failure
+    python3 -B scripts/project/historical_tests.py
+    python3 -B -m unittest discover -s tests -p '*_test.py'
 
-# Public schema/source/type checks, NOT a claim to verify private artifacts.
 check:
-    python3 scripts/project/project.py check
-    python3 scripts/project/virtual_pedals.py check
-    python3 -m unittest discover -s tests -p gt3_virtual_pedals_test.py
-    scripts/project/check-types.sh
-    python3 -m unittest discover -s tests -p gt3_pedal_profiles_test.py
-    python3 -m unittest discover -s tests -p gt3_pedal_admission_test.py
-    python3 -m unittest discover -s tests -p gt3_pedal_closure_test.py
-    python3 -m unittest discover -s tests -p project_metadata_test.py
-    python3 -m unittest discover -s tests -p publication_test.py
-    python3 scripts/audit_public.py
+    python3 -B scripts/project/project.py check
+    python3 -B scripts/project/project.py type-assertions
+    python3 -B scripts/project/run_historical.py metadata "$PWD"
+    python3 -B -m unittest discover -s tests -p '*_test.py'
+    python3 -B scripts/audit_public.py
     git diff --check
 
 status:
-    python3 scripts/project/project.py status
+    python3 -B scripts/project/project.py status
 
 lookup query:
-    python3 scripts/project/project.py lookup '{{query}}'
+    python3 -B scripts/project/project.py lookup '{{query}}'
 
 evidence query:
-    python3 scripts/project/project.py evidence '{{query}}'
-
-# Explicit strict check of retained historical evidence; never silently rehash.
-verify-private root:
-    python3 scripts/project/project.py verify-private '{{root}}'
-
-# Strict current-main evidence verification, separate from the historical root.
-verify-current root:
-    python3 scripts/project/project.py verify-current '{{root}}'
-
-# Separately pinned new pedal proof; also verifies authoritative baseline/v3 fixture.
-verify-pedals root:
-    python3 scripts/project/project.py verify-pedals '{{root}}'
-
-# Retained stopped-survey evidence, NOT an expanded equivalence/Frozen claim.
-verify-pedal-profiles root:
-    python3 scripts/project/project.py verify-pedal-profiles '{{root}}'
-
-# Read-only stack/admission findings; never changes or bypasses the Frozen gate.
-verify-pedal-admission root:
-    python3 scripts/audit_gt3_pedal_admission.py verify --root '{{root}}'
+    python3 -B scripts/project/project.py evidence '{{query}}'
 
 docs-generate:
-    python3 scripts/project/project.py docs
-    python3 scripts/project/virtual_pedals.py docs
+    python3 -B scripts/project/project.py docs
 
 docs-build: docs-generate
-    npm --prefix docs/site run diagrams
-    npm --prefix docs/site run build
+    npm --prefix docusaurus run diagrams
+    npm --prefix docusaurus run build
 
-# Explicit private closure proof, including inherited immutable stopped evidence.
-verify-pedal-closure root:
-    python3 scripts/verify_gt3_pedal_closure.py '{{root}}'
-
-# Explicit virtual-input experiment proof; inherits unchanged Frozen authorities.
-verify-virtual-pedals root:
-    python3 scripts/project/virtual_pedals.py verify '{{root}}'
-
-# Binds all interfaces; use trusted networks only. Existing private server unchanged.
 docs-dev: docs-generate
-    npm --prefix docs/site run start
+    npm --prefix docusaurus run start
 
 audit:
-    python3 scripts/audit_public.py
+    python3 -B scripts/audit_public.py
 
-# Original-behavior game build; ISO and resulting translations stay local.
-build-game iso:
-    scripts/build_gt3.sh '{{iso}}'
+# NEW names are required: discovery/build outputs never overwrite accepted ones.
+build-game iso name:
+    python3 -B scripts/project/products.py generate '{{iso}}' '{{name}}'
+
+# These commands explicitly verify OLD contexts, not the current integration.
+verify-historical profile root:
+    python3 -B scripts/project/run_historical.py '{{profile}}' '{{root}}'
+
+verify-private root:
+    python3 -B scripts/project/run_historical.py original '{{root}}'
+
+verify-current root:
+    python3 -B scripts/project/run_historical.py baseline '{{root}}'
+
+verify-pedals root:
+    python3 -B scripts/project/run_historical.py pedals '{{root}}'
+
+verify-pedal-profiles root:
+    python3 -B scripts/project/run_historical.py profiles '{{root}}'
+
+verify-pedal-admission root:
+    python3 -B scripts/project/run_historical.py admission '{{root}}'
+
+verify-pedal-closure root:
+    python3 -B scripts/project/run_historical.py closure '{{root}}'
+
+verify-virtual-pedals root:
+    python3 -B scripts/project/run_historical.py virtual-pedals '{{root}}'
+
+verify-handbrake root:
+    python3 -B scripts/project/run_historical.py handbrake '{{root}}'
+
+verify-virtual-handbrake root:
+    python3 -B scripts/project/run_historical.py virtual-handbrake '{{root}}'
+
+verify-transmission root:
+    python3 -B scripts/project/run_historical.py transmission '{{root}}'
+
+verify-transmission-speed root:
+    python3 -B scripts/project/run_historical.py speed '{{root}}'
+
+verify-transmission-state root:
+    python3 -B scripts/project/run_historical.py state '{{root}}'
+
+verify-extensions root:
+    python3 -B scripts/project/run_historical.py extensions '{{root}}'
+
+# Current checkpoint verification is deliberately separate from historical proof.
+# Names select NEW ignored outputs; no result or expectation is overwritten.
+qualify-products receipt name:
+    python3 -B scripts/project/matrix.py 'local/restructuring/{{name}}-catalogue.json'
+    python3 -B scripts/project/checkpoint.py run '{{receipt}}' 'local/restructuring/{{name}}-catalogue.json' 'local/restructuring/{{name}}-products'
+
+original-fixtures receipt name:
+    python3 -B scripts/project/source_fixtures.py run '{{receipt}}' 'local/restructuring/{{name}}-fixtures'
+
+verify-source-fixtures report:
+    python3 -B scripts/project/source_fixtures.py verify '{{report}}'
+
+verify-checkpoint report:
+    python3 -B scripts/project/checkpoint.py verify '{{report}}'
+
+verify-approval:
+    python3 -B scripts/project/acceptance.py
