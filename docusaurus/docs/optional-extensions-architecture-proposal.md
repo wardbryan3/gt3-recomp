@@ -6,11 +6,20 @@ Paths, Frozen labels and native validation-host results below are **historical**
 not current product integration approval. Use the [current workflow](workflow.md)
 and [execution status](development/restructuring.md) for maintained commands and actual gates.
 
+This proposal predates the later bounded
+[virtual-transmission implementation](virtual-transmission-v1.md). Its proposed
+additive builders, source layout and approval questions describe that earlier
+design stage, not the current build graph or an outstanding work order.
+See [current architecture](architecture.md) and
+[current authorities](reference/current-authorities.md) for present ownership and
+approval boundaries. Neither this proposal nor the later historical extension
+proof authorizes current product integration.
+
 :::
 
-# Optional gameplay extensions — minimal architecture proposal
+# Historical optional gameplay extensions architecture proposal
 
-**Proposal only.** The project must retain an original-gameplay native baseline.
+**Historical proposal only.** The project must retain an original-gameplay native baseline.
 Virtual clutch/H-pattern is exclusively an extension, not clean recovery. No
 transition-policy override is approved by this document. No implementation,
 canonical/Frozen/build change, plugin framework, commit or push is included.

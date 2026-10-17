@@ -1,5 +1,5 @@
 ---
-title: "Current-main native baseline"
+title: "Historical native-v3 baseline validation"
 ---
 
 :::note Historical source context
@@ -9,6 +9,14 @@ This page preserves findings/instructions from the pre-restructuring context
 Paths, Frozen labels and native validation-host results below are **historical**,
 not current product integration approval. Use the [current workflow](../workflow.md)
 and [execution status](../development/restructuring.md) for maintained commands and actual gates.
+
+This is a retained generated snapshot of the earlier baseline evaluated from
+`82987dec7a71d76414adfff8663da5494a280938` plus its validation overlay, not a view
+of today's product proof. The current documentation generator does not refresh
+this snapshot. “Current-main,” “fresh,” and gate results below retain their
+historical meaning; the generated result text is preserved unchanged.
+See [current authorities](../reference/current-authorities.md) for present records
+and [validation layers](../testing.md) for the separate proof and approval claims.
 
 :::
 

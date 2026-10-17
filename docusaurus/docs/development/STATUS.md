@@ -6,11 +6,19 @@ Paths, Frozen labels and native validation-host results below are **historical**
 not current product integration approval. Use the [current workflow](../workflow.md)
 and [execution status](restructuring.md) for maintained commands and actual gates.
 
+This is an accumulated pre-restructuring checkpoint history, not a current status
+page or work queue. “Latest,” “current,” “fresh,” pass/fail claims and stop
+instructions refer to the individual cycles described below. Later checkpoints may
+resolve an earlier checkpoint's blocker without changing that earlier result.
+Use [current authorities](../reference/current-authorities.md) for present source,
+proof and approval records. Historical validation-host results do not establish
+current product integration or authorize further work.
+
 :::
 
-# Status and evidence boundaries
+# Historical checkpoint status and evidence boundaries
 
-## Latest: bounded virtual throttle/brake experiment
+## Historical virtual throttle/brake checkpoint {#latest-bounded-virtual-throttlebrake-experiment}
 
 [Synthetic / Virtual Pedal v1](../virtual-pedals.md) is a separate opt-in
 command-input experiment, not a reopened Frozen pedal implementation. It maps
@@ -22,7 +30,7 @@ public/strict proof suites pass. Canonical/default behavior and Frozen sources
 remain unchanged. No physical/calibration/DriverInput or adjacent scope. **Stop.**
 Authority: `decomp/gt3/virtual-pedals.json`; `just verify-virtual-pedals EXPLICIT_ROOT`.
 
-## Latest: observed-context Pedal v1 closure — re-frozen
+## Historical observed-context Pedal v1 closure — re-frozen {#latest-observed-context-pedal-v1-closure--re-frozen}
 
 [Closure](../pedal-closure.md), authority `decomp/gt3/pedal-closure.json`:
 unchanged semantic body passes4,199 actual-entry complete CPU/32MiB/exact-cost/
@@ -85,7 +93,7 @@ Snapshot3 remains current; old v2 race states are not portable by changing a byt
 See HANDOFF.md and experiments/legacy/README.md. No pedal/physical-wheel/FFB/AI API
 has been implemented by this checkpoint.
 
-## Current-main native baseline (source base 82987de + validation-only overlay)
+## Historical native baseline (source base 82987de + validation-only overlay) {#current-main-native-baseline-source-base-82987de--validation-only-overlay}
 
 The documented missing CMake/Ninja dependencies are restored. Fresh software and
 GPU/native builds pass; four canonical executables built in independent directories
@@ -145,7 +153,7 @@ No preserved files or runtime semantics were changed.
 No private frames, recordings, game binaries, generated units or snapshots are
 included as public evidence artifacts.
 
-## This clean source tree
+## Earlier rebased source tree {#this-clean-source-tree}
 
 Started from upstream a02cdd56a8ab5077724da2b5ff8ca683024d7cf4 and selectively
 rebased source/tests. The newer upstream interrupt-latch implementation was kept;

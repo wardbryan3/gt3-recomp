@@ -1,5 +1,5 @@
 ---
-title: Current-main reproducible native baseline
+title: Historical native-v3 baseline
 ---
 
 :::note Historical source context
@@ -10,6 +10,14 @@ Paths, Frozen labels and native validation-host results below are **historical**
 not current product integration approval. Use the [current workflow](workflow.md)
 and [execution status](development/restructuring.md) for maintained commands and actual gates.
 
+This record describes the earlier native-v3 baseline evaluated from source base
+`82987dec7a71d76414adfff8663da5494a280938` plus its validation overlay.
+“Current,” “fresh,” and stop instructions below refer to that checkpoint, not the
+present repository. Its clean/synthetic gates ran only in an isolated validation
+host. The recipes are retained historical instructions, not maintained build commands.
+See [current authorities](reference/current-authorities.md) and
+[validation layers](testing.md) for present proof and approval boundaries.
+
 :::
 
 
@@ -17,18 +25,18 @@ and [execution status](development/restructuring.md) for maintained commands and
 
 This cycle restores build/validation prerequisites only. It does not recover
 pedals or change gameplay, control algorithms, rendering, or the save-state
-format. Current source base is `82987dec7a71d76414adfff8663da5494a280938`, plus
+format. Evaluated source base was `82987dec7a71d76414adfff8663da5494a280938`, plus
 the reviewed validation scripts, test-only host wrapper and registry/docs updates.
 Canonical `host/`, `runtime/`, `recomp/` and root CMake gameplay/build targets are
 unchanged. The previous pedal audit remains a historical stopped-cycle report.
 
-Fresh results are maintained separately in
+Results for this historical checkpoint were recorded separately in
 `decomp/gt3/current-validation.json` and its [generated view](registry/current-validation.md).
 The older per-function lifecycle/differential/live fields still describe the
 preserved private experiment. New baseline evidence does not automatically promote
 pedals or establish all-game compatibility.
 
-## Recorded current result
+## Recorded historical result {#recorded-current-result}
 
 **PASS, bounded native baseline.** Four fresh canonical executables built in
 independent directories have identical SHA-256
