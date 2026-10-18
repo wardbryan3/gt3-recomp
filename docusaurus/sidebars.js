@@ -40,7 +40,9 @@ module.exports = {knowledge: [
       'research/transmission/power-transfer', 'research/transmission/mt-selector-v1',
       'research/transmission/speed-search-v1', 'research/transmission/state-transitions-v1'
     ]},
-    'research/economy/index',
+    {type: 'category', label: 'Economy and garage', link: {type: 'doc', id: 'research/economy/index'}, items: [
+      'research/economy/funded-test-save'
+    ]},
     {type: 'category', label: 'Enhancement experiments', link: {type: 'doc', id: 'research/enhancements/index'}, items: [
       'research/enhancements/architecture-proposal', 'research/enhancements/stopped-boundary-audit', 'research/enhancements/virtual-transmission-v1'
     ]},

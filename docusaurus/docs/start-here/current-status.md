@@ -25,6 +25,10 @@ recoveries for garage storage, catalog/pricing and selected credit operations.
 Its function tests and original gameplay observations are separate evidence;
 configuration construction, complete transactions and safe developer credit
 assignment remain incomplete. No recovered economy code is linked into a product.
+A separate owner-approved [private funded test fixture](../research/economy/funded-test-save.md)
+provides 99,999,999 starting credits through disposable memory-card copies.
+Its temporary preparation hack and bounded save/load tests do not qualify a
+production credit setter or establish the game's maximum balance.
 
 For the current working checklist use [continuation](../developer-guide/continuation.md).
 For milestone acceptance limits use [goals](goals.md); for what a given test can

@@ -423,3 +423,12 @@ The next technical work would require a separately scoped decision. This closeou
 preserves what is known and what is not; it authorizes neither more exploration
 nor implementation. Recovery, verification and
 [integration approval](../../reference/authorization.md) remain separate.
+
+The owner has selected a protected funded test save instead of a runtime refill
+feature. The [private funded test fixture](funded-test-save.md) now provides
+99,999,999 starting credits through a read-only master memory-card image and
+writable disposable copies. Cold loading, a purchase and sale, normal saves and
+fresh-copy reset have passed bounded tests. The owner approved temporary fixture
+preparation, not clean production code or changes to the Oracle. This is not a
+proven maximum balance or a product credit-assignment API. A fresh copy resets
+both credits and master progress; it does not preserve later purchases.
