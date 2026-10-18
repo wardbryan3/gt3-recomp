@@ -43,6 +43,11 @@ docs-build: docs-generate
 docs-dev: docs-generate
     npm --prefix docusaurus run start
 
+# Restart the existing user service behind the hosted Tailscale docs site.
+docs-restart: docs-generate
+    systemctl --user restart gt3-docs.service
+    systemctl --user --no-pager status gt3-docs.service
+
 audit:
     python3 -B scripts/audit_public.py
 

@@ -1,7 +1,6 @@
 {
   "intro.md": "start-here/index.md",
   "goals.md": "start-here/goals.md",
-  "handoff.md": "start-here/continuation.md",
   "getting-started.md": "developer-guide/build-and-run.md",
   "workflow.md": "developer-guide/workflow.md",
   "methodology.md": "developer-guide/recovery-method.md",

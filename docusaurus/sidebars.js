@@ -1,6 +1,6 @@
 module.exports = {knowledge: [
   {type: 'category', label: 'Start Here', link: {type: 'doc', id: 'start-here/index'}, items: [
-    'start-here/quick-start', 'start-here/goals', 'start-here/terminology', 'start-here/current-status', 'start-here/continuation'
+    'start-here/quick-start', 'start-here/goals', 'start-here/terminology', 'start-here/current-status'
   ]},
   {type: 'category', label: 'Developer Guide', collapsed: false, link: {type: 'doc', id: 'developer-guide/index'}, items: [
     'developer-guide/environment', 'developer-guide/build-and-run', 'developer-guide/workflow',

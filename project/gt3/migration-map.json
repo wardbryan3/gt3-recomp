@@ -41,7 +41,7 @@
     "docs/site/docs/getting-started.md": "docusaurus/docs/developer-guide/build-and-run.md",
     "docs/site/docs/goals.md": "docusaurus/docs/start-here/goals.md",
     "docs/site/docs/handbrake-v1.md": "docusaurus/docs/research/handbrake/recovery-v1.md",
-    "docs/site/docs/handoff.md": "docusaurus/docs/start-here/continuation.md",
+    "docs/site/docs/handoff.md": "docusaurus/docs/developer-guide/continuation.md",
     "docs/site/docs/intro.md": "docusaurus/docs/start-here/index.md",
     "docs/site/docs/layout.md": "docusaurus/docs/reference/repository-layout.md",
     "docs/site/docs/methodology.md": "docusaurus/docs/developer-guide/recovery-method.md",
