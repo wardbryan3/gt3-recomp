@@ -18,6 +18,20 @@ The [build guide](../developer-guide/build-and-run.md) supplies the ordered setu
 | `just audit` | Tracked/untracked publication scan using existing policy. |
 | `just build-game ISO NEW_NAME` | Private original extraction, bounded discovery, identity-checked assembly and two-product build; new output name required. |
 
+## Isolated economy verification
+
+`just verify-economy ELF REFERENCE_BUILD` builds and runs the isolated economy
+function differentials against explicit private original inputs. It is **not** a
+historical-profile alias or a product integration test. The ELF must match the
+recovered USA v1.10 fingerprint; the reference build supplies the original
+executables and libraries. Generated headers/sources and the local GPU archive
+are also required. Missing inputs fail; no original build is rebuilt or patched.
+
+See the [economy closeout](../research/economy/index.md#reproduce-the-established-verification)
+for source/test links, reproducible commands, counts, opaque dependencies and
+input-domain limits. `just test` runs its public source regressions without game
+inputs, but does not substitute for these original-function differentials.
+
 ## Explicit historical verification
 
 `just verify-historical PROFILE ROOT` reads registered exact predecessor contexts.

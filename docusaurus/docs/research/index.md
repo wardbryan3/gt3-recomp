@@ -15,6 +15,7 @@ alternate onboarding guide or an installation/approval ledger. Start with the
 | [Pedals](pedals/index.md) | Discovery → stopped admission → structural closure. Keep the populations separate. |
 | [Handbrake](handbrake/index.md) | Bounded interior join, commit transitions and virtual input; not whole-function replacement. |
 | [Transmission](transmission/index.md) | Producer/consumer map, Reverse, power transfer, selector, speed and state. Selection is not engagement. |
+| [Economy and garage](economy/index.md) | Original purchase/rejection/sale paths, pool/list storage, catalog/pricing and isolated recoveries. Explicit static/gameplay/differential limits; no integration. |
 | [Enhancement experiments](enhancements/index.md) | Stopped audit and evaluated virtual transmission policy, not original behavior or product installation. |
 | [Platform and presentation](platform/index.md) | Resolution, pacing and LAN experiments, including failures and measurement limitations. |
 | [Provenance](provenance/index.md) | Independent original identity, donor contexts and upstream contributions. |

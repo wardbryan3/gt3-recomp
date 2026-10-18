@@ -50,6 +50,10 @@ audit:
 build-game iso name:
     python3 -B scripts/project/products.py generate '{{iso}}' '{{name}}'
 
+# Explicit private inputs; recovery fixtures only, never product integration.
+verify-economy elf reference_build:
+    python3 -B validation/gt3/differential/run_economy.py --elf "{{elf}}" --reference-build "{{reference_build}}"
+
 # These commands explicitly verify OLD contexts, not the current integration.
 verify-historical profile root:
     python3 -B scripts/project/run_historical.py '{{profile}}' '{{root}}'

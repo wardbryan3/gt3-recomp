@@ -147,6 +147,24 @@
       "product_integration": "not-approved",
       "current_proof": "Independent current proof is recorded separately; classification is not product approval",
       "historical_source_context": "aee79fba37937e4dc99dac4263589d005112c504"
+    },
+    {
+      "id": "economy-mechanisms",
+      "classification": "Recovered",
+      "sources": [
+        "src/gt3/gameplay/economy/gt3_garage.hpp",
+        "src/gt3/gameplay/economy/gt3_garage.cpp",
+        "src/gt3/gameplay/economy/gt3_garage_list.cpp",
+        "src/gt3/gameplay/economy/gt3_economy_catalog.hpp",
+        "src/gt3/gameplay/economy/gt3_economy_catalog.cpp",
+        "src/gt3/gameplay/economy/gt3_economy_state.hpp",
+        "src/gt3/gameplay/economy/gt3_economy_checks.hpp",
+        "src/gt3/gameplay/economy/gt3_economy_transactions.hpp"
+      ],
+      "contract_kind": "isolated memory-native mechanisms and bounded dependency projections; NOT full CPU/ABI or transaction replacements",
+      "product_integration": "not-approved",
+      "current_proof": "project/gt3/economy.json; bounded original-function differentials and separate original gameplay observations; no integration approval",
+      "historical_source_context": "3630415d877546c59d3f41e6b68e66b9cd6aea44"
     }
   ]
 }

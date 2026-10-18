@@ -1,0 +1,75 @@
+{
+  "module": "economy-mechanisms",
+  "status": "recovered-memory-native-and-bounded-projections",
+  "public_base_revision": "3630415d877546c59d3f41e6b68e66b9cd6aea44",
+  "profile": {
+    "original": "GT3 USA v1.10",
+    "elf_sha256": "b6351d1c67a3ac1205d118c9041bfad88e2711235e67ca11d1056c4103cde763"
+  },
+  "static_evidence": {
+    "basis": "Original ELF analysis and unmodified generated-original bodies; decompiler types are not ABI authority.",
+    "representative_elf_inspection": "ev_fe396231a0a1092591675cb9ffa27726b8fccc7eb9e557a3e488aba320ba5265",
+    "garage": ["00218f88", "00218fe0", "0023c1b8", "0023c288", "0023c4a8", "00219190", "0023af40"],
+    "catalog_and_price": ["00231548", "002316e8", "002315d8", "00231680", "00237bc0"],
+    "post_debit_store": ["001d9ce8", "001d9f60"],
+    "promoted_existing_projections": ["0021a6d0", "0021a740", "0021a7d8", "0011bc18", "0011bce0", "00219250", "002192a8"]
+  },
+  "function_differential_verification": {
+    "status": "passed-bounded",
+    "command": "just verify-economy games/gt3-restructuring-fresh/core.elf build/native-gt3-restructuring-fresh",
+    "regenerable_private_report": "local/economy-recovery/current/report.json",
+    "garage_cases": 385,
+    "garage_pool_cases": 265,
+    "garage_original_reset_compositions": 50,
+    "catalog_cases": 1200,
+    "catalog_lookup_cases": 1050,
+    "price_and_mode_cases": 120,
+    "float_forwarding_cases": 30,
+    "existing_field_leaf_cases": 3960,
+    "existing_field_chains": 40,
+    "existing_check_cases": 3024,
+    "existing_transaction_body_cases": 1024,
+    "comparison": "Logical return bits where defined, complete 32MiB RAM excluding explicitly reserved original ABI stack workspace, and ordered dependency checkpoints/traces. Reference input hashes remain unchanged.",
+    "garage_fixtures": "Every first-free position and exhaustion; randomized occupancy; finite well-formed empty/single/multiple/200-node lists; head/middle/tail unlink; selection-field update branches; null guards; reset; freed-slot reselection and reinsertion with an explicitly fixture-initialized detached record.",
+    "catalog_fixtures": "Nonempty sorted unique unsigned64 keys including high-bit extremes; counts 1/2/3/7/16/31/244, strides 8/16/264, root offset/mask decoding, found and missing rows. Price/mode arithmetic uses explicit raw-bit boundary fixtures.",
+    "float_fixtures": "Both forwarding entries, signed zero, subnormals, infinities and NaN payloads; original source helper executes with initialized cache and with its initialization branch enabled.",
+    "opaque_original_compositions": ["00237980", "001dac48 and its original initialization dependencies"],
+    "bounded_mocked_dependencies": "Existing eligibility and debit-body fixtures intercept their opaque callees. They do not prove construction, full incoming constructor argument forwarding, or complete purchases.",
+    "not_qualified": [
+      "Full Cpu/register/stack/instruction-cost replacement or production binding",
+      "Every original caller and its legal gameplay input range",
+      "Empty/corrupt catalog tables or missing-row price preconditions",
+      "Full configuration construction and construction failure paths",
+      "Complete purchase/sale/reward/upgrade transactions or saved-game round trips"
+    ]
+  },
+  "original_gameplay_evidence": {
+    "status": "previously-observed-original-only-not-recovered-gameplay",
+    "private_report": "local/purchase-scenarios/traces/dependency-comparison.json",
+    "checks": 112,
+    "scenarios": [
+      "Affordable purchase: 18000 to 3340 credits; garage 0 to 1",
+      "Insufficient funds: 18000 credits and empty garage unchanged",
+      "Sale: 3340 to 7005 credits; garage 1 to 0"
+    ],
+    "qualification": "These anchor original normal-path behavior. No playable or headless product has executed the recovered mechanisms, and no new gameplay run is claimed by this recovery pass."
+  },
+  "source_regressions": {
+    "public_source_test": "gt3_economy_source_test",
+    "status": "passed",
+    "qualification": "Source-only checks include exact list/reset store sequences; these are regressions, not an independent oracle."
+  },
+  "integration_approval": {
+    "status": "not-approved",
+    "linked_products": [],
+    "runtime_hooks_installed": false,
+    "developer_credit_feature": false,
+    "qualification": "The active request authorizes isolated recovery and verification only. Proof is not approval."
+  },
+  "unknowns_retained": [
+    "Mode meaning and record field +0x208 meaning",
+    "Remaining configuration/reset semantics and all original preconditions",
+    "Failure paths beyond the explicitly qualified fixture contracts",
+    "Safe credit assignment range, lifecycle boundary and persistence guard"
+  ]
+}

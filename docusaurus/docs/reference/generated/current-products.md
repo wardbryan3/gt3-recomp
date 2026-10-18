@@ -20,6 +20,7 @@ These are **current source identities**, not runtime promotion. Both products in
 | transmission-admission | Recovered | not-approved |
 | transmission-state-model | Recovered | not-approved |
 | virtual-transmission | Enhanced / Extended | not-approved |
+| economy-mechanisms | Recovered | not-approved |
 
 ## Separate bounded product approvals
 

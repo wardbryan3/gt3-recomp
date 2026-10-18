@@ -2,6 +2,13 @@
 # ps2run or gt3-native by this restructuring.
 set(GT3_CONTROLS "${CMAKE_SOURCE_DIR}/src/gt3/gameplay/controls")
 set(GT3_TRANSMISSION "${CMAKE_SOURCE_DIR}/src/gt3/gameplay/transmission")
+set(GT3_ECONOMY "${CMAKE_SOURCE_DIR}/src/gt3/gameplay/economy")
+# Memory-native recovery only. No product or PS2 runtime binding is installed.
+add_library(gt3_economy_recovered STATIC
+    ${GT3_ECONOMY}/gt3_garage.cpp
+    ${GT3_ECONOMY}/gt3_garage_list.cpp
+    ${GT3_ECONOMY}/gt3_economy_catalog.cpp)
+target_include_directories(gt3_economy_recovered PUBLIC ${GT3_ECONOMY})
 add_library(gt3_controls_recovered STATIC
     ${GT3_CONTROLS}/gt3_clean_steering.cpp
     ${GT3_CONTROLS}/gt3_clean_pedals.cpp
@@ -46,6 +53,7 @@ if(BUILD_TESTING)
         target_compile_options(${name} PRIVATE -UNDEBUG)
         add_test(NAME ${name} COMMAND ${name})
     endfunction()
+    gt3_source_test(gt3_economy_source_test ${CMAKE_SOURCE_DIR}/validation/gt3/differential/gt3_economy_source_test.cpp gt3_economy_recovered)
     add_library(gt3_fixture_clock SHARED ${CMAKE_SOURCE_DIR}/validation/gt3/live/gt3_baseline_clock.cpp)
     set_target_properties(gt3_fixture_clock PROPERTIES PREFIX "" OUTPUT_NAME "fixed-clock")
     gt3_source_test(gt3_state_layout ${CMAKE_SOURCE_DIR}/validation/gt3/live/gt3_baseline_layout.cpp ps2runtime)

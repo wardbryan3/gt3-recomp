@@ -19,6 +19,13 @@ checks. It does not renew those private proofs or approve the restructuring
 checkpoint on the owner's behalf. A new qualification must use its actual source
 identity and the existing verification process; historical hashes are not repinned.
 
+The completed [economy and garage investigation](../research/economy/index.md)
+adds original purchase/rejection/sale findings and isolated memory-native
+recoveries for garage storage, catalog/pricing and selected credit operations.
+Its function tests and original gameplay observations are separate evidence;
+configuration construction, complete transactions and safe developer credit
+assignment remain incomplete. No recovered economy code is linked into a product.
+
 For the current working checklist use [continuation](../developer-guide/continuation.md).
 For milestone acceptance limits use [goals](goals.md); for what a given test can
 establish use [validation](../developer-guide/validation.md).
