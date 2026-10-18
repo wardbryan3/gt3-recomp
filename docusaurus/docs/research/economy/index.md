@@ -343,7 +343,7 @@ widths. Unknown field and dependency identifiers remain offset-/address-based.
 | [`gt3_economy_state.hpp`](../../../../src/gt3/gameplay/economy/gt3_economy_state.hpp); [`state oracle`](../../../../validation/gt3/differential/gt3_economy_state_oracle.cpp) | Promoted existing **3,960 leaf cases + 40 chains**. No mocked callees; field outputs, address/value wrap and RAM checks. Not legal credit-assignment or caller qualification. |
 | [`gt3_economy_checks.hpp`](../../../../src/gt3/gameplay/economy/gt3_economy_checks.hpp); [`checks oracle`](../../../../validation/gt3/differential/gt3_economy_checks_oracle.cpp) | Promoted existing **3,024** cases; all four outcomes, signed comparisons, ordered calls and distinct accessor results. Dependencies intercepted, not complete original eligibility environments. |
 | [`gt3_economy_transactions.hpp`](../../../../src/gt3/gameplay/economy/gt3_economy_transactions.hpp); [`transaction oracle`](../../../../validation/gt3/differential/gt3_economy_transactions_oracle.cpp) | Promoted existing **1,024** body cases, including **256** null paths and **168** underflows; ordered dependency mutations and store-before-post-call. Construction/value/post-call dependencies mocked; not complete purchases. |
-| [`source regressions`](../../../../validation/gt3/differential/gt3_economy_source_test.cpp) | Public, no-game checks of source behavior, including list/reset store sequences. These are not an independent oracle. |
+| [`source regressions`](../../../../validation/gt3/differential/gt3_economy_source_test.cpp) | Public, no-game checks of source behavior, including list/reset store sequences and the ordered insertion reads/stores for empty/nonempty lists and both signed branches. These are not an independent oracle. |
 
 Total: **9,593 function cases plus 40 chains**. Subcounts above overlap their
 parent suite and must not be added again. Extreme raw-bit fixtures establish
@@ -354,13 +354,15 @@ The garage/catalog comparisons check logical return bits where defined, all
 opaque-dependency checkpoints. Original SP/callee-saved checks do not make the
 memory-native code a full CPU/register/stack/instruction-cost replacement.
 
-**Known representation limit found during documentation review:** original
-`FUN_00218fe0` loads state `+0x30` before storing the incremented count; the current
-C++ loads it after that store. Store/mutation order and tested ordinary-RAM outputs
-match, but exact per-access read/write trace equivalence is **not established**.
-A memory backend that adds read/store side effects must not be assumed equivalent.
-No implementation was changed during this documentation pass. Qualify that
-ordering before any stronger memory-access-trace or binding claim.
+**Insertion ordering:** `FUN_00218fe0` reads count `+0x38`, reads state `+0x30`,
+then stores the incremented count before conditionally updating `+0x30`. The C++
+now preserves that original sequence. The public regression records ordered
+`load32`/`store32` accesses, including values, for empty and nonempty lists and
+both signed branches. It was demonstrated to fail against the earlier reordered
+implementation before the fix. Final-memory comparisons alone cannot establish
+access order; these source regressions supplement, rather than replace, the
+original-function differentials. They do not establish access-trace equivalence
+for every recovered function or supply a production binding.
 
 ### Reproduce the established verification
 
@@ -408,7 +410,7 @@ translations stay private. No new original-gameplay run is implied by a docs bui
 | Full garage, multi-car removal, slot reuse | Function fixtures cover these mechanisms, but full-garage rejection, multi-car sales and an actual freed-slot repurchase were not demonstrated in gameplay. |
 | Complete transaction recovery | `FUN_00219368` sale orchestration remains original; debit bodies remain bounded projections. Constructor arguments, all side effects and failure paths still need explicit contracts. |
 | Other economy paths | Rewards, upgrades, other purchases/sales, all balance writers and full saved-game round trips remain outside established coverage. No whole-state or headless-gameplay equivalence. |
-| Production binding | No full CPU/ABI/cost claim, no binding installed, no integration approval. Address per-access ordering limitations before enlarging the contract. |
+| Production binding | No full CPU/ABI/cost claim, no binding installed, no integration approval. Insertion's identified read ordering is corrected and regression-tested; do not generalize that test to all functions or all backend semantics. |
 | Developer credit assignment | Safe range, lifecycle boundary and a complete persistence guard remain unqualified. Raw setter correctness is not feature safety. |
 
 The persistence blocker is concrete: `runtime/src/iop/sio2.cpp::flush_cards()` can

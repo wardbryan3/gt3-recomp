@@ -57,7 +57,7 @@
   "source_regressions": {
     "public_source_test": "gt3_economy_source_test",
     "status": "passed",
-    "qualification": "Source-only checks include exact list/reset store sequences; these are regressions, not an independent oracle."
+    "qualification": "Source-only checks include exact list/reset store sequences and ordered insertion reads/stores for empty/nonempty lists and both signed branches; these are regressions, not an independent oracle."
   },
   "integration_approval": {
     "status": "not-approved",

@@ -29,8 +29,11 @@ void FUN_00218fe0(garage_memory& memory, std::uint32_t base, std::uint32_t recor
     memory.store32(record + record_field_22c, memory.load32(base + 0x2cu));
     memory.store32(base + 0x2cu, memory.load32(base + 0x2cu) + 1u);
     FUN_0023c1b8(memory, base + garage_collection_offset, record);
-    memory.store32(base + 0x38u, memory.load32(base + 0x38u) + 1u);
+    const auto count = memory.load32(base + 0x38u);
+    // Original reads +0x30 before publishing the incremented count. Keep this
+    // sequence even when an ordinary-RAM backend would produce the same values.
     const auto field_30 = memory.load32(base + 0x30u);
+    memory.store32(base + 0x38u, count + 1u);
     if (std::bit_cast<std::int32_t>(field_30) >= 0)
         memory.store32(base + 0x30u, field_30 + 1u);
 }
